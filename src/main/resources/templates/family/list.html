@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/template :: meta('Members')">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HomeTeam NS | Members</title>
+</head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<div class="wrapper">
+    <div th:replace="fragments/template :: header"></div>
+    <div th:replace="fragments/template :: sidebar('member')"></div>
+    <div class="content-wrapper">
+        <!--/*@thymesVar id="header" type="java.lang.String"*/-->
+        <div th:replace="fragments/template :: content-header(${header})"></div>
+        <!-- Main content -->
+        <section class="content">
+            <table id="example" class="table table-bordered table-hover dataTable display clickable" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th>Main Member NRIC</th>
+                    <th>Name</th>
+                    <th>NRIC</th>
+                    <th>Relationship</th>
+                    <th>Date of Birth</th>
+                    <th>Email</th>
+                    <th>Active Membership</th>
+                    <th>Status</th>
+                    <th>Updated Date</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>Main Member NRIC</th>
+                    <th>Name</th>
+                    <th>NRIC</th>
+                    <th>Relationship</th>
+                    <th>Date of Birth</th>
+                    <th>Email</th>
+                    <th>Active Membership</th>
+                    <th>Status</th>
+                    <th>Updated Date</th>
+                </tr>
+                </tfoot>
+                <tbody>
+                <!--/*@thymesVar id="familyMembers" type="java.lang.Iterable"*/-->
+                <!--/*@thymesVar id="family" type="com.techstudio.htns.domain.FamilyMember"*/-->
+                <tr th:each="family : ${familyMembers}" th:data-href="@{/family/(id=${family.getId()})}">
+                    <td th:text="${family.getFamilyMemberExtension().getContact().getContactExtension().getNric()}">{{MainNRIC}}</td>
+                    <td th:text="${family.getFamilyMemberExtension().getName()}">{{name}}</td>
+                    <td th:text="${family.getFamilyMemberExtension().getNric()}">{{nric}}</td>
+                    <td th:text="${family.getFamilyMemberExtension().getRelationship()}">{{relationship}}</td>
+                    <td th:if="${family.getFamilyMemberExtension().getBirthday() != null}" th:text="${#dates.format(family.getFamilyMemberExtension().getBirthday(), 'dd-MM-yyyy')}">{{dateOfBirth}}</td>
+                    <td th:if="${family.getFamilyMemberExtension().getBirthday() == null}"></td>
+                    <td th:text="${family.getFamilyMemberExtension().getEmail()}">{{email}}</td>
+                    <td th:text="${'Family Membership'}">{{membershipFeeType}}</td>
+                    <td th:text="${family.getFamilyMemberExtension().getApprovalStatus()}">{{status}}</td>
+                    <td th:text="${family.getModifiedOn()} ? ${#dates.format(family.getModifiedOn(), 'dd-MM-yyyy HH:mm:ss')} : ''">{{modifiedOn}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+    <div th:replace="fragments/template :: footer"></div>
+</div>
+<div th:include="fragments/template :: javascript" th:remove="tag"></div>
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable({
+            "ordering": false,
+            "dom": '<"top"iflp<"clear">>rt<"bottom"iflp<"clear">>',
+            "drawCallback": function(settings, json) {
+                $("tr[data-href]").on('click', function() {
+                    window.location = $(this).data("href");
+                });
+            }
+        });
+    } );
+</script>
+</body>
+</html>

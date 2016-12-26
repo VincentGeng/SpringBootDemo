@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/template :: meta('Members')"></head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<div class="wrapper">
+    <div th:replace="fragments/template :: header"></div>
+    <div th:replace="fragments/template :: sidebar('dashboard')"></div>
+    <div class="content-wrapper">
+        <!--/*@thymesVar id="header" type="java.lang.String"*/-->
+        <!--/*@thymesVar id="allGolfingLocation" type="java.util.List<com.techstudio.htns.domain.GolfingLocation>"*/-->
+        <!--/*@thymesVar id="golfingLocation" type="com.techstudio.htns.domain.GolfingLocation"*/-->
+        <!--/*@thymesVar id="contact" type="com.techstudio.htns.domain.Contact"*/-->
+        <div th:replace="fragments/template :: content-header(${header})"></div>
+        <!-- Main content -->
+        <section class="content">
+            <form action="###" method="post" th:action="@{/golfing/booking/create}" id="golfing-booking-form">
+
+                <!------------------------------------------------- Hidden Parameter ------------------------------------------------->
+
+                <!-- Get Other Player Information -->
+                <input type="hidden" name="allOtherPlayerNRIC" id="allOtherPlayerNRIC">
+                <input type="hidden" name="allOtherPlayerName" id="allOtherPlayerName">
+                <input type="hidden" name="allOtherPlayerMemType" id="allOtherPlayerMemType">
+                <input type="hidden" name="allOtherPlayerExpDate" id="allOtherPlayerExpDate">
+                <input type="hidden" name="allOtherPlayerHandicap" id="allOtherPlayerHandicap">
+
+                <!-- Get Persion Modify or Create -->
+                <input type="hidden" name="createBy" id="createBy">
+                <input type="hidden" name="createBy" id="modifiedBy">
+
+                <!-- Get Location ID -->
+                <input type="hidden" name="golfingLocationId" id="golfingLocationId">
+
+                <!-- Get Member Details -->
+                <input type="hidden" name="nric" id="nric">
+                <input type="hidden" th:value="${ isMember }">
+
+                <!------------------------------------------------- End Hidden Parameter ------------------------------------------------->
+
+                <!------------------------------------------------- Section A ------------------------------------------------->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Section A - Golf Booking</h3>
+                    </div>
+                    <div class="box-body" id="sectionABody">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Location
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" id="location" required>
+                                        <option th:each="golfingLocation : ${allGolfingLocation}" th:value="${golfingLocation.golfingLocationExtension().getId()}" th:text="${golfingLocation.golfingLocationExtension().getName()}">Wireframe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Preferred Tee-Off Time
+                                    </label>
+                                    <div class="input-group date bootstrap-timepicker timepicker">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-clock-o"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right" id="teeOffTime" name="teeOffTime" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Booking Date <small>(Booking Period Minimum 3 Days, Maximum 14 Days in advance)</small>
+                                    </label>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right datepicker" id="bookingDate" name="bookingDate" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!------------------------------------------------- End Section A ------------------------------------------------->
+
+                <!------------------------------------------------- Section B ------------------------------------------------->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Section B - Main Application</h3>
+                    </div>
+                    <div class="box-body" id="sectionBBody">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        NRIC
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="txtNRIC" name="txtNRIC" data-inputmask="'mask': 'a9999999a'" data-mask required th:readonly="${ isMember } == true" th:value="${ isMember } == true ? ${ contact.getContactExtension().getNric()} : ''">
+                                        <span class="input-group-btn">
+                                    <button type="button" class="btn btn-info btn-flat" id="btnNRICAuthenticate" th:disabled="${ isMember } == true">
+                                        <i class="fa fa-check"></i>
+                                    </button>
+                                </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Contact No
+                                    </label>
+                                    <input type="text" class="form-control" readonly id="contactNumber" name="contactNumber" th:readonly="${ isMember } != true" th:value="${ isMember } == true ? ${ contact.getMobilePhone()} : ''">
+                                </div>
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Golf Handicap
+                                    </label>
+                                    <input type="text" class="form-control" id="handicap" name="handicap" maxlength="2" onkeypress='return event.charCode >= 48 && event.charCode <= 57' th:readonly="${ isMember } != true" required th:value="${ isMember } == true ? ${ contact.getContactExtension().getIsHandicap() } : ''">
+                                </div>
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Status
+                                    </label>
+                                    <input type="text" class="form-control" readonly id="status" th:value="${ isMember } == true ? ${ contact.getContactExtension().getMembership().getMembershipExtension().getName() } : ''">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Member Name
+                                    </label>
+                                    <input type="text" class="form-control" id="memberName" name="memberName" readonly th:value="${ isMember } == true ? ${ contact.getContactExtension().getFullName() } : ''">
+                                </div>
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Email Address
+                                    </label>
+                                    <input type="text" class="form-control" id="email" name="email" th:readonly="${ isMember } != true" required th:value="${ isMember } == true ? ${ contact.getEmail() } : ''">
+                                </div>
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Expiry Date
+                                    </label>
+                                    <input type="text" class="form-control" readonly name="expDate" id="expDate" th:value="${ isMember } == true ? ${#dates.format(contact.getContactExtension().getExpiredOn(), 'dd-MM-yyyy')} : ''">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!------------------------------------------------- End Section B ------------------------------------------------->
+
+                <!------------------------------------------------- Section C ------------------------------------------------->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Section C - Other Players</h3>
+                    </div>
+                    <div class="box-body" id="sectionCBody">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="box-body table-responsive no-padding">
+                                    <table class="table table-hover" id="other-players">
+                                        <thead>
+                                            <tr>
+                                                <th>NRIC</th>
+                                                <th>Name</th>
+                                                <th>Membership Type</th>
+                                                <th>Expiry Date</th>
+                                                <th>Handicap</th>
+                                                <th>Remarks</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableBody">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>
+                                    Total Booking
+                                </label>
+                                <input type="text" class="form-control" readonly value="1" id="playerCount">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" id="btnAddPlayer" th:disabled="${ isMember } != true">Add Player</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!------------------------------------------------- End Section C ------------------------------------------------->
+
+                <!------------------------------------------------- Section D ------------------------------------------------->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Section D - Joining at Club Member's Flight</h3>
+                    </div>
+                    <div class="box-body" id="sectionDBody">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Club Member Name
+                                    </label>
+                                    <input type="text" class="form-control" id="flightMemberName" name="flightMemberName">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Booked & Confirmed Flight Time
+                                    </label>
+                                    <div class="input-group date bootstrap-timepicker timepicker">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-clock-o"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right" id="flightTime" name="flightTime">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Membership Number
+                                    </label>
+                                    <input type="text" class="form-control" id="flightMembershipNo" name="flightMembershipNo">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Remarks
+                                    </label>
+                                    <textarea class="form-control" rows="3" id="flightDescription" name="flightDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" value="" id="checkboxTNC">I have read and accept the
+                                        <a href="#">Terms and Conditions</a>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="submit" class="btn btn-primary" id="btnSubmit" disabled>Submit</button>
+                                <button type="button" class="btn btn-default" id="btnCancel">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!------------------------------------------------- End Section D ------------------------------------------------->
+
+            </form>
+        </section>
+    </div>
+    <div th:replace="fragments/template :: footer"></div>
+</div>
+<div th:include="fragments/template :: javascript" th:remove="tag"></div>
+
+<!------------------------------------------------- Add New Player Model ------------------------------------------------->
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="myModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header box-header with-border">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add A New Player</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <red>*</red>
+                            <label>
+                                NRIC
+                            </label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="txtAuthenticateIC" data-inputmask="'mask': 'a9999999a'" data-mask required>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-info btn-flat" id="btnICAuthenticate">
+                                        <i class="fa fa-check"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                Name
+                            </label>
+                            <input type="text" class="form-control" required id="txtAuthenticateName" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                Golf Handicap
+                            </label>
+                            <input type="text" class="form-control" required id="txtAuthenticateHandicap" disabled maxlength="2" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+                        </div>
+                        <div class="form-group" style="display: none;">
+                            <label>
+                                Membership Type
+                            </label>
+                            <input type="text" class="form-control" required id="txtAuthenticateMemberType" name="txtAuthenticateMemberType">
+                        </div>
+                        <div class="form-group" style="display: none;">
+                            <label>
+                                Expiry Date
+                            </label>
+                            <input type="text" class="form-control" required id="txtAuthenticateExpDate" name="txtAuthenticateExpDate">
+                        </div>
+                        <div class="form-group" style="display: none;">
+                            <label>
+                                Remarks
+                            </label>
+                            <input type="text" class="form-control" required id="txtAuthenticateRemarks" name="txtAuthenticateRemarks">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnAddNewPlayer" data-dismiss="modal">Add</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!------------------------------------------------- End Add New Player Model ------------------------------------------------->
+
+<!------------------------------------------------- Invalid NRIC Model ------------------------------------------------->
+<div class="modal modal-danger fade" id="errorMessageModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Invalid NRIC</h4>
+            </div>
+            <div class="modal-body">
+                <p>Please make sure that: </p>
+                <p>1. You have entered the correct member NRIC </p>
+                <p>2. Only allow Ordinary, Social, and Main Membership NRIC </p>
+                <p>3. Your membership have not reached the expiry date </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!------------------------------------------------- End Invalid NRIC Model ------------------------------------------------->
+
+<script>
+    $(document).ready(function() {
+        var count = 1; //To display number of player playing
+
+        <!----------------------- Data Input Style ----------------------->
+        $(":input").inputmask();
+        $('textarea[data-allcap], input[data-allcap]').on('keypress', function () {
+            $(this).val(function () {
+                return this.value.toUpperCase();
+            });
+        });
+        $('[data-toggle="tooltip"]').tooltip();
+        $("[data-mask]").inputmask();
+
+        <!----------------------- Date Picker Style ----------------------->
+        $('.datepicker').datepicker({
+            format: 'dd-mm-yyyy',
+            startDate: '+3d',
+            endDate: '+14d',
+            autoclose: true
+        });
+        var date = new Date();
+        $('input[name=registrationDate]').datepicker("setDate", date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear());
+
+        <!----------------------- Time Picker Style ----------------------->
+        $('#flightTime').timepicker({
+            disableFocus: false,
+            minuteStep: 1,
+            template: 'dropdown',
+            showMeridian:false,
+        });
+        $('#flightTime').val(null);
+
+        $('#teeOffTime').timepicker({
+            disableFocus: true,
+            defaultTime: '09:00 AM',
+            minuteStep: 1,
+            template: 'dropdown',
+            display: 'none',
+        });
+
+        <!----------------------- Authenticate Main Member ----------------------->
+        $("#btnNRICAuthenticate").click(function() {
+            $("#txtNRIC").val(function () {
+                return this.value.toUpperCase();
+            });
+
+            //To check that the member is Ordinary, Associate, or Social Member
+            $.ajax({
+                type: 'POST',
+                url: '/ajax/member/golfing-booking',
+                data: {
+                    nric: $("#txtNRIC").val(),
+                },
+                dataType: 'json',
+                success: function (data) {
+                    var getExpDate = new Date(data.contactExtension.expiredOn);
+                    var expDate = getExpDate.getDate() + '-' + getExpDate.getMonth() + '-' + getExpDate.getFullYear();
+                    $("#memberName").val(data.contactExtension.fullName);
+                    $("#contactNumber").val(data.mobilePhone);
+                    $("#email").val(data.email);
+                    $("#handicap").val(data.contactExtension.isHandicap);
+                    $("#status").val(data.contactExtension.membership.membershipExtension.name);
+                    $("#expDate").val(expDate);
+
+                    $("#nric").val($("#txtNRIC").val()); //save nric number to pass parameter
+
+                    $("#contactNumber").prop("readonly", false);
+                    $("#email").prop("readonly", false);
+                    $("#handicap").prop("readonly", false);
+                    $("#btnAddPlayer").prop("disabled", false);
+
+                },
+                error: function () {
+                    $("#errorMessageModel").modal();
+                }
+            });
+        });
+
+        <!----------------------- Authenticate Member ----------------------->
+        $("#btnICAuthenticate").click(function () {
+            //Change NRIC to Uppercase
+            $("#txtAuthenticateIC").val(function () {
+                return this.value.toUpperCase();
+            });
+
+            //Validate NRIC shoud not be null
+            if($("#txtAuthenticateIC").val() == ""){
+                alert("NRIC is required");
+                return false;
+            }
+
+            //Validate NRIC shoud not be the same as registered member
+            if($("#txtAuthenticateIC").val() == $("#nric").val()){
+                alert("IC should not repeated");
+                return false;
+            }
+
+            //Validate NRIC shoud not repeated on the table
+            var arrNRIC = [];
+            $("#tableBody tr").each(function() {
+                arrNRIC.push($(this).find("td:eq(0)").text());
+            });
+            for(i = 0; i < arrNRIC.length; i++) {
+                if($("#txtAuthenticateIC").val().toUpperCase() == arrNRIC[i]){
+                    alert("IC should not repeated");
+                    return false;
+                }
+            }
+
+            $("#btnICAuthenticate").attr("disabled", "disabled");
+
+            $.ajax({
+                type: 'POST',
+                url: '/ajax/member/',
+                data: {
+                    nric: $("#txtAuthenticateIC").val(),
+                },
+                dataType: 'json',
+                success: function (data) {
+                    var getExpDate = new Date(data.contactExtension.expiredOn);
+                    var expDate = getExpDate.getDate() + '-' + getExpDate.getMonth() + '-' + getExpDate.getFullYear();
+                    $("#txtAuthenticateName").val(data.contactExtension.fullName);
+                    $("#txtAuthenticateHandicap").val(data.contactExtension.isHandicap);
+                    $("#txtAuthenticateMemberType").val(data.contactExtension.membership.membershipExtension.name);
+                    $("#txtAuthenticateExpDate").val(expDate);
+                    $("#txtAuthenticateRemarks").val("");
+
+                    $("#txtAuthenticateIC").attr("disabled", "disabled");
+                    $("#txtAuthenticateName").attr("disabled", "disabled");
+                    $("#txtAuthenticateHandicap").prop("disabled", false);
+                },
+                error: function () {
+                    $("#txtAuthenticateName").val("");
+                    $("#txtAuthenticateHandicap").val("");
+                    $("#txtAuthenticateMemberType").val("Guest");
+                    $("#txtAuthenticateExpDate").val("");
+                    $("#txtAuthenticateRemarks").val("Guest Retes will be imposed");
+
+                    $("#txtAuthenticateIC").attr("disabled", "disabled");
+                    $("#txtAuthenticateName").prop("disabled", false);
+                    $("#txtAuthenticateHandicap").prop("disabled", false);
+                }
+            });
+        });
+
+        <!----------------------- Insert Another Player ----------------------->
+        $("#btnAddNewPlayer").click(function () {
+            //Change NRIC to Uppercase
+            $("#txtAuthenticateName").val(function () {
+                return this.value.toUpperCase();
+            });
+            if (count == "4") {
+                alert("Player Can't More Than 4");
+                return false;
+            } else {
+                $("#tableBody").append('<tr>' +
+                    '<td>' + $("#txtAuthenticateIC").val() + '</td>' +
+                    '<td>' + $("#txtAuthenticateName").val() + '</td>' +
+                    '<td>' + $("#txtAuthenticateMemberType").val() + '</td>' +
+                    '<td>' + $("#txtAuthenticateExpDate").val() + '</td>' +
+                    '<td>' + $("#txtAuthenticateHandicap").val() + '</td>' +
+                    '<td>' + $("#txtAuthenticateRemarks").val() + '</td>' +
+                    '<td><a class="btn btn-primary btnDeletePlayer">Delete</a></td>' +
+                    '</tr>');
+
+                count++;
+                $("#playerCount").val(count);
+
+                //If Player count reach maximum, hide Add Player Button
+                if($("#playerCount").val() == 4){
+                    $("#btnAddPlayer").hide();
+                }
+            }
+        });
+
+        <!----------------------- Delete Specific Player on Table ----------------------->
+        $('#other-players').on('click', ".btnDeletePlayer", function () {
+            $(this).parents("tr").remove();
+            count--;
+            $("#playerCount").val(count);
+
+            if($("#playerCount").val() != 4){
+                $("#btnAddPlayer").show();
+            }
+        });
+
+        <!----------------------- Action when Modal Load ----------------------->
+        $('#myModal').on('hidden.bs.modal', function (e) {
+            $("#txtAuthenticateIC").prop("disabled", false);
+            $("#txtAuthenticateName").attr("disabled", "disabled");
+            $("#txtAuthenticateHandicap").attr("disabled", "disabled");
+
+            $("#txtAuthenticateIC").val("");
+            $("#txtAuthenticateName").val("");
+            $("#txtAuthenticateHandicap").val("");
+
+            $("#btnICAuthenticate").prop("disabled", false);
+        });
+
+        <!----------------------- Check Checkbox is Checked ----------------------->
+        $('input[type=radio][name=timeAlloted]').change(function() {
+            if(this.value == '1'){
+                $("#teeOffTime").empty();
+
+                $("#teeOffTime").append("<option>10:00</option>");
+                $("#teeOffTime").append("<option>11:00</option>");
+                $("#teeOffTime").append("<option>12:00</option>");
+            }else if (this.value == '2'){
+                $("#teeOffTime").empty();
+
+                $("#teeOffTime").append("<option>1:00</option>");
+                $("#teeOffTime").append("<option>2:00</option>");
+                $("#teeOffTime").append("<option>3:00</option>");
+            }
+        });
+
+        <!----------------------- Check Checkbox is Checked ----------------------->
+        $("#checkboxTNC").click(function() {
+           if($("#checkboxTNC").prop('checked')){
+               $("#btnSubmit").prop('disabled', false);
+           } else {
+               $("#btnSubmit").attr('disabled', 'disabled');
+           }
+        });
+
+        <!----------------------- Cancel Button Click ----------------------->
+        $("#btnCancel").click(function() {
+           window.history.back();
+        });
+
+        <!----------------------- Testing Get Player Data ----------------------->
+        $("#getPlayerDetail").click(function() {
+
+        });
+
+        <!----------------------- Submit Button Click ----------------------->
+        $("#btnSubmit").click(function() {
+            $("#nric").val($("#txtNRIC").val());
+            if($("#memberName").val() == ""){
+                $("#errorMessageModel").modal();
+                return false;
+            }else{
+                //Get the table data and insert into hidden field to pass data
+                var arrNRIC = [];
+                var arrName = [];
+                var arrMemType = [];
+                var arrExpDate = [];
+                var arrHandicap = [];
+
+                $("#tableBody tr").each(function() {
+                    arrNRIC.push($(this).find("td:eq(0)").text());
+                    arrName.push($(this).find("td:eq(1)").text());
+                    arrMemType.push($(this).find("td:eq(2)").text());
+                    arrExpDate.push($(this).find("td:eq(3)").text());
+                    arrHandicap.push($(this).find("td:eq(4)").text());
+                });
+
+                for(i = 0; i < arrNRIC.length; i++) {
+                    if(i == 0){
+                        $("#allOtherPlayerNRIC").val(arrNRIC[i]);
+                        $("#allOtherPlayerName").val(arrName[i]);
+                        $("#allOtherPlayerMemType").val(arrMemType[i]);
+                        $("#allOtherPlayerExpDate").val(arrExpDate[i]);
+                        $("#allOtherPlayerHandicap").val(arrHandicap[i]);
+                    }else {
+                        $("#allOtherPlayerNRIC").val($("#allOtherPlayerNRIC").val() + ", " + arrNRIC[i]);
+                        $("#allOtherPlayerName").val($("#allOtherPlayerName").val() + ", " + arrName[i]);
+                        $("#allOtherPlayerMemType").val($("#allOtherPlayerMemType").val() + ", " + arrMemType[i]);
+                        $("#allOtherPlayerExpDate").val($("#allOtherPlayerExpDate").val() + ", " + arrExpDate[i]);
+                        $("#allOtherPlayerHandicap").val($("#allOtherPlayerHandicap").val() + ", " + arrHandicap[i]);
+                    }
+                } //End get the table data and insert into hidden field to pass data
+
+                //Change name value to UpperCase
+                $("#allOtherPlayerName").val(function () {
+                    return this.value.toUpperCase();
+                });
+
+                //Get Value of Location ID and insert to hidden field
+                $("#golfingLocationId").val($("#location").val());
+            }
+        });
+    });
+</script>
+</body>
+</html>

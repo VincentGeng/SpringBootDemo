@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://github.com/thymeleaf/thymeleaf-extras-springsecurity">
+<head th:replace="fragments/template :: meta('Members')">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HomeTeam NS | Members</title>
+</head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<div class="wrapper">
+    <div th:replace="fragments/template :: header"></div>
+    <div th:replace="fragments/template :: sidebar('dashboard')"></div>
+    <div class="content-wrapper">
+        <!--/*@thymesVar id="header" type="java.lang.String"*/-->
+        <div th:replace="fragments/template :: content-header(${header})"></div>
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-lg-3 col-xs-6" sec:authorize="hasRole('ADMIN')">
+                    <div class="small-box bg-aqua">
+                        <div class="inner">
+                            <div class="htns-widget-text">
+                                FACILITY
+                                <br/>BOOKING
+                            </div>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-cube"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">
+                            More info <i class="fa fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-xs-6" sec:authorize="hasRole('ADMIN')">
+                    <div class="small-box bg-green">
+                        <div class="inner">
+                            <div class="htns-widget-text">
+                                CHALET
+                                <br/>BOOKING
+                            </div>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-calendar-check-o"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">
+                            More info <i class="fa fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-xs-6" sec:authorize="hasRole('ADMIN')">
+                    <div class="small-box bg-yellow">
+                        <div class="inner">
+                            <div class="htns-widget-text">
+                                GOLF
+                                <br/>BOOKING
+                            </div>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-book"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">
+                            More info <i class="fa fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-xs-6" sec:authorize="hasRole('ADMIN')">
+                    <div class="small-box bg-red">
+                        <div class="inner">
+                            <div class="htns-widget-text">
+                                POINT OF
+                                <br/>SALES
+                            </div>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-tags"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">
+                            More info <i class="fa fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-xs-6" sec:authorize="hasRole('ADMIN')">
+                    <div class="small-box bg-bright-yellow">
+                        <div class="inner">
+                            <div class="htns-widget-text">
+                                EVENT
+                                <br/>MANAGEMENT
+                            </div>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-gift"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">
+                            More info <i class="fa fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-xs-6" sec:authorize="hasRole('ADMIN')">
+                    <div class="small-box bg-bright-pink">
+                        <div class="inner">
+                            <div class="htns-widget-text">
+                                PRODUCT
+                                <br/>MANAGEMENT
+                            </div>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-shopping-bag"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">
+                            More info <i class="fa fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-xs-6" sec:authorize="hasRole('ADMIN')">
+                    <div class="small-box bg-tiffany-blue">
+                        <div class="inner">
+                            <div class="htns-widget-text">
+                                STAFF
+                                <br/>MANAGEMENT
+                            </div>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-user"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">
+                            More info <i class="fa fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-xs-6" sec:authorize="hasRole('ADMIN')">
+                    <div class="small-box bg-purple">
+                        <div class="inner">
+                            <div class="htns-widget-text">
+                                MEMBERSHIP
+                                <br/>MANAGEMENT
+                            </div>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-users"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">
+                            More info <i class="fa fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-xs-6" sec:authorize="hasRole('ADMIN')">
+                    <div class="small-box bg-rose">
+                        <div class="inner">
+                            <div class="htns-widget-text">
+                                SETTINGS
+                            </div>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-cog"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">
+                            More info <i class="fa fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-xs-6" sec:authorize="hasRole('USER')">
+                    <div class="small-box bg-ocean">
+                        <div class="inner">
+                            <div class="htns-widget-text">
+                                WEB PORTAL
+                            </div>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-chrome"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">
+                            More info <i class="fa fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div th:replace="fragments/template :: footer"></div>
+</div>
+<div th:include="fragments/template :: javascript" th:remove="tag"></div>
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable( {
+            "dom": '<"top"iflp<"clear">>rt<"bottom"iflp<"clear">>'
+        } );
+    } );
+</script>
+</body>
+</html>

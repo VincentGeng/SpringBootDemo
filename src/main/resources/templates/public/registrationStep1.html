@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/public :: meta('Membership Registration')"></head>
+<body class="public-page">
+<div class="wrapper">
+    <div class="container">
+        <!--/*@thymesVar id="header" type="java.lang.String"*/-->
+        <!--/*@thymesVar id="contact" type="com.techstudio.htns.domain.Contact"*/-->
+        <section th:replace="fragments/public :: content-header(${header})"></section>
+        <!-- Main content -->
+        <section class="content">
+            <form action="###" method="post" th:action="@{/public/registration}" th:object="${contact}" >
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">PERSONAL DETAILS</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        NRIC / FIN
+                                    </label>
+                                    <input type="text" class="form-control" th:field="*{contactExtension.nric}" required data-inputmask="'mask': 'a9999999a'" data-mask>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Full name (As on NRIC/FIN)
+                                    </label>
+                                    <input type="text" class="form-control" th:field="*{contactExtension.fullName}" data-allcap required>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Email</label>
+                                    <input type="email" class="form-control" th:field="*{email}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Nationality
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" th:field="*{contactExtension.nationality}" required>
+                                        <!--/*@thymesVar id="allNationality" type="java.util.List<com.techstudio.htns.domain.MaritalStatus>"*/-->
+                                        <option th:each="item : ${allNationality}" th:value="${item.getId()}" th:text="${item.getName()}">Wireframe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Race
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" th:field="*{contactExtension.race}" required>
+                                        <!--/*@thymesVar id="allNationality" type="java.util.List<com.techstudio.htns.domain.MaritalStatus>"*/-->
+                                        <option th:each="item : ${allRace}" th:value="${item.getId()}" th:text="${item.getName()}">Wireframe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Office Phone</label>
+                                    <input type="text" class="form-control" th:field="*{telephone2}" data-inputmask="'mask': '(65) 9999 9999'" data-mask>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Date Of Birth (DD-MM-YYYY)</label>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right datepicker" th:field="*{birthday}" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Salutation
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" th:field="*{contactExtension.salutation}" required>
+                                        <!--/*@thymesVar  type="java.util.List<Salutation>"*/-->
+                                        <option th:each="salutation : ${allSalutation}" th:value="${salutation.getId()}" th:text="${salutation.getName()}">Wireframe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Hand Phone</label>
+                                    <input type="text" class="form-control" th:field="*{mobilePhone}" data-inputmask="'mask': '(65) 9999 9999'" data-mask required>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Gender
+                                    </label>
+                                    <div class="radio row">
+                                        <div class="col-sm-6">
+                                            <label class="radio-inline">
+                                                <input type="radio" th:field="*{genderCode}" value="1" required> Male
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="radio-inline">
+                                                <input type="radio" th:field="*{genderCode}" value="2"> Female
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Marital Status</label>
+                                    <select class="form-control select2 select2-hidden-accessible" th:field="*{contactExtension.maritalStatus}" required>
+                                        <!--/*@thymesVar id="allMaritalStatus" type="java.util.List<com.techstudio.htns.domain.MaritalStatus>"*/-->
+                                        <option th:each="item : ${allMaritalStatus}" th:value="${item.getId()}" th:text="${item.getName()}">Wireframe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Home Phone</label>
+                                    <input type="text" class="form-control" th:field="*{telephone1}" data-inputmask="'mask': '(65) 9999 9999'" data-mask>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">ADDRESS FOR COMMUNICATIONS</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Housing Type
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" th:field="*{contactExtension.housingType}" required>
+                                        <option disabled selected value=""> -- select an option --</option>
+                                        <option th:each="item : ${allHousing}" th:value="${item.getId()}" th:text="${item.getName()}">Wireframe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        House No. / BLOCK
+                                    </label>
+                                    <input type="text" class="form-control" th:field="*{address.name}" data-allcap required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Unit No.
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">#</span>
+                                        <input type="text" class="form-control" th:field="*{address.line1}" data-inputmask="'mask': '9[9]-99[9][a]'" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Building Name</label>
+                                    <input type="text" class="form-control" th:field="*{address.line3}" data-allcap>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Street Name
+                                    </label>
+                                    <input type="text" class="form-control" th:field="*{address.line2}" data-allcap required>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        ZIP/Postal Code
+                                    </label>
+                                    <input type="text" class="form-control" th:field="*{address.postalCode}" data-inputmask="'mask': '999999'" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">OTHER PARTICULARS</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Economic Status:
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" th:field="*{contactExtension.economicStatusType}" required>
+                                        <option disabled selected value=""> -- select an option --</option>
+                                        <option th:each="item : ${allEconomicType}" th:value="${item.getId()}" th:text="${item.getName()}">Wireframe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Highest Education
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" th:field="*{contactExtension.highestEducation}" required>
+                                        <option disabled selected value=""> -- select an option --</option>
+                                        <option th:each="item : ${allEdu}" th:value="${item.getId()}" th:text="${item.getName()}">Wireframe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Car IU</label>
+                                    <input type="text" class="form-control" th:field="*{contactExtension.carIu}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Occupation:
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" th:field="*{contactExtension.economicStatus}" required>
+                                        <option disabled selected value=""> -- select an option --</option>
+                                        <option th:each="item : ${allEconomic}" th:value="${item.getId()}" th:text="${item.getName()}">Wireframe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Annual Income
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" th:field="*{contactExtension.annualIncome}" required>
+                                        <option disabled selected value=""> -- select an option --</option>
+                                        <option th:each="item : ${allIncome}" th:value="${item.getId()}" th:text="${item.getName()}">Wireframe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Car Plate</label>
+                                    <input type="text" class="form-control" th:field="*{contactExtension.carPlate}" data-inputmask="'mask': 'a[a][a][9][9][9]9[a]'">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Handicap</label>
+                                    <input type="text" class="form-control" th:field="*{contactExtension.isHandicap}">
+                                </div>
+                                <div class="form-group">
+                                    <label>PA CAN Number</label>
+                                    <input type="text" class="form-control" th:field="*{contactExtension.paCanNumber}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">EMERGENCY CONTACT</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Name
+                                    </label>
+                                    <input type="text" class="form-control" th:field="*{emergencyContactExtension.name}" data-allcap required>
+                                </div>
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Relationship
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" th:field="*{emergencyContactExtension.relationship}" required>
+                                        <option value="Spouse">Spouse</option>
+                                        <option value="Parents / Parents in law">Parents / Parents in law</option>
+                                        <option value="Siblings">Siblings</option>
+                                        <option value="Relatives">Relatives</option>
+                                        <option value="Friends">Friends</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Contact No.
+                                    </label>
+                                    <input type="text" class="form-control" th:field="*{emergencyContactExtension.contactNumber}" data-inputmask="'mask': '(65) 9999 9999'" data-mask required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">PREFERENCES</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Performing Arts</label>
+                                    <div class="checkbox" th:each="option : ${allPerformingArts}">
+                                        <label>
+                                            <input type="checkbox" th:value="${option.id}" th:text="${option.name}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Arts & Lifestyle</label>
+                                    <div class="checkbox" th:each="option : ${allArtsLifestyle}">
+                                        <label>
+                                            <input type="checkbox" th:value="${option.id}" th:text="${option.name}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Sports</label>
+                                    <div class="checkbox" th:each="option : ${allSports}">
+                                        <label>
+                                            <input type="checkbox" th:value="${option.id}" th:text="${option.name}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Education & Life Skills</label>
+                                    <div class="checkbox" th:each="option : ${allEduLifeskills}">
+                                        <label>
+                                            <input type="checkbox" th:value="${option.id}" th:text="${option.name}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Passion E-Clubs</label>
+                                    <div class="checkbox" th:each="option : ${allPassionEClub}">
+                                        <label>
+                                            <input type="checkbox" th:value="${option.id}" th:text="${option.name}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Volunteering with PA</label>
+                                    <div class="checkbox" th:each="option : ${allVolunteering}">
+                                        <label>
+                                            <input type="checkbox" th:value="${option.id}" th:text="${option.name}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Education & Lifeskills</label>
+                                    <div class="checkbox" th:each="option : ${allEduLifeskills}">
+                                        <label>
+                                            <input type="checkbox" th:value="${option.id}" th:text="${option.name}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Children's Programmes</label>
+                                    <div class="checkbox" th:each="option : ${allChildProg}">
+                                        <label>
+                                            <input type="checkbox" th:value="${option.id}" th:text="${option.name}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Passion E-Clubs</label>
+                                    <div class="checkbox" th:each="option : ${allPassionEClub}">
+                                        <label>
+                                            <input type="checkbox" th:value="${option.id}" th:text="${option.name}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">COMMUNICATION PREFERENCE</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <red>*</red>
+                                            Receive promotional VOICE call?
+                                        </label>
+                                        <div class="col-sm-9">
+                                            <label class="radio-inline">
+                                                <input type="radio" value="0" th:field="*{doNotPhone}" required> Yes
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" value="1" th:field="*{doNotPhone}"> No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <red>*</red>
+                                            Receive promotional messages to your hand phone?
+                                        </label>
+                                        <div class="col-sm-9">
+                                            <label class="radio-inline">
+                                                <input type="radio" value="0" th:field="*{doNotFax}" required> Yes
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" value="1" th:field="*{doNotFax}"> No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <red>*</red>
+                                            Receive promotional postal mail?
+                                        </label>
+                                        <div class="col-sm-9">
+                                            <label class="radio-inline">
+                                                <input type="radio" value="0" th:field="*{doNotPostalMail}" required> Yes
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" value="1" th:field="*{doNotPostalMail}"> No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <red>*</red>
+                                            Receive promotional email?
+                                        </label>
+                                        <div class="col-sm-9">
+                                            <label class="radio-inline">
+                                                <input type="radio" value="0" th:field="*{doNotEmail}" required> Yes
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" value="1" th:field="*{doNotEmail}"> No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <red>*</red>
+                                            Receive the FRONTLINE Magazine?
+                                        </label>
+                                        <div class="col-sm-9">
+                                            <label class="radio-inline">
+                                                <input type="radio" value="0" th:field="*{doNotBulkPostalMail}" required> Yes
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" value="1" th:field="*{doNotBulkPostalMail}"> No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button type="reset" class="btn btn-default">Reset</button>
+                        <button type="submit" class="btn btn-primary">Next</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+    <div th:replace="fragments/public :: footer"></div>
+</div>
+<div th:include="fragments/public :: javascript" th:remove="tag"></div>
+<script>
+    function pad(str, max) {
+        str = str.toString();
+        return str.length < max ? pad("0" + str, max) : str;
+    }
+
+$(document).ready(function () {
+    $(":input").inputmask();
+    $('textarea[data-allcap], input[data-allcap]').on('keyup', function () {
+        $(this).val(function () {
+            return this.value.toUpperCase();
+        });
+    });
+
+    $('[data-toggle="tooltip"]').tooltip();
+    $("[data-mask]").inputmask();
+
+    $('.datepicker').datepicker({
+        format: 'dd-mm-yyyy',
+        autoclose: true
+    });
+
+    var date = new Date();
+    $('input[name=registrationDate]').datepicker("setDate", date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear());
+
+
+    $('#member-reg-form').on('submit', function () {
+        var serializeString = $(this).serialize();
+        alert(serializeString);
+    });
+
+});
+</script>
+</body>
+</html>

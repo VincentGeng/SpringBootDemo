@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/template :: meta('Members')"></head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<div class="wrapper">
+    <div th:replace="fragments/template :: header"></div>
+    <div th:replace="fragments/template :: sidebar('dashboard')"></div>
+    <div class="content-wrapper">
+        <!--/*@thymesVar id="header" type="java.lang.String"*/-->
+        <div th:replace="fragments/template :: content-header(${header})"></div>
+        <!-- Main content -->
+        <section class="content">
+            Member Created Successfully.
+        </section>
+    </div>
+    <div th:replace="fragments/template :: footer"></div>
+</div>
+<div th:include="fragments/template :: javascript" th:remove="tag"></div>
+<script>
+</script>
+</body>
+</html>

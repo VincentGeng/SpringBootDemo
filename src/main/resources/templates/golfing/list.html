@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/template :: meta('Golfing')"></head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<div class="wrapper">
+    <div th:replace="fragments/template :: header"></div>
+    <div th:replace="fragments/template :: sidebar('golf')"></div>
+    <div class="content-wrapper">
+        <!--/*@thymesVar id="header" type="java.lang.String"*/-->
+        <!--/*@thymesVar id="allGolfingLocation" type="java.util.List<com.techstudio.htns.domain.GolfingLocation>"*/-->
+        <!--/*@thymesVar id="golfingLocation" type="com.techstudio.htns.domain.GolfingLocation"*/-->
+        <div th:replace="fragments/template :: content-header(${header})"></div>
+        <!-- Main content -->
+        <section class="content">
+            <div class="callout callout-success" th:if="${message} != null">
+                <h4>GOLF BOOKING SUCCESSFULLY!</h4>
+
+                <p>[[${message}]]</p>
+            </div>
+            <div class="callout callout-success" th:if="${messageEdit} != null">
+                <h4>GOLF EDIT SUCCESSFULLY!</h4>
+
+                <p>[[${messageEdit}]]</p>
+            </div>
+            <div class="callout callout-success" th:if="${messageDelete} != null">
+                <h4>GOLF DELETE SUCCESSFULLY!</h4>
+
+                <p>[[${messageDelete}]]</p>
+            </div>
+            <form action="###" method="get" th:action="@{/golfing/listing}" id="member-reg-form">
+
+                <!------------------------------------------------- Search Filter ------------------------------------------------->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Search for Existing Booking</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        NRIC NO
+                                    </label>
+                                    <input type="text" class="form-control" name="nric" required th:readonly="${#authorization.expression('hasRole(''MEMBER'')')}" th:value="${ nric }">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        GOLF LOCATION
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" name="location" required>
+                                        <option th:each="golfingLocation : ${allGolfingLocation}" th:value="${golfingLocation.golfingLocationExtension().getId()}" th:text="${golfingLocation.golfingLocationExtension().getName()}">Wireframe</option>
+                                        <!--</option>-->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        STATUS
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" name="status" required>
+                                        <option value="">PLEASE SELECT</option>
+                                        <option value="1" th:selected="${status} == 1">Approved</option>
+                                        <option value="2" th:selected="${status} == 2">Not Approved</option>
+                                        <option value="3" th:selected="${status} == 3">Pending Approval</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                                <button type="button" class="btn btn-default" id="btnReset" name="btnReset">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!------------------------------------------------- End Search Filter ------------------------------------------------->
+
+                <!------------------------------------------------- Data Table ------------------------------------------------->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">BOOKING DETAILS</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <!--<div class="col-md-12 text-left">-->
+                                <!--<a class="btn btn-primary" th:href="@{/golfing/booking}" th:if="${isMember} == true">New Booking</a>-->
+                            <!--</div>-->
+                            <div class="col-sm-12">
+                                <table id="example" class="table table-bordered table-hover dataTable display clickable" cellspacing="0" width="100%">
+                                    <thead>
+                                        <tr role="row">
+                                            <th>Booking ID</th>
+                                            <th>Location</th>
+                                            <th>Golfing Date</th>
+                                            <th>NRIC</th>
+                                            <th>Status</th>
+                                            <th>Updated Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Booking ID</th>
+                                            <th>Location</th>
+                                            <th>Golfing Date</th>
+                                            <th>NRIC</th>
+                                            <th>Status</th>
+                                            <th>Updated Date</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                    <!--/*@thymesVar id="bookingList" type="java.lang.List<com.techstudio.htns.domain.GolfLinkBooking>"*/-->
+                                    <!--/*@thymesVar id="booking" type="com.techstudio.htns.domain.GolfLinkBooking"*/-->
+                                        <tr th:each="booking : ${bookingList}" th:data-href="@{/golfing/booking/edit(id=${booking.getId()})}">
+                                            <td th:text="${booking.getGolfLinkBookingExtension().getBookingId()}">{{BookingID}}</td>
+                                            <td th:text="${booking.getGolfLinkBookingExtension().getGolfingLocation().golfingLocationExtension().getName()}">{{BookingLocation}}</td>
+                                            <td th:text="${booking.getGolfLinkBookingExtension().getDate()} ? ${#dates.format(booking.getGolfLinkBookingExtension().getDate(), 'dd-MM-yyyy')} : ''">{{BookingDate}}</td>
+                                            <td th:text="${booking.getGolfLinkBookingExtension().getNric()}">{{BookingNRIC}}</td>
+                                            <td th:text="${booking.getGolfLinkBookingExtension().getBookingStatusStr()}">{{BookingStatus}}</td>
+                                            <td th:text="${booking.getModifiedOn()} ? ${#dates.format(booking.getModifiedOn(), 'dd-MM-yyyy HH:mm:ss')} : ''">{{ModifiedOn}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!------------------------------------------------- End Data Table ------------------------------------------------->
+
+            </form>
+        </section>
+    </div>
+    <div th:replace="fragments/template :: footer"></div>
+</div>
+<div th:include="fragments/template :: javascript" th:remove="tag"></div>
+
+<!------------------------------------------------- Book Details Modal ------------------------------------------------->
+
+<!------------------------------------------------- End Book Details Modal ------------------------------------------------->
+<script>
+    $(document).ready(function() {
+        <!----------------------- Date Picker Style ----------------------->
+        $('.datepicker').datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true
+        });
+
+        <!----------------------- Data Table Style ----------------------->
+        $('#example').DataTable({
+            "ordering": false,
+            "dom": '<"top"iflp<"clear">>rt<"bottom"iflp<"clear">>',
+            "drawCallback": function(settings, json) {
+                $("tr[data-href]").on('click', function() {
+                    window.location = $(this).data("href");
+                });
+            }
+        });
+
+        <!----------------------- Button Reset Click ----------------------->
+        $("#btnReset").click(function() {
+            window.location = "/golfing/listing";
+        });
+    });
+</script>
+</body>
+</html>

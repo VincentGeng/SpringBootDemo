@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/template :: meta('Chalet')"></head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<div class="wrapper">
+    <div th:replace="fragments/template :: header"></div>
+    <div th:replace="fragments/template :: sidebar('chalet')"></div>
+    <div class="content-wrapper">
+        <!--/*@thymesVar id="header" type="java.lang.String"*/-->
+        <!--/*@thymesVar id="allChaletType" type="java.util.List<com.techstudio.htns.domain.ChaletTypeExtension>"*/-->
+        <!--/*@thymesVar id="type" type="com.techstudio.htns.domain.ChaletTypeExtension"*/-->
+        <!--/*@thymesVar id="allLocation" type="java.util.List<com.techstudio.htns.domain.BusinessUnit>"*/-->
+        <!--/*@thymesVar id="location" type="com.techstudio.htns.domain.BusinessUnit"*/-->
+        <!--/*@thymesVar id="allChalet" type="java.util.List<com.techstudio.htns.domain.ChaletExtension>"*/-->
+        <!--/*@thymesVar id="chalet" type="com.techstudio.htns.domain.ChaletExtension"*/-->
+
+        <div th:replace="fragments/template :: content-header(${header})"></div>
+        <!-- Main content -->
+        <div class="content">
+            <!--/*@thymesVar id="message" type="java.lang.String"*/-->
+            <div class="callout callout-success" id="msgDisplay" th:if="${message} != null">
+                <!--<h4>Member added successfully!</h4>-->
+
+                <p>[[${message}]]</p>
+            </div>
+            <!--/*@thymesVar id="chalet" type="com.techstudio.htns.domain.Chalet"*/-->
+            <form action="###" method="get" th:action="@{/chalet/booking}">
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">BOOKING DETAILS</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Select a Location
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" id="locationId" name="locationId" required>
+                                        <option value="">SELECT</option>
+                                        <option th:each="location : ${allLocation}" th:value="${location.getId()}" th:text="${location.getName()}" th:selected="${selectedLocation == location.getId()}">Wireframe</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!--<div class="col-md-3">-->
+                                <!--<div class="form-group">-->
+                                    <!--<label>-->
+                                        <!--<red>*</red>-->
+                                        <!--Select a Chalet Type-->
+                                    <!--</label>-->
+                                    <!--<select class="form-control select2 select2-hidden-accessible" id="typeId" name="typeId" required>-->
+                                        <!--<option value="">SELECT</option>-->
+                                        <!--<option th:if="${allChaletType} != null" th:each="type : ${allChaletType}" th:value="${type.getId()}" th:text="${type.getChaletTypeExtension().getType()}" th:selected="${selectedChaletType} == ${type.getId()}">Wireframe</option>-->
+                                    <!--</select>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Date Range</label>
+
+                                    <div class="input-group input-daterange">
+                                        <input type="text" class="form-control" id="startDate" name="startDate" required th:value="${selectedStartDate} ? ${#dates.format(selectedStartDate, 'dd-MM-yyyy')} : ''">
+                                        <span class="input-group-addon" id="basic-addon1">to</span>
+                                        <input type="text" class="form-control" id="endDate" name="endDate" required th:value="${selectedEndDate} ? ${#dates.format(selectedEndDate, 'dd-MM-yyyy')} : ''">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="submit" id="searchButton" class="btn btn-primary">Search</button>
+                                <button type="reset" id="clearButton" class="btn btn-default">Clear</button>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:20px; display:none;">
+                            <div class="col-md-12 text-right">
+                                <button type="button" class="btn btn-primary" style="display:none;" id="successBtn" data-toggle="modal" data-target=".successBooking">Success</button>
+                                <button type="button" class="btn btn-primary" style="display:none;" id="modifyBtn" data-toggle="modal" data-target=".deleteBooking">Modify Booking</button>
+                                <button type="button" class="btn btn-primary" style="display:none;" id="rescheduleBtn" data-toggle="modal" data-target=".rescheduleBooking">Reschedule Booking</button>
+                                <button type="button" class="btn btn-primary" style="display:none;" id="chaletBtn" data-toggle="modal" data-target=".chaletInfo">Chalet Info</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div class="col-md-12 text-right" id="redTxt" style="display:none">
+                    <label>
+                        <red> Click on the dates to make booking</red>
+                    </label>
+                </div>
+
+                <div class="col-md-12">
+                    <div id="calendar"></div>
+                </div>
+
+                <div class="col-md-12 text-right" style="margin-top:20px; margin-bottom:20px;">
+                    <button type="button" class="btn btn-primary" id="bookingBtn"  style="display:none;" data-toggle="modal" data-target=".bookingDetails">Book Now</button>
+                </div>
+            </div>
+        </div><!-- Close content -->
+    </div><!-- Close content-wrapper -->
+    <div th:replace="fragments/template :: footer"></div>
+</div><!-- close wrapper -->
+<div th:include="fragments/template :: javascript" th:remove="tag"></div>
+
+<!-- Booking -->
+<div class="modal fade bookingDetails" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form action="###" method="post" th:action="@{/chalet/booking}" id="addBooking">
+                <div class="modal-header box-header with-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Chalet Booking</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" >
+
+                        <!---------------------- Personal Details --------------------->
+                        <div class="col-xs-12" id="personalDetails">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        NRIC
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="nric" name="nric" data-inputmask="'mask': 'a9999999a'" data-mask required>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" id="checkNRIC" type="button"><i class="glyphicon glyphicon-ok-circle"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                        <red>*</red>
+                                    <label>
+                                        Email</label>
+                                    <input type="email" id="email" name="email" class="form-control" required>
+                                </div>
+
+                                <input id="bLocationId" name="bLocationId" type="hidden"/>
+                                <input id="bChaletNameId" name="bChaletNameId" type="hidden"/>
+                                <input id="bChaletTypeId" name="bChaletTypeId" type="hidden"/>
+                                <input id="bTotalPayable" name="bTotalPayable" type="hidden"/>
+                                <input id="bTenderAmt" name="bTenderAmt" type="hidden"/>
+                                <input id="bDesc" name="bDesc" type="hidden"/>
+                                <input id="bAmount" name="bAmount" type="hidden"/>
+                                <input id="sDate" name="sDate" type="hidden"/>
+                                <input id="eDate" name="eDate" type="hidden"/>
+                                <input id="mtype" name="mtype" type="hidden"/>
+                                <input id="listBookingSummary" name="listBookingSummary" type="hidden"/>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Location</label>
+                                    <label class="form-control" id="location" name="location" style="border: 0px;"><span id="bLocation"></span></label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Chalet Name</label>
+                                    <label class="form-control" id="chaletName" name="chaletName" style="border: 0px;"><span id="bChaletName"></span></label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Check In Date</label>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" id="checkInDate" name="checkInDate" class="form-control pull-right" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="showRemarks" style="display:none;">
+                                    <label>
+                                        <red>*</red>
+                                        Remarks</label>
+                                    <input type="text" id="remarks" name="remarks" class="form-control" required>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Name</label>
+                                    <input type="text" id="nname" name="nname" class="form-control" required data-allcap>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Phone</label>
+                                    <input type="text" id="phone" name="phone" class="form-control" required data-inputmask="'mask': '(65) 9999 9999'" data-mask>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Chalet Type</label>
+                                    <label class="form-control" id="chaletType" style="border: 0px;"><span id="bChaletType"></span></label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Booking Type</label>
+                                    <div class="form-control" style="border:none;">
+                                        <label class="radio-inline">
+                                            <input class="rb" type="radio" id="b1" name="bookingType" value="book"> Book
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input class="rb" type="radio" id="b2" name="bookingType" value="block"> Block
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Check Out Date</label>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" id="checkOutDateDisplay" name="checkOutDateDisplay" class="form-control pull-right" required>
+                                        <input type="hidden" id="checkOutDate" name="checkOutDate">
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- Close Personal Details -->
+
+                        <!----------------------------------  Unavailable Message ---------------------------------->
+
+
+                        <div class="col-xs-12" id="showUnavailable" style="display:none; padding:5%;">
+                            <label>
+                                <red>This chalet is not eligible for this membership type.</red>
+                            </label>
+
+                        </div>
+                        <!----------------------------------  Booking Summary ---------------------------------->
+                        <div class="col-xs-12" id="showSummary" style="display:none; margin-top:20px;">
+                            <label>
+                                <div style="color:#e55425; margin-left:2px;">Booking Summary</div>
+                            </label>
+                            <div class="widget-content nopadding">
+                                <table id ="summaryTable" class="table table-bordered table-striped table-hover" style="text-align: center">
+                                    <thead>
+                                    <tr style="background-color: #CCCCCC">
+                                        <th style="text-align:center">Booking Date</th>
+                                        <th style="text-align:center">Day Type</th>
+                                        <th style="text-align:center">Cost (SGD)</th>
+                                        <th style="text-align:center">GST (SGD)</th>
+                                        <th style="text-align:center">Total Cost (SGD)</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+
+                            <div class="col-md-3 text-right" style="background-color: grey; float:right; text-align:center;">
+                                <label style="color:#FFFFFF">
+                                    Total Payable (SGD): <span id="totalPayable"></span>
+                                </label>
+                            </div>
+
+                            <br/><br/><br/>
+                        </div><!-- Close Booking Summary -->
+
+
+                        <!----------------------------------  Payment Mode ---------------------------------->
+                        <div class="col-xs-12" id="showPayment" style="display:none;">
+                            <label>
+                                <div style="color:#e55425; margin-left:2px;">Payment Mode</div>
+                            </label>
+
+                            <div class="widget-content nopadding">
+                                <table id ="paymentTable" class="table table-bordered table-striped table-hover" style="text-align: center">
+                                    <tbody>
+                                    <tr style="background-color: #CCCCCC">
+                                        <th style="text-align:center">Payment Type</th>
+                                        <th style="text-align:center">Description</th>
+                                        <th style="text-align:center">Amount (SGD)</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">CASH</td>
+                                        <td><input id="d1"type="text" style="width: 100%;"/></td>
+                                        <td><input id="p1" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">Cheque / Cashier Order / Money Order</td>
+                                        <td><input id="d2"type="text" style="width: 100%;"/></td>
+                                        <td><input id="p2" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">Complimentary Vouchers</td>
+                                        <td><input id="d3"type="text" style="width: 100%;"/></td>
+                                        <td><input id="p3" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">Credit Cards (Masters / Visa)</td>
+                                        <td><input id="d4" type="text" style="width: 100%;"/></td>
+                                        <td><input id="p4" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">Diners</td>
+                                        <td><input id="d5" type="text" style="width: 100%;"/></td>
+                                        <td><input id="p5" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">HomeTeamNS Blue Voucher</td>
+                                        <td><input id="d6" type="text" style="width: 100%;"/></td>
+                                        <td><input id="p6" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">Nets</td>
+                                        <td><input id="d7" type="text" style="width: 100%;"/></td>
+                                        <td><input id="p7" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="col-md-3" style="background-color: grey; float:right; width:30%; text-align:center;">
+                                <label style="color:#FFFFFF">
+                                    Tendered Amount (SGD): <span id="tenderedAmt"></span>
+                                </label>
+                            </div>
+
+                            <div class="col-md-3" style="background-color: grey; float:right; width:30%; text-align:center; margin-right:2%;">
+                                <label style="color:#FFFFFF">
+                                    Amount Balance (SGD): <span id="balance"></span>
+                                </label>
+                            </div>
+
+                            <br/><br/><br/>
+                        </div><!-- Close PaymenMode -->
+
+
+                        <div class="col-xs-12" id="showBtn" style="text-align:right; display:none; margin-bottom:20px;">
+                            <button type="button" id="bookingSubmit" class="btn btn-primary"><span id="submitBtnText"></span></button> &nbsp;&nbsp;
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                        </div>
+                        <br/><br/>
+
+
+                    </div><!-- Close row -->
+                </div><!-- Close modal body -->
+            </form>
+        </div><!-- CLose modal content -->
+    </div>
+</div>
+
+<!-- Delete/Cancel Booking Details -->
+<div class="modal fade deleteBooking" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form action="###" method="post" th:action="@{/chalet/delete}" id="deleteBooking">
+                <div class="modal-header box-header with-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabelDelete">Chalet Booking</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" >
+                        <div class="col-xs-12" id="deletePersonalDetails">
+                            <div class="col-md-6">
+
+                                <input id="dLocationId" name="dLocationId" type="hidden"/>
+                                <input id="dChaletNameId" name="dChaletNameId" type="hidden"/>
+                                <input id="dChaletTypeId" name="dChaletTypeId" type="hidden"/>
+                                <input id="dAction" name="dAction" type="hidden"/>
+                                <input id="dChaletBookingId" name="dChaletBookingId" type="hidden"/>
+                                <input id="dChaletBookingDetailId" name="dChaletBookingDetailId" type="hidden"/>
+                                <input id="dInvoiceId" name="dInvoiceId" type="hidden"/>
+                                <input id="dInvoiceDetailId" name="dInvoiceDetailId" type="hidden"/>
+                                <input id="dPaymentId" name="dPaymentId" type="hidden"/>
+                                <input id="dsDate" name="dsDate" type="hidden"/>
+                                <input id="deDate" name="deDate" type="hidden"/>
+
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        NRIC</label>
+                                    <label class="form-control" id="dNric" name="dNric" style="border: 0px;"></label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Email</label>
+                                    <label class="form-control" id="dEmail" name="dEmail" style="border: 0px;"></label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Location</label>
+                                    <label class="form-control" id="dLocation" name="dLocation" style="border: 0px;"></label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Chalet Name</label>
+                                    <label class="form-control" id="dChaletName" name="dChaletName" style="border: 0px;"></span></label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Check In Date</label>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" id="dCheckInDate" name="dCheckInDate" class="form-control pull-right" >
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <!--<red>*</red>-->
+                                        Remarks</label>
+                                    <input type="text" id="dRemarks" name="dRemarks" class="form-control">
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Name</label>
+                                    <label class="form-control" id="dName" name="dName" style="border: 0px;"></label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Mobile</label>
+                                    <label class="form-control" id="dMobile" name="dMobile" style="border: 0px;"></label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Chalet Type</label>
+                                    <label class="form-control" id="dChaletType" name="dChaletType" style="border: 0px;"></label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Booking Type</label>
+                                    <div class="form-control" style="border:none;">
+                                        <label class="radio-inline">
+                                            <input class="rb2" type="radio" id="book" name="dbookingType" value="book"> Book
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input class="rb2" type="radio" id="block" name="dbookingType" value="block"> Block
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Check Out Date</label>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" id="dCheckOutDateDisplay" name="dCheckOutDateDisplay" class="form-control pull-right" >
+                                        <input type="hidden" id="dCheckOutDate" name="dCheckOutDate" >
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- Close Personal Details -->
+
+                        <div class="col-xs-12" id="deleteButton" style="text-align:right; margin-top:15px;">
+                            <button type="button" id="deleteSubmit" class="btn btn-primary">Delete Booking</button> &nbsp;&nbsp;
+                        </div>
+
+                        <div class="col-xs-12" id="modifyButton" style="text-align:right; display:none; margin-top:15px;">
+                            <button type="button" id="rescheduleSubmit" class="btn btn-primary">Reschedule Booking</button> &nbsp;&nbsp;
+                            <button type="button" id="cancelSubmit" class="btn btn-primary">Cancel Booking</button>
+                        </div>
+
+
+                        <!----------------------------------  Booking Summary ---------------------------------->
+                        <div class="col-xs-12" id="showDSummary" style="margin-top:20px;">
+
+                            <label>
+                                <div style="color:#e55425; margin-left:2px;">Booking Summary</div>
+                            </label>
+
+                            <div class="widget-content nopadding">
+                                <table id ="summaryDTable" class="table table-bordered table-striped table-hover data-table" style="text-align: center">
+                                    <thead>
+                                    <tr style="background-color: #CCCCCC">
+                                        <th style="text-align:center">Booking Date</th>
+                                        <th style="text-align:center">Day Type</th>
+                                        <th style="text-align:center">Cost (SGD)</th>
+                                        <th style="text-align:center">GST (SGD)</th>
+                                        <th style="text-align:center">Total Cost (SGD)</th>
+                                    </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+
+                            <div class="col-md-3 text-right" style="background-color: grey; float:right; text-align:center;">
+                                <label style="color:#FFFFFF">
+                                    Total (SGD): <span id="dtotalPayable"></span>
+                                </label>
+                            </div>
+
+                            <br/><br/><br/>
+                            <div class="row" id="closeBtn" style="display:none;">
+                                <div class="col-md-12 text-right">
+                                    <button type="button" id="closeClick" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                                <br/><br/>
+                            </div>
+                        </div>
+
+                        <!----------------------------------  Audit History ---------------------------------->
+                        <!--<div class="col-xs-12" id="showDHistory" style="margin-top:20px;">-->
+
+                            <!--<label>-->
+                                <!--<div style="color:#e55425; margin-left:2px;">Audit History</div>-->
+                            <!--</label>-->
+
+                            <!--<div class="widget-content nopadding">-->
+                                <!--<table id ="auditDTable" class="table table-bordered table-striped table-hover data-table" style="text-align: center; width:75%;">-->
+                                    <!--<thead>-->
+                                    <!--<tr style="background-color: #CCCCCC">-->
+                                        <!--<th style="text-align:center">Action By</th>-->
+                                        <!--<th style="text-align:center">Action</th>-->
+                                        <!--<th style="text-align:center">Log Date</th>-->
+                                        <!--<th style="text-align:center">Log Time</th>-->
+                                    <!--</tr>-->
+                                    <!--</thead>-->
+                                <!--</table>-->
+                            <!--</div>-->
+                            <!--<br/><br/><br/>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Reschedule Booking -->
+<div class="modal fade rescheduleBooking" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form action="###" method="post" th:action="@{/chalet/reschedule}" id="rescheduleBooking">
+                <div class="modal-header box-header with-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabelReschedule">Chalet Booking</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" >
+                        <div class="col-xs-12" id="rescheduleDetails">
+                            <div class="col-md-6">
+
+                                <input id="rLocationId" name="rLocationId" type="hidden"/>
+                                <input id="rChaletBookingId" name="rChaletBookingId" type="hidden"/>
+                                <input id="rChaletBookingDetailId" name="rChaletBookingDetailId" type="hidden"/>
+                                <input id="rInvoiceId" name="rInvoiceId" type="hidden"/>
+                                <input id="rInvoiceDetailId" name="rInvoiceDetailId" type="hidden"/>
+                                <input id="rPaymentId" name="rPaymentId" type="hidden"/>
+                                <input id="listRBookingSummary" name="listRBookingSummary" type="hidden"/>
+                                <input id="rPayable" name="rPayable" type="hidden"/>
+                                <input id="rAction" name="rAction" type="hidden"/>
+                                <input id="rCharge" name="rCharge" type="hidden"/>
+                                <input id="rTenderAmt" name="rTenderAmt" type="hidden"/>
+                                <input id="rDesc" name="rDesc" type="hidden"/><!-- Desc List -->
+                                <input id="rAmount" name="rAmount" type="hidden"/><!--Amount List -->
+                                <input id="rAmendment" name="rAmendment" type="hidden"/>
+
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Location</label>
+                                    <label class="form-control" id="rLocation" name="rLocation" style="border: 0px;"></label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Chalet Name</label>
+                                    <select class="form-control select2 select2-hidden-accessible" id="rChaletId" name="rChaletId" required>
+                                        <option value="">SELECT</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Check In Date</label>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" id="rCheckInDate" name="rCheckInDate" class="form-control pull-right datepicker" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Chalet Type</label>
+                                    <select class="form-control select2 select2-hidden-accessible" id="rChaletTypeId" name="rChaletTypeId" required>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Booking Type</label>
+                                    <div class="form-control" style="border:none;">
+                                        <label class="radio-inline">
+                                            <input type="radio" id="rbook" name="rbookingType" value="book" checked> Book
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Check Out Date</label>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" id="rCheckOutDate" name="rCheckOutDate" class="form-control pull-right datepicker" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- Close Personal Details -->
+
+
+                        <div class="col-xs-12" style="text-align:right; margin-top:15px;">
+                            <button type="button" id="checkAvailabilityBtn" class="btn btn-primary">Check Availability</button> &nbsp;
+                            <button type="reset" id="resetBtn" class="btn btn-default">Reset</button> &nbsp;
+                        </div>
+
+
+                        <!----------------------------------  Booking Summary ---------------------------------->
+                        <div class="col-xs-12" id="showRSummary" style="margin-top:20px;">
+
+                            <label>
+                                <div style="color:#e55425; margin-left:2px;">Booking Summary</div>
+                            </label>
+
+                            <div class="widget-content nopadding">
+                                <table id ="summaryRTable" class="table table-bordered table-striped table-hover data-table" style="text-align: center">
+                                    <thead>
+                                    <tr style="background-color: #CCCCCC">
+                                        <th style="text-align:center">Booking Date</th>
+                                        <th style="text-align:center">Day Type</th>
+                                        <th style="text-align:center">Cost (SGD)</th>
+                                        <th style="text-align:center">GST (SGD)</th>
+                                        <th style="text-align:center">Total Cost (SGD)</th>
+                                    </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+
+                            <div class="col-md-3 text-right" style="background-color: grey; float:right; text-align:center;">
+                                <label style="color:#FFFFFF">
+                                    Total (SGD): <span id="rtotalPayable"></span>
+                                </label>
+
+                            </div>
+
+                            <div class="col-xs-12" id="closeRBtn" style="text-align:right; display:none; margin-bottom:20px; margin-top:20px;">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+
+                        <!----------------------------------  Amendment Booking Summary ---------------------------------->
+                        <div class="col-xs-12" id="showAmendment" style="display:none; margin-top:20px;">
+
+                            <label>
+                                <div style="color:#e55425; margin-left:2px;"> Amendment Booking Summary</div>
+                            </label>
+
+                            <div class="widget-content nopadding">
+                                <table id ="summaryATable" class="table table-bordered table-striped table-hover data-table" style="text-align: center">
+                                    <thead>
+                                    <tr style="background-color: #CCCCCC">
+                                        <th style="text-align:center; width:60%;">Description</th>
+                                        <th style="text-align:center; width:40%;">Amount (SGD)</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+
+                            <div class="col-md-3 text-right" style="background-color: grey; float:right; text-align:center;">
+                                <label style="color:#FFFFFF"><span id="rAmendmentChargeTxt"></span>
+                                   <span id="rtotalCharge"></span>
+                                </label>
+                            </div>
+                            <br/><br/><br/>
+                        </div>
+
+                        <!----------------------------------  Payment Mode ---------------------------------->
+                        <div class="col-xs-12" id="showRPayment" style="display:none;">
+                            <label>
+                                <div style="color:#e55425; margin-left:2px;">Payment Mode</div>
+                            </label>
+
+                            <div class="widget-content nopadding">
+                                <table id ="paymentRTable" class="table table-bordered table-striped table-hover" style="text-align: center">
+                                    <tbody>
+                                    <tr style="background-color: #CCCCCC">
+                                        <th style="text-align:center">Payment Type</th>
+                                        <th style="text-align:center">Description</th>
+                                        <th style="text-align:center">Amount (SGD)</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">CASH</td>
+                                        <td><input id="rd1" type="text" style="width: 100%;"/></td>
+                                        <td><input id="rp1" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">Cheque / Cashier Order / Money Order</td>
+                                        <td><input id="rd2" type="text" style="width: 100%;"/></td>
+                                        <td><input id="rp2" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">Complimentary Vouchers</td>
+                                        <td><input id="rd3" type="text" style="width: 100%;"/></td>
+                                        <td><input id="rp3" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">Credit Cards (Masters / Visa)</td>
+                                        <td><input id="rd4" type="text" style="width: 100%;"/></td>
+                                        <td><input id="rp4" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">Diners</td>
+                                        <td><input id="rd5" type="text" style="width: 100%;"/></td>
+                                        <td><input id="rp5" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">HomeTeamNS Blue Voucher</td>
+                                        <td><input id="rd6" type="text" style="width: 100%;"/></td>
+                                        <td><input id="rp6" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">Nets</td>
+                                        <td><input id="rd7" type="text" style="width: 100%;"/></td>
+                                        <td><input id="rp7" type="number" style="width: 100%; text-align:right;" /></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="col-md-3" style="background-color: grey; float:right; width:30%; text-align:center;">
+                                <label style="color:#FFFFFF">
+                                    Tendered Amount (SGD): <span id="rtenderedAmt"></span>
+                                </label>
+                            </div>
+
+                            <div class="col-md-3" style="background-color: grey; float:right; width:30%; text-align:center; margin-right:2%;">
+                                <label style="color:#FFFFFF">
+                                    Amount Balance (SGD): <span id="rbalance"></span>
+                                </label>
+                            </div>
+
+                        </div><!-- Close PaymenMode -->
+
+                        <div class="col-xs-12" id="showPaymentBtn" style="text-align:right; display:none; margin-top:20px; margin-bottom:20px;">
+                            <button type="button" id="paymentBtn" class="btn btn-primary"><span id="paymentTxt"></span></button> &nbsp;&nbsp;
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Chalet Info Pop up -->
+<div class="modal fade chaletInfo" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header box-header with-border">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabelInfo">Chalet Information</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row" >
+                    <div class="col-xs-12" id="chaletInfo">
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label>Location</label>
+                                <label class="form-control" id="iLocation" name="iLocation" style="border: 0px;"></label>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Chalet Name</label>
+                                <label class="form-control" id="iChaletName" name="iChaletName" style="border: 0px;"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label>Chalet Type</label>
+                                <label class="form-control" id="iChaletType" name="iChaletType" style="border: 0px;"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12"  style="text-align:right; margin-bottom:20px;">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--/*@thymesVar id="showSuccesful" type="java.lang.String"*/-->
+<div style="display:none;" th:if="${showSuccesful} != null">
+    <span id="getSuccess">[[${showSuccesful}]]</span>
+</div>
+
+<!--/*@thymesVar id="invoiceNo" type="java.lang.String"*/-->
+<div style="display:none;" th:if="${invoiceNo} != null">
+    <span id="getInvoice">[[${invoiceNo}]]</span>
+</div>
+
+<!-- Success Booking -->
+<div class="modal fade successBooking" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header box-header with-border">
+                <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+                <h4 class="modal-title" id="myLargeModalLabel">Booking Success</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row" >
+
+                    <div class="col-md-12" style="margin-top:20px;">
+                        <div class="col-md-3">
+                            <img th:src="@{/dist/img/success.jpg}" style="width:50%; float:right;">
+                        </div>
+                        <div class="col-md-7">
+                            Your Invoice generated successfully. <br/>
+                            Please click the Invoice Number to print the receipt.<br/><br/>
+                            Your Invoice Number is <a id="invoice" href="#" target="_blank"><span id="invoiceText"></span></a>
+
+                            <div class="col-xs-12" style=" margin-top:20px; margin-bottom:20px; text-align:right;">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- Close row -->
+            </div><!-- Close modal body -->
+        </div><!-- CLose modal content -->
+    </div>
+</div>
+
+<script th:src="@{/dist/js/chalet/booking.js}"></script>
+
+<script>
+    //Date Picker Style
+    $('.datepicker').datepicker({
+        format: 'dd-mm-yyyy',
+        autoclose: true
+    });
+
+    $('.input-daterange').width('100%').datepicker({
+        todayBtn: "linked",
+        autoclose: true,
+        format: 'dd-mm-yyyy'
+    });
+
+    $(document).ready(function(){
+
+        //Remove duplicate options
+        var usedNames = {};
+        $("select[name='locationId'] > option").each(function () {
+            if(usedNames[this.text]) {
+                $(this).remove();
+            } else {
+                usedNames[this.text] = this.value;
+            }
+        });
+
+
+        //set timeout for prompy succesful message
+        setTimeout(function() {
+            $('#msgDisplay').fadeOut();
+        }, 5000);
+
+        var today = new Date();
+
+//        var d = new Date();
+//
+//        var month = d.getMonth()+1;
+//        var month1 = d.getMonth()+2;
+//        var day = d.getDate();
+//        var day1 = d.getDate()+1;
+//
+//        var nextmonth = d.getFullYear() + '-' +
+//            (month<10 ? '0' : '') + month1 + '-' +
+//            (day<10 ? '0' : '') + day;
+
+        $("[data-mask]").inputmask();
+
+        $('textarea[data-allcap], input[data-allcap]').on('keyup', function () {
+            $(this).val(function () {
+                return this.value.toUpperCase();
+            });
+        });
+
+        <!-- --------------- Functions ------------------- -->
+
+        $("#locationId").on('change', function(){
+            var location = $(this).val();
+            getChaletType(location);
+        });
+
+        function getChaletType(location) {
+
+            var parameter = {
+                'businessUnit' : location
+            };
+
+            $.ajax({
+                type : 'POST',
+                url: '/ajax/chalet-type/',		//1 AP - 1 group
+                data : parameter,
+                dataType : 'json',
+                success : function(data) {
+
+                    $('#typeId').empty();
+                    $('#typeId').append($('<option>', {
+                        value: "",
+                        text : "SELECT"
+                    }));
+
+                   // console.log("data:",data);
+
+                    if((data==null)||(data=="")){
+                        $('#typeId').append($('<option>', {
+                            value: "",
+                            text : "No Chalet for this location"
+                        }));
+                    }else{
+                        $.each(data, function (i, data) {
+
+                            $('#typeId').append($('<option>', {
+                                value: data.chaletTypeExtension.id,
+                                text : data.chaletTypeExtension.type
+                            }));
+                        });
+                    }
+                }
+            });
+        }
+
+        var chaletNames = "";
+        var dates = "";
+        var bookingInfo ="";
+
+        chaletNames = [(${chaletInfos})];
+        dates = [(${calendarDates})];
+        bookingInfo = [(${bookingInfos})];
+
+
+        var calendar = $('#calendar').customCalendar({
+            onClick: function () {
+
+                //show Book Now Btn
+                $('#bookingBtn').show();
+
+            },
+            onInfoClick: function () {
+
+                var chaletId = $(this).data('chalet-id');
+                getChaletInfo(chaletId);
+
+                $("#chaletBtn").click();
+
+            },
+            onBookedClick: function() {
+
+                $('.deleteBooking').unbind('hidden.bs.modal');
+
+                var date = $(this).data('date');
+                var chaletId = $(this).data('chalet-id');
+                var chaletName = $(this).data('chalet-name');
+                var bookingId = $(this).data('booking-id');
+                //var bookingType = "book";
+                var bookingType = $(this).data('bookingType');
+
+                $("#dChaletBookingId").val(bookingId);
+                $("#rChaletBookingId").val(bookingId);
+                $("#dChaletNameId").val(chaletId);
+                $("#dChaletName").text(chaletName);
+                $("#dbookingType").text(bookingType);
+
+                $("#summaryDBody").remove();
+                getBookingDetails(bookingId);
+
+                //only can cancel or reschedule booking
+                if(bookingType=="book"){
+
+                    document.getElementById('book').checked = true;
+                    document.getElementById("block").disabled = true;
+
+                    $('#modifyButton').hide(); //Jack modify
+                    $('#deleteButton').hide();
+                    $('#modifyBtn').click();
+
+                    //only can delete booking
+                }else if(bookingType == "block"){
+
+                    document.getElementById('block').checked = true;
+                    document.getElementById("book").disabled = true;
+
+                    $('#deleteButton').show();
+                    $('#modifyButton').hide();
+                    $('#modifyBtn').click();
+                }
+
+            },
+            dates : dates,
+            resourcesList: chaletNames,
+            resourcesInfo: bookingInfo,
+
+        });
+
+        if([(${showCal})]==true){
+            $("#redTxt").show();
+        }else{
+            $("#redTxt").hide();
+        }
+
+        var successVal = $("#getSuccess").text();
+        var invoiceVal = $("#getInvoice").text();
+
+        if(successVal=="true"){
+            if(invoiceVal!=""){
+                $("#invoiceText").text(invoiceVal);
+                //document.getElementById("invoice").href="../"+invoiceVal;
+                $("#successBtn").click();
+            }
+
+        }
+
+
+        var sd = $("#startDate").val();
+        var ed = $("#endDate").val();
+
+        if(sd!=""){
+            $("#sDate").val(sd);
+            $("#dsDate").val(sd);
+            $("#msDate").val(sd);
+        }
+
+        if(ed!=""){
+            $("#eDate").val(ed);
+            $("#deDate").val(ed);
+            $("#meDate").val(ed);
+        }
+
+        function getChaletInfo(chaletID) {
+
+            var parameter = {
+                'chaletId': chaletID
+
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/ajax/chalet-info/',
+                data: parameter,
+                dataType: 'json',
+                success: function (data) {
+
+                    console.log("getChaletInfo:",data);
+
+
+                }
+            });
+        }
+
+                    //booking btn is clicked
+        $('#bookingBtn').on('click', function(){
+
+            var getCalendarData = calendar.getSelectedDates();
+
+            var checkinDate = getCalendarData.selectedDates[0];
+            console.log("checkinDate:",checkinDate);
+
+            var today = new Date();
+            var checkinCheck = new Date();
+            var inSplit = checkinDate.split("-");
+            checkinCheck.setFullYear(inSplit[2], inSplit[1]-1, inSplit[0]);
+
+
+            var inDiff = Math.abs(checkinCheck.getTime() - today.getTime());
+            var diffInDay = Math.ceil(inDiff/(1000*3600*24));
+
+            var locationIdSelect = $("#locationId").val();
+            var chaletTypeIdSelect = getCalendarData.chaletTypeId;
+            var locationSelect = $("#locationId option:selected").text();
+            var chaletTypeSelect = getCalendarData.chaletTypeName;
+            var chaletId = getCalendarData.chaletId;
+            var chaletName = getCalendarData.chaletName;
+            var dateRange = getCalendarData.selectedDates;
+
+            var checkOutDate = getCalendarData.selectedDates[dateRange.length-1];
+
+            var sameDate = 0;
+
+            if(checkinDate==checkOutDate){
+                sameDate = 1;
+            }else{
+                sameDate = 0;
+            }
+
+            var newCheckOutDate = new Date();
+            var parts = checkOutDate.split("-");
+            newCheckOutDate.setFullYear(parts[2], parts[1]-1, parts[0]);
+
+            var outDiff = Math.abs(newCheckOutDate.getTime() - checkinCheck.getTime());
+            var diffOutDay = Math.ceil(outDiff/(1000*3600*24));
+
+            //if checkindate is today, and checkoutday is tomorrow, auto set to 2nights
+            //if((diffInDay==0) && (diffOutDay<2)){
+            if((diffInDay==0) && (sameDate==1)){
+                alert("Must stay minimum 2 nights for booking on today.");
+                newCheckOutDate.setDate(newCheckOutDate.getDate()+1);
+                checkOutDate = newCheckOutDate.getDate() + "-" + (newCheckOutDate.getMonth()+1) + "-" + newCheckOutDate.getFullYear();
+            }
+
+            newCheckOutDate.setDate(newCheckOutDate.getDate()+1);
+            var dYear = newCheckOutDate.getFullYear();
+            var dMonth = newCheckOutDate.getMonth()+1;
+            var dDay = newCheckOutDate.getDate();
+
+            if(dDay<10){
+                dDay = "0"+dDay;
+            }
+
+            if(dMonth<10){
+                dMonth = "0"+dMonth;
+            }
+            var checkOutDateDisplay = dDay + "-" + dMonth + "-" + dYear;
+
+            $("#bLocationId").val(locationIdSelect);
+            $("#bChaletTypeId").val(chaletTypeIdSelect);
+            $("#bChaletNameId").val(chaletId);
+            $("#bLocation").text(locationSelect);
+            $("#bChaletType").text(chaletTypeSelect);
+            $("#bChaletName").text(chaletName);
+            $("#checkInDate").val(checkinDate);
+            $("#checkOutDate").val(checkOutDate);
+            $("#checkOutDateDisplay").val(checkOutDateDisplay);
+
+            document.getElementById('checkInDate').readOnly = true;
+            document.getElementById('checkOutDateDisplay').readOnly = true;
+
+            document.getElementById('b1').checked = true;
+
+            var nric = $("#nric").val();
+            $("#summaryBody").remove();
+            $("#showSummary").hide();
+            $("#showPayment").hide();
+            $("#showUnavailable").hide();
+            $("#showBtn").hide();
+
+            if(nric!=""){
+                checkNRIC(nric, chaletId, checkinDate, checkOutDate);
+            }
+        });
+
+
+
+        $("#checkNRIC").click(function(){
+
+            var nric = $("#nric").val();
+            var chaletID = $("#bChaletNameId").val();
+            var startDate = $("#checkInDate").val();
+            var endDate = $("#checkOutDate").val();
+
+            $('#nname').val("");
+            $('#email').val("");
+            $('#phone').val("");
+            $("#summaryBody").remove();
+
+            document.getElementById("checkNRIC").style.color='black';
+            document.getElementById('nname').readOnly = false;
+            //document.getElementById('email').readOnly = false;
+            //document.getElementById('phone').readOnly = false;
+            checkNRIC(nric, chaletID, startDate, endDate);
+
+        });
+
+
+        function checkNRIC(nric, chaletID, startDate, endDate) {
+
+            var parameter = {
+                'nric': nric,
+                'chaletId':chaletID,
+                'startDate':startDate,
+                'endDate':endDate
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/ajax/member/chalet-booking/',
+                data: parameter,
+                dataType: 'json',
+                success: function (data) {
+
+                   //console.log("data:",data);
+                    var dataContact = data.contact;
+                    var dataTable = data.dates; //data to display in summary table
+
+                    if(dataContact!=null){
+                        document.getElementById("checkNRIC").style.color='green';
+                        $("#checkNRIC").html('<i class="glyphicon glyphicon-ok-circle"></i>');
+
+                        $('#nname').val(dataContact.contactExtension.fullName);
+                        $('#email').val(dataContact.email);
+                        $('#phone').val(dataContact.mobilePhone);
+
+                        document.getElementById('nname').readOnly = true;
+                        //document.getElementById('email').readOnly = true;
+                        //document.getElementById('phone').readOnly = true;
+
+                    }else{
+
+                        document.getElementById("checkNRIC").style.color='red';
+                        $("#checkNRIC").html('<i class="glyphicon glyphicon-remove"></i>');
+                    }
+
+                    if(dataTable.length>0){
+
+                        $("#summaryBody").remove();
+
+                        var tbody = document.createElement('tbody'), tr, td, row, cell;
+                        tbody.id="summaryBody";
+
+                        var totalSum = 0;
+                        var count = 0;
+                        var listBookingSummary="";
+                        var COMA = ",";
+                        var DELIMITER = "|";
+
+                        //display data in summary table
+                        for(var details in dataTable){
+
+                            var bDate = dataTable[details].date;
+                            var bTypeName = dataTable[details].dayName;
+                            var bType = dataTable[details].dayType;
+                            var bCost = dataTable[details].dayCost;
+                            var bGst = dataTable[details].dayGst;
+                            var bTotal = dataTable[details].dayTotal;
+
+                            //change date format
+                            var bDateSPlit = bDate.split("-");  //yyyy-mm-dd
+                            bDate = bDateSPlit[2] + "-" + bDateSPlit[1] + "-" + bDateSPlit[0];  //dd-mm-yyyy
+
+
+                            if(listBookingSummary==""){
+                                listBookingSummary += bDate + COMA + bType + COMA + bTypeName + COMA + bCost + COMA + bGst + COMA + bTotal;
+                            }else{
+                                listBookingSummary += DELIMITER + bDate + COMA + bType + COMA + bTypeName + COMA + bCost + COMA + bGst + COMA + bTotal;
+                            }
+
+                            $("#listBookingSummary").val(listBookingSummary);
+
+
+                            totalSum += Number(bTotal);
+
+                            tr = document.createElement('tr');
+
+                            td1 = document.createElement('td');
+                            td1.setAttribute('name', "bookingDate["+count+"]");
+                            td1.style.textAlign="left";
+                            tr.appendChild(td1);
+                            td1.innerHTML = bDate;
+
+                            td2 = document.createElement('td');
+                            td2.setAttribute('name', "dayName["+count+"]");
+                            td2.style.textAlign="left";
+                            tr.appendChild(td2);
+                            td2.innerHTML = bTypeName;
+
+                            td3 = document.createElement('td');
+                            td3.setAttribute('name', "cost["+count+"]");
+                            td3.style.textAlign="right";
+                            tr.appendChild(td3);
+                            td3.innerHTML = bCost;
+
+                            td4 = document.createElement('td');
+                            td4.setAttribute('name', "gst["+count+"]");
+                            td4.style.textAlign="right";
+                            tr.appendChild(td4);
+                            td4.innerHTML = bGst;
+
+                            td5 = document.createElement('td');
+                            td5.setAttribute('name', "totalCost["+count+"]");
+                            td5.style.textAlign="right";
+                            tr.appendChild(td5);
+                            td5.innerHTML = bTotal;
+
+                            tbody.appendChild(tr);
+
+                            count++;
+                        }
+                        document.getElementById('summaryTable').appendChild(tbody);
+
+                        totalSum = totalSum.toFixed(2);
+                        $("#totalPayable").text(totalSum);
+                        $("#balance").text(totalSum);
+                        $("#tenderedAmt").text("0.00");
+
+                        var bookingType="";
+
+                        if (document.getElementById('b1').checked) {
+                            bookingType = document.getElementById('b1').value;
+
+                        }else if (document.getElementById('b2').checked) {
+                            bookingType = document.getElementById('b2').value;
+                        }
+
+                        if(bookingType=="book"){
+
+                            $('#showSummary').show();
+                            $('#showPayment').show();
+                            $('#showRemarks').hide();
+                            $('#showBtn').show();
+                            $('#submitBtnText').text("Make Payment");
+
+                        }else if(bookingType=="block"){
+
+                            $('#showRemarks').show();
+                            $('#showSummary').show();
+                            $('#showPayment').hide();
+                            $('#showBtn').show();
+                            $('#submitBtnText').text("Block Now");
+
+                        }else{
+                            $('#showSummary').show();
+                        }
+
+                        $('#showUnavailable').hide();
+                        document.getElementById("b1").disabled = false;
+                        document.getElementById("b2").disabled = false;
+
+                    }else{
+
+                        $('#showUnavailable').show();
+                        document.getElementById("b1").disabled = true;
+                        document.getElementById("b2").disabled = true;
+
+                        $('#showSummary').hide();
+                        $('#showPayment').hide();
+                        $('#showRemarks').hide();
+                        $('#showBtn').hide();
+
+                    }
+                }
+            });
+        }
+
+        function getBookingDetails(bookingId) {
+            var parameter = {
+                'id': bookingId
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/ajax/chalet-booking/',
+                data: parameter,
+                dataType: 'json',
+                success: function (data) {
+
+                   // console.log("AAgetBookingDetails:",data);
+
+                    var chaletBookingExtension = data.chaletBookingExtension;
+                    var nric = chaletBookingExtension.nric;
+                    var name = chaletBookingExtension.name;
+                    var email = chaletBookingExtension.email;
+                    var mobile = chaletBookingExtension.mobileNo;
+
+                    $("#dNric").text(nric);
+                    $("#dName").text(name);
+                    $("#dEmail").text(email);
+                    $("#dMobile").text(mobile);
+
+                    var dDateRange = chaletBookingExtension.bookingDates;
+                    var dcheckinDate = dDateRange[0];   //yyyy-mm-dd
+                    var checkinParts = dcheckinDate.split("-");
+                    dcheckinDate = checkinParts[2] + "-" + checkinParts[1] + "-" + checkinParts[0];
+
+                    var dcheckOutDate = dDateRange[dDateRange.length-1];
+                    var checkoutParts = dcheckOutDate.split("-");
+                    dcheckOutDate = checkoutParts[2] + "-" + checkoutParts[1] + "-" + checkoutParts[0];
+
+                    var dnewCheckOutDate = new Date();
+                    var parts = dcheckOutDate.split("-");
+                    dnewCheckOutDate.setFullYear(parts[2], parts[1]-1, parts[0]);
+                    dnewCheckOutDate.setDate(dnewCheckOutDate.getDate()+1);
+                    var ddYear = dnewCheckOutDate.getFullYear()
+                    var ddMonth = dnewCheckOutDate.getMonth()+1;
+                    var ddDay = dnewCheckOutDate.getDate();
+
+                    if(ddDay<10){
+                        ddDay = "0" + ddDay;
+                    }
+
+                    if(ddMonth<10){
+                        ddMonth = "0" + ddMonth;
+                    }
+                    var dcheckOutDateDisplay = ddDay + "-" + ddMonth + "-" + ddYear;
+
+                    var chalet = data.chaletBookingExtension.chalet;
+                    var chaletExt = chalet.chaletExtension;
+
+                    var chaletBookingDetailExt = data.chaletBookingDetailExtensionList;
+                    var listSize = chaletBookingDetailExt.length;
+                    var invoice = "";
+                    var invoiceId ="";
+                    var invoiceNumber ="";
+                    var invoiceDetail = "";
+                    var invoiceDetailId = "";
+
+                    if(data.chaletBookingExtension.invoice!=null){
+                        invoice = data.chaletBookingExtension.invoice;
+                        invoiceId = invoice.id;
+                        invoiceNumber = invoice.invoiceNumber;
+                    }
+
+                    if(listSize>0){
+
+                        if(chaletBookingDetailExt[0].invoiceDetail!=null){
+                            invoiceDetail = chaletBookingDetailExt[0].invoiceDetail;
+                            invoiceDetailId = invoiceDetail.id;
+                        }
+                    }
+
+                    var totalSum = 0;
+                    var listBookingDetailsId="";
+                    var DELIMITER = "|";
+
+                    var tbody = document.createElement('tbody'), tr, td, row, cell;
+                    tbody.id="summaryDBody";
+
+
+
+                    for(var i=listSize-1; i>-1; i--){
+
+                        var bookingDetailExtId = chaletBookingDetailExt[i].id;
+                        var chaletBookingType = chaletBookingDetailExt[i].chaletBookingType;
+                        var chaletBookingTypeExt = chaletBookingType.chaletBookingTypeExtension;
+
+                        var startDateTimestamp = chaletBookingDetailExt[i].startDate;
+                        var bDate = new Date(startDateTimestamp);
+                        var year = bDate.getFullYear();
+                        var month = bDate.getMonth()+1;
+                        var date = bDate.getDate();
+
+                        if(date<10){
+                            date = "0" + date;
+                        }
+
+                        if(month<10){
+                            month = "0" + month;
+                        }
+                        var displayDate = date + "-" + month + "-" + year;
+
+                        var bTypeName = chaletBookingTypeExt.type;
+                        var bTotal = (chaletBookingTypeExt.cost);
+//                        bCost = Number(bCost).toFixed(2);
+//                        var bGst = (Number(bCost) * 0.07).toFixed(2);
+//                        var bTotal = (Number(bCost) + Number(bGst)).toFixed(2);
+
+                        bTotal = Number(bTotal).toFixed(2);
+                        var bGst = (Number(bTotal) / 1.07 * 0.07).toFixed(2);
+                        var bCost = (Number(bTotal) / 1.07 * 1.0).toFixed(2);
+
+                        totalSum += Number(bTotal);
+
+                        if(listBookingDetailsId==""){
+                            listBookingDetailsId += bookingDetailExtId;
+
+                        }else{
+                            listBookingDetailsId += DELIMITER + bookingDetailExtId;
+                        }
+
+                        tr = document.createElement('tr');
+
+                        td1 = document.createElement('td');
+                        td1.setAttribute('name', "dbookingDate["+i+"]");
+                        td1.style.textAlign="left";
+                        tr.appendChild(td1);
+                        td1.innerHTML = displayDate;
+
+                        td2 = document.createElement('td');
+                        td2.setAttribute('name', "ddayName["+i+"]");
+                        td2.style.textAlign="left";
+                        tr.appendChild(td2);
+                        td2.innerHTML = bTypeName;
+
+                        td3 = document.createElement('td');
+                        td3.setAttribute('name', "dcost["+i+"]");
+                        td3.style.textAlign="right";
+                        tr.appendChild(td3);
+                        td3.innerHTML = bCost;
+
+                        td4 = document.createElement('td');
+                        td4.setAttribute('name', "dgst["+i+"]");
+                        td4.style.textAlign="right";
+                        tr.appendChild(td4);
+                        td4.innerHTML = bGst;
+
+                        td5 = document.createElement('td');
+                        td5.setAttribute('name', "dtotalCost["+i+"]");
+                        td5.style.textAlign="right";
+                        tr.appendChild(td5);
+                        td5.innerHTML = bTotal;
+
+                        tbody.appendChild(tr);
+                    }
+
+                    document.getElementById('summaryDTable').appendChild(tbody);
+
+                    $("#dChaletBookingDetailId").val(listBookingDetailsId);
+                    $("#rChaletBookingDetailId").val(listBookingDetailsId);
+
+                    totalSum = totalSum.toFixed(2);
+                    $("#dtotalPayable").text(totalSum);
+
+                    var chaletBookingExtId = chaletBookingExtension.id;
+                    var chaletId = chalet.id;
+                    var chaletExtId = chaletExt.id;
+
+                    var dlocationIdSelect = $("#locationId").val();
+                    var dchaletTypeIdSelect = $("#typeId").val();
+                    var dlocationSelect = $("#locationId option:selected").text();
+                    var dchaletTypeSelect = $("#typeId option:selected").text();
+
+                    $("#dInvoiceId").val(invoiceId);
+                    $("#rInvoiceId").val(invoiceId);
+                    $("#dInvoiceDetailId").val(invoiceDetailId);
+                    $("#rInvoiceDetailId").val(invoiceDetailId);
+//                    $("#dPaymentId").val(dlocationIdSelect);
+//                    $("#rPaymentId").val(dlocationIdSelect);
+
+                    $("#dLocationId").val(dlocationIdSelect);
+                    $("#rLocationId").val(dlocationIdSelect);
+                    $("#dChaletTypeId").val(dchaletTypeIdSelect);
+                    $("#rLocation").text(dlocationSelect);
+                    $("#dLocation").text(dlocationSelect);
+                    $("#dChaletType").text(dchaletTypeSelect);
+                    $("#dCheckInDate").val(dcheckinDate);
+                    $("#dCheckOutDate").val(dcheckOutDate);
+                    $("#dCheckOutDateDisplay").val(dcheckOutDateDisplay);
+                    //$("#dRemarks").val("Testing remark");
+
+                    document.getElementById('dRemarks').readOnly = true;
+                    document.getElementById('dCheckInDate').readOnly = true;
+                    document.getElementById('dCheckOutDateDisplay').readOnly = true;
+
+                }
+            });
+        }
+
+
+    });
+
+</script>
+<script th:src="@{/dist/js/chalet/reschedule.js}"></script><!-- Must put here to prevent when click close button , pop up reschedule screen -->
+
+</body>
+</html>

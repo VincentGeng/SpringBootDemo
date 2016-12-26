@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://github.com/thymeleaf/thymeleaf-extras-springsecurity">
+<head th:fragment="meta(title)">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HomeTeam NS | [[${title}]]</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" th:href="@{/dist/css/AdminLTE.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/timepicker/bootstrap-timepicker.css}">
+    <link rel="stylesheet" th:href="@{/plugins/datepicker/datepicker3.css}">
+    <link rel="stylesheet" th:href="@{/plugins/fileinput/css/fileinput.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/datatables/dataTables.bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/plugins/customcalendar/custom-calendar.css}">
+    <link rel="stylesheet" th:href="@{/plugins/customtimetable/custom-timetable.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/skins/skin-htns.css}">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<!-- Site wrapper -->
+<div class="wrapper">
+    <header class="main-header" th:fragment="header">
+        <div class="htns-bar"></div>
+        <a href="#" class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini"><b>HT</b>NS</span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg">
+                <img th:src="@{/dist/img/hometeam-logo.png}" alt="HomeTeamNS" class="navbar-logo">
+            </span>
+        </a>
+    </header>
+    <!-- =============================================== -->
+    <!-- Left side column. contains the sidebar -->
+    <aside class="main-sidebar" th:fragment="sidebar(page)">
+        <section class="sidebar">
+            <div class="user-panel">
+                <div class="htns-info">
+                    <div class="htns-username">
+                        <a href="#">
+                            <span th:text ="${#authentication.principal.fullname}">{{loggedInUser}}</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-down pull-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                    <p th:text="${#authentication.principal.roleDisplay}">{{UserAccountType}}</p>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li th:classappend="${page == 'dashboard' ? 'active' : ''}">
+                    <a href="#" th:href="@{/}">
+                        <i class="fa fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li sec:authorize="hasRole('MEMBER')" th:classappend="${page == 'profile' ? 'active' : ''}">
+                    <a href="#" th:href="@{/profile/(id=${#authentication.principal.contact.contactId})}">
+                        <i class="glyphicon glyphicon-user"></i>
+                        <span>My Profile</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                    </a>
+                </li>
+                <li sec:authorize="hasRole('ADMIN')" class="treeview" th:classappend="${page == 'member' ? 'active' : ''}">
+                    <a href="#">
+                        <i class="fa fa-users"></i>
+                        <span>Membership Management</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="#" th:href="@{/member/create}">New Member</a></li>
+                        <li><a href="#" th:href="@{/member/all}">Member Listing</a></li>
+                        <li><a href="#" th:href="@{/family/all}">Family Listing</a></li>
+                        <li th:if="false"><a href="#">Member Settings</a></li>
+                        <li th:if="false"><a href="#">Preferences Settings</a></li>
+                    </ul>
+                </li>
+                <li sec:authorize="hasRole('USER')" class="treeview" th:classappend="${page == 'facility' ? 'active' : ''}">
+                    <a href="#">
+                        <i class="fa fa-cube"></i>
+                        <span>Facility Booking</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li sec:authorize="hasRole('ADMIN')"><a href="#" th:href="@{/facility/booking}">Make a Booking</a></li>
+                        <li><a href="#" th:href="@{/facility/listing}">Booking Listing</a></li>
+                    </ul>
+                </li>
+                <li sec:authorize="hasRole('USER')" class="treeview" th:classappend="${page == 'chalet' ? 'active' : ''}">
+                    <a href="#">
+                        <i class="fa fa-calendar-check-o"></i>
+                        <span>Chalet Booking</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li sec:authorize="hasRole('ADMIN')"><a href="#" th:href="@{/chalet/booking}">Make a Booking</a></li>
+                        <li><a href="#" th:href="@{/chalet/listing}">Booking Listing</a></li>
+                    </ul>
+                </li>
+                <li sec:authorize="hasRole('USER')" class="treeview" th:classappend="${page == 'golf' ? 'active' : ''}">
+                    <a href="#">
+                        <i class="fa fa-book"></i>
+                        <span>Golf Booking</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li sec:authorize="hasRole('MEMBER')"><a href="#" th:href="@{/golfing/booking}">Make a Booking</a></li>
+                        <li><a href="#" th:href="@{/golfing/listing}">Booking Listing</a></li>
+                    </ul>
+                </li>
+                <li sec:authorize="hasRole('ADMIN')" th:classappend="${page == 'pos' ? 'active' : ''}">
+                    <a href="#">
+                        <i class="fa fa-tags"></i>
+                        <span>Point of Sales</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li sec:authorize="hasRole('ADMIN')"><a href="#" th:href="@{/pos/add}">Add Invoice</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><a href="#" th:href="@{/pos/home}">Invoice Listing</a></li>
+                    </ul>
+                </li>
+                <li sec:authorize="hasRole('ADMIN')" th:if="false" class="treeview" th:classappend="${page == 'event' ? 'active' : ''}">
+                    <a href="#">
+                        <i class="fa fa-gift"></i>
+                        <span>Event Management</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="#">New Event</a></li>
+                    </ul>
+                </li>
+                <li sec:authorize="hasRole('ADMIN')" th:if="false" class="treeview" th:classappend="${page == 'product' ? 'active' : ''}">
+                    <a href="#">
+                        <i class="fa fa-shopping-bag"></i>
+                        <span>Product Management</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="#">Products</a></li>
+                        <li><a href="#">Product Category</a></li>
+                    </ul>
+                </li>
+                <li sec:authorize="hasRole('ADMIN')" th:if="false" class="treeview" th:classappend="${page == 'staff' ? 'active' : ''}">
+                    <a href="#">
+                        <i class="fa fa-user"></i>
+                        <span>Staff Management</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="#">New Staff</a></li>
+                        <li><a href="#">Staff Listing</a></li>
+                    </ul>
+                </li>
+                <li sec:authorize="hasRole('ADMIN')" th:if="false" class="treeview" th:classappend="${page == 'settings' ? 'active' : ''}">
+                    <a href="#">
+                        <i class="fa fa-cog"></i>
+                        <span>Settings</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="#">Templates</a></li>
+                        <li><a href="#">System Jobs</a></li>
+                        <li><a href="#">Auto Numbering</a></li>
+                        <li><a href="#">Letter Rates</a></li>
+                        <li><a href="#">Email Distribution</a></li>
+                        <li><a href="#">Sub Club Costs</a></li>
+                        <li><a href="#">Product Link</a></li>
+                        <li><a href="#">Cancellation Policy</a></li>
+                    </ul>
+                </li>
+                <li sec:authorize="hasRole('MEMBER')" th:classappend="${page == 'profile' ? 'active' : ''}">
+                    <a href="#" th:href="@{/settings/change-password/(id=${#authentication.principal.contact.contactId})}">
+                        <i class="glyphicon glyphicon-lock"></i>
+                        <span>Change Password</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/logout}">
+                        <i class="fa fa-sign-out"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-circle-o text-red"></i>
+                        <span>Web Portal</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </aside>
+    <!-- =============================================== -->
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header htns-content-header" th:fragment="content-header(header)">
+            <h1>
+                [[${header}]]
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#">Dashboard</a></li>
+                <li class="active">[[${header}]]</li>
+            </ol>
+        </section>
+        <!-- Main content -->
+        <section class="content">
+            <form role="form">
+                <!-- text input -->
+                <div class="form-group">
+                    <label>Text</label>
+                    <input type="text" class="form-control" placeholder="Enter ...">
+                </div>
+                <div class="form-group">
+                    <label>Text Disabled</label>
+                    <input type="text" class="form-control" placeholder="Enter ..." disabled>
+                </div>
+                <!-- textarea -->
+                <div class="form-group">
+                    <label>Textarea</label>
+                    <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Textarea Disabled</label>
+                    <textarea class="form-control" rows="3" placeholder="Enter ..." disabled></textarea>
+                </div>
+                <!-- input states -->
+                <div class="form-group has-success">
+                    <label class="control-label" for="inputSuccess"><i class="fa fa-check"></i> Input with
+                        success</label>
+                    <input type="text" class="form-control" id="inputSuccess" placeholder="Enter ...">
+                    <span class="help-block">Help block with success</span>
+                </div>
+                <div class="form-group has-warning">
+                    <label class="control-label" for="inputWarning"><i class="fa fa-bell-o"></i> Input with
+                        warning</label>
+                    <input type="text" class="form-control" id="inputWarning" placeholder="Enter ...">
+                    <span class="help-block">Help block with warning</span>
+                </div>
+                <div class="form-group has-error">
+                    <label class="control-label" for="inputError"><i class="fa fa-times-circle-o"></i> Input with
+                        error</label>
+                    <input type="text" class="form-control" id="inputError" placeholder="Enter ...">
+                    <span class="help-block">Help block with error</span>
+                </div>
+                <!-- checkbox -->
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox">
+                            Checkbox 1
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox">
+                            Checkbox 2
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" disabled>
+                            Checkbox disabled
+                        </label>
+                    </div>
+                </div>
+                <!-- radio -->
+                <div class="form-group">
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+                            Option one is this and that&mdash;be sure to include why it's great
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                            Option two can be something else and selecting it will deselect option one
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios3" value="option3" disabled>
+                            Option three is disabled
+                        </label>
+                    </div>
+                </div>
+                <!-- select -->
+                <div class="form-group">
+                    <label>Select</label>
+                    <select class="form-control">
+                        <option>option 1</option>
+                        <option>option 2</option>
+                        <option>option 3</option>
+                        <option>option 4</option>
+                        <option>option 5</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Select Disabled</label>
+                    <select class="form-control" disabled>
+                        <option>option 1</option>
+                        <option>option 2</option>
+                        <option>option 3</option>
+                        <option>option 4</option>
+                        <option>option 5</option>
+                    </select>
+                </div>
+                <!-- Select multiple-->
+                <div class="form-group">
+                    <label>Select Multiple</label>
+                    <select multiple class="form-control">
+                        <option>option 1</option>
+                        <option>option 2</option>
+                        <option>option 3</option>
+                        <option>option 4</option>
+                        <option>option 5</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Select Multiple Disabled</label>
+                    <select multiple class="form-control" disabled>
+                        <option>option 1</option>
+                        <option>option 2</option>
+                        <option>option 3</option>
+                        <option>option 4</option>
+                        <option>option 5</option>
+                    </select>
+                </div>
+            </form>
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer" th:fragment="footer">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> 2.0.0 Alpha
+        </div>
+        <strong>Copyright &copy; 2016 <a href="http://www.hometeamns.sg">HomeTeam NS</a>.</strong> All rights reserved.
+    </footer>
+</div>
+<!-- ./wrapper -->
+<div th:fragment="javascript">
+    <script th:src="@{/plugins/jQuery/jquery-2.2.3.min.js}"></script>
+    <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <script th:src="@{/plugins/slimScroll/jquery.slimscroll.min.js}"></script>
+    <script th:src="@{/plugins/fastclick/fastclick.js}"></script>
+    <script th:src="@{/plugins/timepicker/bootstrap-timepicker.js}"></script>
+    <script th:src="@{/plugins/datepicker/bootstrap-datepicker.js}"></script>
+    <script th:src="@{/plugins/input-mask/jquery.inputmask.js}"></script>
+    <script th:src="@{/plugins/fileinput/js/fileinput.min.js}"></script>
+    <script th:src="@{/plugins/nric.checker/nric-checker.js}"></script>
+    <script th:src="@{/plugins/datatables/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/plugins/datatables/dataTables.bootstrap.min.js}"></script>
+    <script th:src="@{/plugins/customcalendar/custom-calendar.js}"></script>
+    <script th:src="@{/plugins/customtimetable/custom-timetable.js}"></script>
+    <script th:src="@{/plugins/handlebars/handlebars.js}"></script>
+    <script th:src="@{/dist/js/app.min.js}"></script>
+</div>
+</body>
+</html>

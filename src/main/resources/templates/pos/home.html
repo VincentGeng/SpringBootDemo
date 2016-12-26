@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/template :: meta('Members')"></head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<div class="wrapper">
+    <div th:replace="fragments/template :: header"></div>
+    <div th:replace="fragments/template :: sidebar('dashboard')"></div>
+    <div class="content-wrapper">
+        <!--/*@thymesVar id="header" type="java.lang.String"*/-->
+        <!--/*@thymesVar id="allGolfingLocation" type="java.util.List<com.techstudio.htns.domain.GolfingLocation>"*/-->
+        <!--/*@thymesVar id="golfingLocation" type="com.techstudio.htns.domain.GolfingLocation"*/-->
+        <div th:replace="fragments/template :: content-header(${header})"></div>
+        <!-- Main content -->
+        <section class="content">
+            <form action="###" method="get" th:action="@{/pos/search}" id="member-reg-form">
+
+                <!------------------------------------------------- Search Filter ------------------------------------------------->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Search for Existing E-Receipt</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>
+                                        NRIC NO
+                                    </label>
+                                    <input type="text" class="form-control" name="nric">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>
+                                        RECEIPT NO
+                                    </label>
+                                    <input type="text" class="form-control" name="receipt">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <!-- <label>
+                                        Date Range</label>
+
+                                    <div class="input-daterange input-group" id="datepicker">
+                                        <input type="text" class="input-sm form-control" name="startDate" />
+                                        <span class="input-group-addon">to</span>
+                                        <input type="text" class="input-sm form-control" name="endDate" />
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                                <button type="button" class="btn btn-default">RESET</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!------------------------------------------------- End Search Filter ------------------------------------------------->
+
+                <!------------------------------------------------- Data Table ------------------------------------------------->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">RECEIPT LISTING</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-12 text-left">
+                                <a class="btn btn-primary" th:href="@{/pos/add}">Add New Receipt</a>
+                            </div>
+                            <div class="col-sm-12">
+                                <table id="example" class="table table-bordered table-hover dataTable display clickable" cellspacing="0" width="100%">
+                                    <thead>
+                                        <tr role="row">
+                                            <th>Receipt No</th>
+                                            <th>NRIC No</th>
+                                            <th>Name</th>
+                                            <th>Total Ammount</th>
+                                            <th>Cashier</th>
+                                            <th>Time Stamp</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Receipt No</th>
+                                            <th>NRIC No</th>
+                                            <th>Name</th>
+                                            <th>Total Ammount</th>
+                                            <th>Cashier</th>
+                                            <th>Time Stamp</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                    <!--/*@thymesVar id="receiptList" type="java.lang.List<com.techstudio.htns.domain.InvoiceDetailExtension>"*/-->
+                                        <!-- <tr th:each="booking : ${receiptList}" th:data-href="@{/golfing/booking/edit(id=${booking.getId()})}"> -->
+                                        <tr th:each="receipt : ${receiptList}">
+                                            <td th:text="${receipt.getInvoice().getInvoiceNumber()}">{{InvoiceNumber}}</td>
+                                            <td th:text="${receipt.getNric()}">{{Nric}}</td>
+                                            <td th:text="${receipt.getMemberName()}">{{MemberName}}</td>
+                                            <td th:text="${receipt.getInvoice().getTotalAmount()}">{{TotalAmount}}</td>
+                                            <td th:text="${receipt.getCashier()}">{{Cashier}}</td>
+                                            <td th:text="${receipt.getInvoice().getCreatedOn()}">{{CreatedOn}}</td>
+
+                                            <!-- <td th:text="${receipt.getNric()}">{{Nric}}</td>
+                                            <td th:text="${receipt.getMemberName()}">{{MemberName}}</td>
+                                            <td th:text="${receipt.getInvoice().getTotalAmount()}">{{TotalAmount}}</td>
+                                            <td th:text="${receipt.getCashier()}">{{Cashier}}</td>
+                                            <td th:text="${receipt.getInvoice().getCreatedOn()}">{{CreatedOn}}</td> -->
+
+                                            <!-- <td th:if="${booking.getGolfLinkBookingExtension().getBookingStatus() == 1}">Approved</td>
+                                            <td th:if="${booking.getGolfLinkBookingExtension().getBookingStatus() == 2}">Not Approved</td>
+                                            <td th:if="${booking.getGolfLinkBookingExtension().getBookingStatus() == 3}">Pending Approved</td>
+                                            <td th:if="${booking.getGolfLinkBookingExtension().getBookingStatus() == 4}">Pending Approved</td>
+                                            <td th:if="${booking.getGolfLinkBookingExtension().getBookingStatus() == 5}">Deleted</td> -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!------------------------------------------------- End Data Table ------------------------------------------------->
+
+            </form>
+        </section>
+    </div>
+    <div th:replace="fragments/template :: footer"></div>
+</div>
+<div th:include="fragments/template :: javascript" th:remove="tag"></div>
+
+<!------------------------------------------------- Book Details Modal ------------------------------------------------->
+
+<!------------------------------------------------- End Book Details Modal ------------------------------------------------->
+<script>
+    $(document).ready(function() {
+        //Date Picker Style
+        $('.datepicker').datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true
+        });
+
+        $('.input-daterange').width('100%').datepicker({
+            //todayBtn: "linked",
+            format: 'dd-mm-yyyy'
+        });
+
+        var date = new Date();
+        $('input[name=registrationDate]').datepicker("setDate", date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear());
+
+        $("#btnNewBooking").click(function() {
+        });
+
+        $('#example').DataTable({
+            "ordering": false,
+            "dom": '<"top"iflp<"clear">>rt<"bottom"iflp<"clear">>',
+            "drawCallback": function(settings, json) {
+                $("tr[data-href]").on('click', function() {
+                    window.location = $(this).data("href");
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

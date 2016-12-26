@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:remove="all">Order Confirmation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div>
+
+        <p>Hi Staycation admin/HTNS_SB admin,</p>
+
+        <br/>
+        <p> There is a cancellation for your necessary actions.</p>
+        <br/>
+
+        <p>Cancellation of:</p>
+
+        <div class="widget-content nopadding">
+            <table border="1">
+                <thead>
+                <tr>
+                    <td width="100">NRIC</td>
+                    <td width="100">Name</td>
+                    <td width="100">Description</td>
+                    <td width="100">Booking Date</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr style="background-color:white;">
+                    <td th:text="${nric}"></td>
+                    <td th:text="${name}"></td>
+                    <td th:text="${desc}"></td>
+                    <td th:text="${bookingdate}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p>Acknowledgement note of deduction for $21.40 to be send to User</p>
+
+        <br/>
+</div>
+
+<span style="font-size:13px; color:red;"><b><i>* Note:</i></b></span>
+<br/>
+
+<div style="border:1px; padding:10px; ">
+    <b>Cancellation Policies and Refund Policies</b><br/><br/>
+
+    <div class="widget-content">
+        <table class="table table-bordered table-striped table-hover data-table">
+            <thead>
+            <tr style="background-color:#F9F387;">
+                <td style="width:180px;"></td>
+                <td style="width:200px;">More than 14 days</td>
+                <td style="width:200px;">14 days or less</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr style="background-color:white;">
+                <td>Amendment Penalty</td>
+                <td> Admin Fee of $21.40</td>
+                <td>No Amendments</td>
+            </tr>
+            <tr>
+                <td>Cancellation Penalty</td>
+                <td>50% of Rental Fee</td>
+                <td>No Refunds</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+</body>
+</html>

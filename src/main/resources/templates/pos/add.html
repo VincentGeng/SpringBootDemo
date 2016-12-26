@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/template :: meta('Members')"></head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<div class="wrapper">
+    <div th:replace="fragments/template :: header"></div>
+    <div th:replace="fragments/template :: sidebar('dashboard')"></div>
+    <div class="content-wrapper">
+        <!--/*@thymesVar id="header" type="java.lang.String"*/-->
+        <!--/*@thymesVar id="contact" type="com.techstudio.htns.domain.Contact"*/-->
+        <!--/*@thymesVar id="allProductCat" type="java.util.List<com.techstudio.htns.domain.ProductCategoryExtension>"*/-->
+        <!--/*@thymesVar id="productCat" type="com.techstudio.htns.domain.ProductCategoryExtension"*/-->
+        <div th:replace="fragments/template :: content-header(${header})"></div>
+        <!-- Main content -->
+        <section class="content">
+            <!-- <form action="###" method="post" th:action="@{/golfing/booking/create}" id="golfing-booking-form"> -->
+            <form action="###" method="post" th:action="@{/pos/addInvoice}" id="pos-add-form">
+
+                <!------------------------------------------------- Section A ------------------------------------------------->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Section A</h3>
+                    </div>
+                    <div class="box-body" id="sectionBBody">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        NRIC NO</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="nric" name="nric" data-inputmask="'mask': 'a9999999a'" data-mask required>
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-info btn-flat" id="btnNRICAuthenticate">
+                                                <i class="fa fa-check"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Hand Phone
+                                    </label>
+                                    <!-- <input type="text" class="form-control" th:value="${ contact.getMobilePhone()}" id="contactNumber" name="contactNumber">  -->
+                                    <input type="text" class="form-control" id="contactNumber" name="contactNumber">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Expiry Date
+                                    </label>
+                                    <!-- <input type="text" class="form-control" readonly th:value="${contact.getContactExtension().getExpiredOn()} ? ${#dates.format(contact.getContactExtension().getExpiredOn(), 'dd-MM-yyyy')} : ''"> -->
+                                    <input type="text" class="form-control" readonly name="expDate" id="expDate">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Select an Item</label>
+                                    <div class="input-group">
+                                        <input type="text" id="itemID" name="itemID" style="display: none">
+                                        <input type="text" class="form-control" id="itemName" name="itemName">
+                                        <span class="input-group-btn">
+                                            <!-- <button type="button" class="btn btn-primary" id="bookingBtn"  style="display:none;" data-toggle="modal" data-target=".bookingDetails">Book Now</button>  -->
+                                            <button type="button" class="btn btn-info btn-flat" id="btnItemSearch" data-toggle="modal" data-target=".bookingDetails">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Item Description
+                                    </label>
+                                    <!-- <input type="text" class="form-control" th:value="${ contact.getMobilePhone()}" id="itemDesc" name="itemDesc">  -->
+                                    <input type="text" class="form-control" id="itemDesc" name="itemDesc">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        List Price (SGD)</label>
+                                    <!-- <input type="text" class="form-control" th:value="${ contact.getMobilePhone()}" id="itemPrice" name="itemPrice">  -->
+                                    <input type="number" class="form-control" id="itemPrice" name="itemPrice">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Item (NRIC NO)</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="itemNric" name="itemNric" data-inputmask="'mask': 'a9999999a'" data-mask required>
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-info btn-flat" id="btnItemNRICAuthenticate">
+                                                <i class="fa fa-check"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Item (Hand Phone)
+                                    </label>
+                                    <input type="text" class="form-control" id="itemContactNumber" name="itemContactNumber">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Name</label>
+                                    <input type="text" class="form-control" id="memberName" name="memberName">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Email
+                                    </label>
+                                    <!-- <input type="text" class="form-control" th:value="${ contact.getEmail()}" id="email" name="email">  -->
+                                    <input type="text" class="form-control" id="email" name="email">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Membership Type
+                                    </label>
+                                    <input type="text" class="form-control" readonly id="status">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Membership Group
+                                    </label>
+                                    <input type="text" class="form-control" readonly id="status1">
+                                </div>
+                                <div class="form-group">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Required Quantity</label>
+                                    <input type="number" class="form-control" id="reqQty" name="reqQty">
+                                </div>
+                                <div class="form-group">
+                                    <label>&nbsp;&nbsp;</label>
+                                    <br/><br/><br/>
+                                </div>
+                                <div class="form-group">
+                                <label>
+                                    Item (Member Name)</label>
+                                    <input type="text" class="form-control" id="itemMemberName" name="itemMemberName">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                    Item (Email)</label>
+                                    <input type="text" class="form-control" id="itemEmail" name="itemEmail">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="button" class="btn btn-primary" id="addItemBtn">ADD ITEM</button>
+                                <button type="button" class="btn btn-default" id="resetItemBtn">RESET</button>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:20px; display:none;">
+                            <div class="col-md-12 text-right">
+                                <button type="button" class="btn btn-primary" style="display:none;" id="successBtn" data-toggle="modal" data-target=".successBooking">Success</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!------------------------------------------------- End Section A ------------------------------------------------->
+
+                <input id="listBookingSummary" name="listBookingSummary" type="hidden"/>
+                <input id="bTotalPayable" name="bTotalPayable" type="hidden"/>
+                <input id="bDesc" name="bDesc" type="hidden"/>
+                <input id="bAmount" name="bAmount" type="hidden"/>
+                <input id="bTenderAmt" name="bTenderAmt" type="hidden"/>
+
+                <!------------------------------------------------- Section B ------------------------------------------------->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Section B</h3>
+                    </div>
+                    <div class="box-body" id="sectionCBody">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="box-body table-responsive no-padding">
+                                    <table class="table table-hover" id="addedProductsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>NRIC</th>
+                                                <th>Name</th>
+                                                <th>Item Description</th>
+                                                <th>Price</th>
+                                                <th>Qty</th>
+                                                <th>GST</th>
+                                                <th>Cost</th>
+                                                <th>Total</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3" style="background-color: grey; float:right; width:30%; text-align:center;">
+                                <label style="color:#FFFFFF">
+                                        Total (SGD): <span id="totalAmt"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!------------------------------------------------- End Section C ------------------------------------------------->
+
+                <!----------------------------------  Payment Mode ---------------------------------->
+                <!-- <div class="col-xs-12" id="showPayment" style="display:block;">  -->
+                    <!-- <label>
+                        <div style="color:#e55425; margin-left:2px;">Payment Mode</div>
+                    </label> -->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                            <h3 class="box-title">Payment Mode</h3>
+                    </div>
+
+                    <div class="widget-content nopadding">
+                        <table id ="paymentTable" class="table table-bordered table-striped table-hover" style="text-align: center">
+                            <tbody>
+                            <tr style="background-color: #CCCCCC">
+                                <th style="text-align:center">Payment Type</th>
+                                <th style="text-align:center">Description</th>
+                                <th style="text-align:center">Amount (SGD)</th>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left">CASH</td>
+                                <td><input id="d1"type="text" style="width: 100%;"/></td>
+                                <td><input id="p1" type="number" style="width: 100%; text-align:right;" value="0"/></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left">Cheque / Cashier Order / Money Order</td>
+                                <td><input id="d2"type="text" style="width: 100%;"/></td>
+                                <td><input id="p2" type="number" style="width: 100%; text-align:right;" value="0"/></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left">Complimentary Vouchers</td>
+                                <td><input id="d3"type="text" style="width: 100%;"/></td>
+                                <td><input id="p3" type="number" style="width: 100%; text-align:right;" value="0"/></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left">Credit Cards (Masters / Visa)</td>
+                                <td><input id="d4" type="text" style="width: 100%;"/></td>
+                                <td><input id="p4" type="number" style="width: 100%; text-align:right;" value="0"/></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left">Diners</td>
+                                <td><input id="d5" type="text" style="width: 100%;"/></td>
+                                <td><input id="p5" type="number" style="width: 100%; text-align:right;" value="0"/></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left">HomeTeamNS Blue Voucher</td>
+                                <td><input id="d6" type="text" style="width: 100%;"/></td>
+                                <td><input id="p6" type="number" style="width: 100%; text-align:right;" value="0"/></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:left">Nets</td>
+                                <td><input id="d7" type="text" style="width: 100%;"/></td>
+                                <td><input id="p7" type="number" style="width: 100%; text-align:right;" value="0"/></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-md-3" style="background-color: grey; float:right; width:30%; text-align:center;">
+                        <label style="color:#FFFFFF">
+                            Tendered Amount (SGD): <span id="tenderedAmt"></span>
+                        </label>
+                    </div>
+
+                    <div class="col-md-3" style="background-color: grey; float:right; width:30%; text-align:center; margin-right:2%;">
+                        <label style="color:#FFFFFF">
+                            Amount Balance (SGD): <span id="balance"></span>
+                        </label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button type="button" class="btn btn-primary" id="btnSubmit">Make Payment</button>
+                            <button type="button" class="btn btn-default" id="btnCancel">Cancel</button>
+                        </div>
+                    </div>
+
+                    <br/><br/><br/>
+                </div><!-- Close PaymenMode -->
+
+            </form>
+        </section>
+    </div>
+    <div th:replace="fragments/template :: footer"></div>
+</div>
+<div th:include="fragments/template :: javascript" th:remove="tag"></div>
+
+<!-- Search Product Item -->
+<div id="bookingDetailsModal" class="modal fade bookingDetails" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form action="###" method="post" th:action="@{/pos/prodSearch}" id="addBooking">
+                <div class="modal-header box-header with-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Product Search</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" >
+
+                        <!---------------------- Product Search Details --------------------->
+                        <div class="col-xs-12" id="productSearch_div">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Category</label>
+                                    <!-- <input type="text" id="searchProdCat" name="searchProdCat" class="form-control" required>  -->
+
+                                    <select class="form-control select2 select2-hidden-accessible" id="categoryId" name="categoryId" required>
+                                        <option value="">SELECT</option>
+                                        <option th:each="productCat : ${allProductCat}" th:value="${productCat.getId()}" th:text="${productCat.getCategoryName()}">Wireframe</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Item Description</label>
+                                    <input type="text" id="searchItemDesc" name="searchItemDesc" class="form-control" required>
+                                </div>
+                            </div>
+                        </div> <!-- Close Product Search Details -->
+
+                        <div class="col-xs-12" id="productSearch2_div">
+                            <div class="col-md-12 text-right">
+                                <button type="button" class="btn btn-primary" id="productSearch">Search</button>
+                                <button type="button" class="btn btn-default" id="searchReset">RESET</button>
+                            </div>
+                        </div>
+
+                        <!----------------------------------  Product Listing ---------------------------------->
+                        <div class="col-xs-12" id="showSummary" style="margin-top:20px;">
+                            <div class="widget-content nopadding">
+                                <table id ="summaryTable" class="table table-bordered table-striped table-hover" style="text-align: center">
+                                    <thead>
+                                    <tr style="background-color: #CCCCCC">
+                                        <th style="text-align:left">Item No</th>
+                                        <th style="text-align:left">Item Description</th>
+                                        <th style="text-align:center">Price</th>
+                                    </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+
+                            <br/><br/><br/>
+                        </div><!-- Close Product Listing -->
+
+                        <!-- <div class="col-xs-12" id="showBtn" style="text-align:right; display:none; margin-bottom:20px;">
+                            <button type="button" id="bookingSubmit" class="btn btn-primary"><span id="submitBtnText"></span></button> &nbsp;&nbsp;
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                        <br/><br/>  -->
+
+                    </div><!-- Close row -->
+                </div><!-- Close modal body -->
+            </form>
+        </div><!-- CLose modal content -->
+    </div>
+</div>
+
+<!--/*@thymesVar id="showSuccesful" type="java.lang.String"*/-->
+<div style="display:none;" th:if="${showSuccesful} != null">
+    <span id="getSuccess">[[${showSuccesful}]]</span>
+</div>
+
+<!--/*@thymesVar id="invoiceNo" type="java.lang.String"*/-->
+<div style="display:none;" th:if="${invoiceNo} != null">
+    <span id="getInvoice">[[${invoiceNo}]]</span>
+</div>
+
+<!-- Success Booking -->
+<div id="successBookingModal" class="modal fade successBooking" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header box-header with-border">
+                <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+                <h4 class="modal-title" id="myLargeModalLabel">Invoice Add Success</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row" >
+
+                    <div class="col-md-12" style="margin-top:20px;">
+                        <div class="col-md-3">
+                            <img th:src="@{/dist/img/success.jpg}" style="width:50%; float:right;">
+                        </div>
+                        <div class="col-md-7">
+                            Your Invoice generated successfully. <br/>
+                            Please click the Invoice Number to print the receipt.<br/><br/>
+                            Your Invoice Number is <a id="invoice" href="#" target="_blank"><span id="invoiceText"></span></a>
+
+                            <div class="col-xs-12" style=" margin-top:20px; margin-bottom:20px; text-align:right;">
+                                <!-- <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>  -->
+                                <button type="button" class="btn btn-primary" id="closeInvoiceBtn">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- Close row -->
+            </div><!-- Close modal body -->
+        </div><!-- CLose modal content -->
+    </div>
+</div>
+
+<script th:src="@{/dist/js/pos/add.js}"></script>
+
+<script>
+    $(document).ready(function() {
+        var count = 1; //To display number of player playing
+
+        if($("#nric").val() == null){
+            $("#nric").prop("disabled", false);
+        }
+
+        <!----------------------- Data Input Style ----------------------->
+        $(":input").inputmask();
+        $('textarea[data-allcap], input[data-allcap]').on('keypress', function () {
+            $(this).val(function () {
+                return this.value.toUpperCase();
+            });
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
+        $("[data-mask]").inputmask();
+
+        <!----------------------- Date Picker Style ----------------------->
+        /*$('.datepicker').datepicker({
+            format: 'dd-mm-yyyy',
+            startDate: '+3d',
+            endDate: '+14d',
+            autoclose: true
+        });
+        var date = new Date();
+        $('input[name=registrationDate]').datepicker("setDate", date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear());
+        */
+
+        <!----------------------- Authenticate Main Member ----------------------->
+        $("#btnNRICAuthenticate").click(function() {
+            $("#nric").val(function () {
+                return this.value.toUpperCase();
+            });
+            $.ajax({
+                type: 'POST',
+                url: '/ajax/member/',
+                data: {
+                    nric: $("#nric").val(),
+                },
+                dataType: 'json',
+                success: function (data) {
+                    var getExpDate = new Date(data.contactExtension.expiredOn);
+                    var expDate = getExpDate.getDate() + '-' + getExpDate.getMonth() + '-' + getExpDate.getFullYear();
+                    $("#memberName").val(data.contactExtension.fullName);
+                    $("#contactNumber").val(data.mobilePhone);
+                    $("#email").val(data.email);
+                    <!-- $("#handicap").val(data.contactExtension.isHandicap); -->
+                    $("#status").val(data.contactExtension.membership.membershipExtension.name);
+                    $("#status1").val(data.contactExtension.membership.membershipExtension.name);
+                    $("#expDate").val(expDate);
+                },
+                /*error: function () {
+                    alert("Invalid NRIC");
+                }*/
+            });
+        });
+
+        <!----------------------- Get Secondary Member ----------------------->
+        $("#btnItemNRICAuthenticate").click(function() {
+            $("#itemNric").val(function () {
+                return this.value.toUpperCase();
+            });
+            $.ajax({
+                type: 'POST',
+                url: '/ajax/member/',
+                data: {
+                    nric: $("#itemNric").val(),
+                },
+                dataType: 'json',
+                success: function (data) {
+                    $("#itemMemberName").val(data.contactExtension.fullName);
+                    $("#itemContactNumber").val(data.mobilePhone);
+                    $("#itemEmail").val(data.email);
+                },
+            });
+        });
+
+        <!----------------------- Search Product & display on Table ----------------------->
+        $("#productSearch").click(function() {
+            $("#searchItemDesc").val(function () {
+                return this.value.toUpperCase();
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: '/pos/prodSearch/',
+                data: {
+                    categoryId: $("#categoryId").val(),
+                    searchItemDesc: $("#searchItemDesc").val(),
+                },
+                dataType: 'json',
+                success: function (data) {
+
+                    $("#showSummary").hide();
+                    $("#summaryBody").remove();
+
+                    if((data==null)||(data=="")){
+                        $('#typeId').append($('<option>', {
+                            value: "",
+                            text : "No Chalet for this location"
+                        }));
+                    }else{
+                        var dataTable = data.prodList;
+
+                        if(dataTable.length>0){
+
+                            $("#summaryBody").remove();
+
+                            var tbody = document.createElement('tbody'), tr, td, row, cell;
+                            tbody.id="summaryBody";
+
+                            var listProducts="";
+                            var COMA = ",";
+                            var DELIMITER = "|";
+
+                            //display data in summary table
+                            for(var details in dataTable){
+
+                                var itemId = dataTable[details].prodId;
+                                var itemNo = dataTable[details].prodNum;
+                                var itemDesc = dataTable[details].prodName;
+                                var price = dataTable[details].prodPrice;
+
+                                tr = document.createElement('tr');
+                                tr.setAttribute('id', itemId);
+
+                                td1 = document.createElement('td');
+                                td1.setAttribute('name', "prodNum["+count+"]");
+                                td1.style.textAlign="left";
+                                tr.appendChild(td1);
+                                td1.innerHTML = itemNo;
+
+                                td2 = document.createElement('td');
+                                td2.setAttribute('name', "prodName["+count+"]");
+                                td2.style.textAlign="left";
+                                tr.appendChild(td2);
+                                td2.innerHTML = itemDesc;
+
+                                td3 = document.createElement('td');
+                                td3.setAttribute('name', "prodPrice["+count+"]");
+                                td3.style.textAlign="right";
+                                tr.appendChild(td3);
+                                td3.innerHTML = price;
+
+                                tbody.appendChild(tr);
+                                count++;
+                            }
+                            document.getElementById('summaryTable').appendChild(tbody);
+
+                            var bookingType="book";
+                            if(bookingType=="book") {
+                                $('#showSummary').show();
+                            }
+
+                            $('#showUnavailable').hide();
+                        }
+                    }
+                },
+            });
+        });
+
+        <!----------------------- Add product from search to page ----------------------->
+        $('#summaryTable').on("click", "tr", function(event){
+
+            var prodID = $(this).attr('id');
+            var prodRow = document.getElementById(prodID);
+
+            console.log("prodID: "+prodID);
+            $("#itemID").val(prodID);
+
+            var prodNum = $(this).find('td').eq(0).text();
+            var prodDesc = $(this).find('td').eq(1).text();
+            var prodPrice = $(this).find('td').eq(2).text();
+
+            $("#itemName").val(prodNum);
+            $("#itemDesc").val(prodDesc);
+            $("#itemPrice").val(prodPrice);
+
+            $("#bookingDetailsModal").modal('hide');
+        });
+
+        <!----------------------- Add item to Section B with NRIC table ----------------------->
+        $("#addItemBtn").click(function() {
+            $("#nric").val(function () {
+                return this.value.toUpperCase();
+            });
+
+            // Need to put in checking for the fields.
+            if($("#nric").val() == null){
+                //error: function () {
+                //    alert("Invalid NRIC");
+                //}
+            }
+
+            // get values from the fields.
+            var pNric = $("#nric").val() ;
+            var pName = $("#memberName").val();
+            var pMobileNum = $("#contactNumber").val();
+            var pEmail = $("#email").val();
+            var pExpDate = $("#expDate").val();
+            var pItemNum = $("#itemName").val();
+            var pItemDesc = $("#itemDesc").val();
+            var pItemPrice = $("#itemPrice").val();
+            var pQty = $("#reqQty").val();
+            var pItemId = $("#itemID").val();
+            var nric2 = $("#itemNric").val();
+            var name2 = $("#itemMemberName").val();
+            var mobileNum2 = $("#itemContactNumber").val();
+            var email2 = $("#itemEmail").val();
+
+            console.log("addItemBtn - pItemId: "+pItemId+" | email2: "+email2);
+
+            // get the secondary member details & set into the section B.
+            if(nric2!=null && nric2.length>0){
+                pNric = nric2;
+                pName = name2;
+                pEmail = email2;
+                pMobileNum = mobileNum2;
+            }
+
+            var pItemObjList = [];
+            var itemObj = {}
+
+            // check if the tbody has data.
+            if($("#addedListBody").length){
+                // if the tbody exist,
+                console.log("AddedListBody exist...");
+
+                // get all the data from the tables.
+               //var rowCount = $("#addedListBody tr").length;
+
+                var rowCount = document.getElementById("addedListBody").rows.length;
+                console.log("AddedListBody rowCount: "+rowCount);
+
+                //var rowObj = document.getElementById("addedListBody").rows[0];
+                //var trID = rowObj.id;
+
+                for(i=0; i<rowCount; i++){
+                    itemObj = new Object();
+
+                    var rowObj = document.getElementById("addedListBody").rows[i];
+                    var trID = rowObj.id;
+                    console.log("trID: "+trID);
+                    itemObj['itemID'] = trID;
+
+                    itemObj['nric'] = rowObj.cells[0].innerHTML;
+                    console.log("i= "+i+" | pNRIC: "+pNric);
+
+                    itemObj['memberName'] = rowObj.cells[1].innerHTML;
+                    itemObj['itemDesc'] = rowObj.cells[2].innerHTML;
+                    var nonGSTPrice = rowObj.cells[3].innerHTML;
+                    itemObj['itemPrice'] = (nonGSTPrice / 0.93).toFixed(2);     // get the price with GST.
+                    itemObj['reqQty'] = rowObj.cells[4].innerHTML;
+                    itemObj['email'] = rowObj.cells[8].innerHTML;
+                    itemObj['mobileNum'] = rowObj.cells[9].innerHTML;
+
+                    console.log("i= "+i+" | itemPrice: "+rowObj.cells[3].innerHTML);
+                    console.log("i= "+i+" | reqQty: "+rowObj.cells[4].innerHTML+" | email: "+itemObj.email+" | mobileNum: "+itemObj.mobileNum);
+
+                    pItemObjList.push(itemObj);
+                }
+
+                // remove the old tbody.
+                $("#addedListBody").remove();
+            }
+
+            // variable to store all the added items.
+            itemObj = new Object();
+            itemObj['itemID'] = pItemId;
+            itemObj['nric'] = pNric;
+            itemObj['memberName'] = pName;
+            itemObj['email'] = pEmail;
+            itemObj['itemName'] = pItemNum;
+            itemObj['itemDesc'] = pItemDesc;
+            itemObj['itemPrice'] = pItemPrice;
+            itemObj['reqQty'] = pQty;
+            itemObj['mobileNum'] = pMobileNum;
+            pItemObjList.push(itemObj);
+
+            var tbody = document.createElement('tbody'), tr, td, row, cell;
+            tbody.id="addedListBody";
+
+            var listProducts="";
+            var COMA = ",";
+            var DELIMITER = "|";
+            var totalAmt = 0;
+
+            //display data in addedListBody table
+            for(var details in pItemObjList){
+
+                var itemId = pItemObjList[details].itemID;
+                var itemNo = pItemObjList[details].itemName;
+                var itemDesc = pItemObjList[details].itemDesc;
+                var price = pItemObjList[details].itemPrice;
+                var qty = pItemObjList[details].reqQty;
+                var iNric = pItemObjList[details].nric;
+                var iName = pItemObjList[details].memberName;
+                var iEmail = pItemObjList[details].email;
+                var iMobileNum = pItemObjList[details].mobileNum;
+
+                tr = document.createElement('tr');
+                tr.setAttribute('id', itemId);
+
+                td1 = document.createElement('td');
+                td1.setAttribute('name', "itemNric["+count+"]");
+                td1.style.textAlign="left";
+                tr.appendChild(td1);
+                td1.innerHTML = iNric;
+
+                td2 = document.createElement('td');
+                td2.setAttribute('name', "memName["+count+"]");
+                td2.style.textAlign="left";
+                tr.appendChild(td2);
+                td2.innerHTML = iName;
+
+                td3 = document.createElement('td');
+                td3.setAttribute('name', "itemDesc["+count+"]");
+                td3.style.textAlign="right";
+                tr.appendChild(td3);
+                td3.innerHTML = itemDesc;
+
+                td4 = document.createElement('td');
+                td4.setAttribute('name', "price["+count+"]");
+                td4.style.textAlign="right";
+                tr.appendChild(td4);
+                td4.innerHTML = (price * 0.93).toFixed(2);
+
+                td5 = document.createElement('td');
+                td5.setAttribute('name', "qty["+count+"]");
+                td5.style.textAlign="right";
+                tr.appendChild(td5);
+                td5.innerHTML = qty;
+
+                td6 = document.createElement('td');
+                td6.setAttribute('name', "gst["+count+"]");
+                td6.style.textAlign="right";
+                tr.appendChild(td6);
+                td6.innerHTML = (price * 0.07).toFixed(2);
+
+                td7 = document.createElement('td');
+                td7.setAttribute('name', "cost["+count+"]");
+                td7.style.textAlign="right";
+                tr.appendChild(td7);
+                td7.innerHTML = (price * 1).toFixed(2);
+
+                td8 = document.createElement('td');
+                td8.setAttribute('name', "total["+count+"]");
+                td8.style.textAlign="right";
+                tr.appendChild(td8);
+                td8.innerHTML = (price * qty).toFixed(2);
+                totalAmt += (price * qty);
+
+                td9 = document.createElement('td');
+                td9.setAttribute('name', "email["+count+"]");
+                td9.style.display="none";
+                tr.appendChild(td9);
+                td9.innerHTML = iEmail;
+
+                td10 = document.createElement('td');
+                td10.setAttribute('name', "mobileNum["+count+"]");
+                td10.style.display="none";
+                tr.appendChild(td10);
+                td10.innerHTML = iMobileNum;
+
+                tbody.appendChild(tr);
+                count++;
+            }
+            document.getElementById('addedProductsTable').appendChild(tbody);
+            $("#totalAmt").text(totalAmt.toFixed(2));
+            $("#balance").text(totalAmt.toFixed(2));
+            $("#tenderedAmt").text("0.00");
+        });
+
+        <!----------------------- Delete Specific Player on Table ----------------------->
+        $('#other-players').on('click', ".btnDeletePlayer", function () {
+            $(this).parents("tr").remove();
+            count--;
+            $("#playerCount").val(count);
+        });
+
+        /*<!----------------------- Action when Modal Load ----------------------->
+        $('#myModal').on('hidden.bs.modal', function (e) {
+            $("#txtAuthenticateIC").prop("disabled", false);
+            $("#txtAuthenticateName").attr("disabled", "disabled");
+            $("#txtAuthenticateHandicap").attr("disabled", "disabled");
+
+            $("#txtAuthenticateIC").val("");
+            $("#txtAuthenticateName").val("");
+            $("#txtAuthenticateHandicap").val("");
+
+            $("#btnICAuthenticate").prop("disabled", false);
+        });*/
+
+        <!----------------------- Cancel Button Click ----------------------->
+        $("#btnCancel").click(function() {
+           //window.history.back();
+            document.location.href = '/pos/home'
+        });
+
+        <!----------------------- show out the invoice popup ----------------------->
+        var successVal = $("#getSuccess").text();
+        var invoiceVal = $("#getInvoice").text();
+
+        if(successVal=="true"){
+            if(invoiceVal!=""){
+                $("#invoiceText").text(invoiceVal);
+                //document.getElementById("invoice").href="../"+invoiceVal;
+                $("#successBtn").click();
+            }
+        }
+
+        <!----------------------- close invoice popup Click ----------------------->
+        $("#closeInvoiceBtn").click(function() {
+            $("#successBookingModal").modal('hide');
+            document.location.href = '/pos/home'
+        });
+
+        // detect if the modal has been hidden.
+        /*$('#successBookingModal').on('hidden.bs.modal', function(){
+            alert('detect hidden');
+            document.location.href = '/pos/home'
+        });*/
+
+        <!----------------------- reset button Click ----------------------->
+        $("#resetItemBtn").click(function(){
+            $("#nric").val("");
+            $("#memberName").val("");
+            $("#contactNumber").val("");
+            $("#email").val("");
+            $("#status").val("");
+            $("#status1").val("");
+            $("#expDate").val("");
+            $("#itemName").val("");
+            $("#itemDesc").val("");
+            $("#itemPrice").val("");
+            $("#reqQty").val("");
+            $("#itemNric").val("");
+            $("#itemMemberName").val("");
+            $("#itemContactNumber").val("");
+            $("#itemEmail").val("");
+        });
+
+    });
+</script>
+</body>
+</html>

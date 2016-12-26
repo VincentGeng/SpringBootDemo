@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/template :: meta('Members')">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HomeTeam NS | Members</title>
+</head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<div class="wrapper">
+    <div th:replace="fragments/template :: header"></div>
+    <div th:replace="fragments/template :: sidebar('dashboard')"></div>
+    <div class="content-wrapper">
+        <!--/*@thymesVar id="header" type="java.lang.String"*/-->
+
+        <div th:replace="fragments/template :: content-header(${header})"></div>
+        <!-- Main content -->
+        <section class="content">
+            <!--/*@thymesVar id="booking" type="com.techstudio.htns.domain.ChaletBookingExtension"*/-->
+            <form action="###" method="get" th:action="@{/chalet/bookingDetail}">
+
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">BOOKING DETAILS</h3>
+                    </div>
+
+                    <div class="box-body">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>
+                                    NRIC</label>
+                                <input type="text" id="nric" name="nric" class="form-control" th:value="${booking.getNric()} ? ${booking.getNric()} : ''"  readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Email</label>
+                                <input type="text" id="email" name="email" class="form-control" th:value="${booking.getEmail()} ? ${booking.getEmail()} : ''"  readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Location</label>
+                                <input type="text" id="location" name="location" class="form-control" th:value="${booking.getChaletBooking().getBusinessUnit()} ? ${booking.getChaletBooking().getBusinessUnit().getName()}: ''" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Chalet Name</label>
+                                <input type="text" id="chaletName" name="chaletName" class="form-control" th:value="${booking.getChalet()} ? ${booking.getChalet().getChaletExtension().getName()} : ''" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Check In Date</label>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" id="rCheckInDate" name="rCheckInDate" class="form-control pull-right" th:value="${booking.getBookedFrom() != null} ? ${#dates.format(booking.getBookedFrom(), 'dd-MM-yyyy')} : ''"  readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>
+                                    Name</label>
+                                <input type="text" id="name" name="name" class="form-control" th:value="${booking.getName()}  ? ${booking.getName()} : ''" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Mobile </label>
+                                <input type="text" id="mobile" name="mobile" class="form-control" th:value="${booking.getMobileNo()}  ? ${booking.getMobileNo()} : ''" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Chalet Type</label>
+                                <input type="text" id="chaletType" name="chaletType" class="form-control" th:value="${booking.getChalet().getChaletExtension()}  ? ${booking.getChalet().getChaletExtension().getChaletType().getChaletTypeExtension().getType()} : ''" readonly>
+                            </div>
+
+                            <input type="hidden" id="status" name="status" th:value="${booking.getBookingStatus()}">
+
+                            <div class="form-group">
+                                <label>
+                                    Status</label>
+                                <input type="text" id="statusTxt" name="statusTxt" class="form-control" th:value="${booking.getBookingStatusStr()}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Check Out Date</label>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" id="rCheckOutDate" name="rCheckOutDate" class="form-control" th:value="${booking.getBookedTo() != null} ? ${#dates.format(booking.getBookedTo(), 'dd-MM-yyyy')} : ''" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- Close body -->
+                </div>
+
+                <!----------------------------------  Booking Summary ---------------------------------->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">BOOKING SUMMARY</h3>
+                    </div>
+
+                    <div class="box-body">
+
+                        <div class="col-xs-12" id="showSummary" style="margin-top:20px;">
+
+                            <div class="widget-content nopadding">
+                                <table id ="summaryRTable" class="table table-bordered table-striped table-hover data-table" style="text-align: center">
+                                    <thead>
+                                    <tr style="background-color: #CCCCCC">
+                                        <th style="text-align:center">Booking Date</th>
+                                        <th style="text-align:center">Day Type</th>
+                                        <th style="text-align:center">Cost (SGD)</th>
+                                        <th style="text-align:center">GST (SGD)</th>
+                                        <th style="text-align:center">Total Cost (SGD)</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!--/*@thymesVar id="bookingDetails" type="java.util.List<com.techstudio.htns.domain.ChaletBookingDetailExtension>"*/-->
+                                    <!--/*@thymesVar id="details" type="com.techstudio.htns.domain.ChaletBookingDetailExtension"*/-->
+                                    <tr th:each="details : ${bookingDetails}">
+                                        <td style="text-align:left" th:text="${details.getStartDate() != null} ? ${#dates.format(details.getStartDate(), 'dd-MM-yyyy')} : ''">{{Date}}</td>
+                                        <td style="text-align:left" th:text="${details.getDayType()}">{{Day Type}}</td>
+                                        <td style="text-align:right" th:text="${#numbers.formatDecimal(details.getChaletBookingType().getChaletBookingTypeExtension().getCost() / 1.07 * 1.0, 0, 'COMMA', 2, 'POINT')}">{{Cost}}</td>
+                                        <td style="text-align:right"th:text="${#numbers.formatDecimal(details.getChaletBookingType().getChaletBookingTypeExtension().getCost() / 1.07 * 0.07, 0, 'COMMA', 2, 'POINT')}">{{GST}}</td>
+                                        <td style="text-align:right" th:text="${#numbers.formatDecimal(details.getChaletBookingType().getChaletBookingTypeExtension().getCost() , 0, 'COMMA', 2, 'POINT')}">{{Total}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div><!-- Close booking summary -->
+
+                <input type="hidden" id="invoice" name="invoice" th:value="${booking.getInvoice()}">
+
+                <!----------------------------------  Invoice ---------------------------------->
+                <div class="box box-default" style="display:none;" id="showInvoice">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">INVOICE</h3>
+                    </div>
+
+                    <div class="box-body">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label style="width:30%;">
+                                    Invoice Number:</label>
+                                <a href="" target="_blank"><span th:text="${booking.getInvoice()} ? ${booking.getInvoice().getInvoiceNumber()} :'-'"></span></a>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="width:30%;">
+                                    Total Amount(SGD): </label>
+                                <span th:text="${booking.getInvoice()} ? ${#numbers.formatDecimal(booking.getInvoice().getTotalAmount(), 0, 'COMMA', 2, 'POINT')} :'-' "></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!----------------------------------  Back button ---------------------------------->
+
+                <div class="box-body">
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-primary" id="btnCancel" onclick="history.back()">Back</button>
+                    </div>
+                </div>
+
+            </form>
+
+        </section>
+    </div>
+    <div th:replace="fragments/template :: footer"></div>
+</div>
+<div th:include="fragments/template :: javascript" th:remove="tag"></div>
+<script>
+    $(document).ready(function() {
+
+       var invoice =  $("#invoice").val();
+
+       console.log("invoice:",invoice);
+       if((invoice!=null)&&(invoice!="")){
+           $("#showInvoice").show();
+       }
+
+    });
+</script>
+</body>
+</html>

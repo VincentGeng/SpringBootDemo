@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/template :: meta('Golfing')"></head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<div class="wrapper">
+    <div th:replace="fragments/template :: header"></div>
+    <div th:replace="fragments/template :: sidebar('golf')"></div>
+    <div class="content-wrapper">
+        <!--/*@thymesVar id="header" type="java.lang.String"*/-->
+        <!--/*@thymesVar id="message" type="java.lang.String"*/-->
+        <!--/*@thymesVar id="allGolfingLocation" type="java.util.List<com.techstudio.htns.domain.GolfingLocation>"*/-->
+        <!--/*@thymesVar id="golfingLocation" type="com.techstudio.htns.domain.GolfingLocation"*/-->
+        <!--/*@thymesVar id="contact" type="com.techstudio.htns.domain.Contact"*/-->
+        <!--/*@thymesVar id="golfLinkBooking" type="com.techstudio.htns.domain.GolfLinkBooking"*/-->
+        <!--/*@thymesVar id="golfLinkBookingDetailList" type="java.util.List<com.techstudio.htns.domain.GolfLinkBookingDetailExtension>"*/-->
+        <!--/*@thymesVar id="detailExtension" type="com.techstudio.htns.domain.GolfLinkBookingDetailExtension"*/-->
+        <div th:replace="fragments/template :: content-header(${header})"></div>
+        <!-- Main content -->
+        <section class="content">
+            <div class="callout callout-success" th:if="${message} != null">
+                <h4>Golf booking successfully!</h4>
+
+                <p>[[${message}]]</p>
+            </div>
+            <form action="###" method="post" th:action="@{/golfing/booking/edit}" id="golfing-booking-form">
+                <!------------------------------------------------- Hidden Parameter ------------------------------------------------->
+                <!-- Get Other Player Information -->
+                <input type="hidden" name="allOtherPlayerNRIC" id="allOtherPlayerNRIC">
+                <input type="hidden" name="allOtherPlayerName" id="allOtherPlayerName">
+                <input type="hidden" name="allOtherPlayerMemType" id="allOtherPlayerMemType">
+                <input type="hidden" name="allOtherPlayerExpDate" id="allOtherPlayerExpDate">
+                <input type="hidden" name="allOtherPlayerHandicap" id="allOtherPlayerHandicap">
+
+                <!--<input th:value="${ golfLinkBooking.getGolfLinkBookingExtension().getId() }" id="bookingID" name="bookingID" type="hidden"/>-->
+
+                <!-- Get Location ID -->
+                <input type="hidden" name="golfingLocationId" id="golfingLocationId">
+
+                <!-- Get Golf Link Booking ID -->
+                <input type="hidden" name="golfbookingID" id="golfbookingID" th:value="${golfbookingID}">
+                <!------------------------------------------------- End Hidden Parameter ------------------------------------------------->
+
+                <!------------------------------------------------- Section A ------------------------------------------------->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Section A - Golf Booking</h3>
+                    </div>
+                    <div class="box-body" id="sectionABody">
+                        <div class="row" th:if="${ golfLinkBooking.golfLinkBookingExtension.getBookingStatus() == 3}" th:hidden="${#authorization.expression('hasRole(''MEMBER'')')}">
+                            <div class="col-md-12 text-center">
+                                <div class="form-group">
+                                    <div class="radio row">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="approval" value="1" th:required="${#authorization.expression('hasRole(''ADMIN'')')}" checked> Approved
+                                        </label>
+
+                                        <label class="radio-inline">
+                                            <input type="radio" name="approval" value="2"> Not Approved
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Location
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" id="location" th:disabled="${#authorization.expression('hasRole(''ADMIN'')')} or ${golfLinkBooking.getGolfLinkBookingExtension().getBookingStatus()} != 3">
+                                        <option th:each="golfingLocation : ${allGolfingLocation}" th:value="${golfingLocation.golfingLocationExtension().getId()}" th:text="${golfingLocation.golfingLocationExtension().getName()}" th:selected="${ golfLinkBooking.getGolfLinkBookingExtension().getGolfingLocation().golfingLocationExtension().getId() ==  golfingLocation.golfingLocationExtension().getId()}">Wireframe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Preferred Tee-Off Time
+                                    </label>
+                                    <div class="input-group date bootstrap-timepicker timepicker">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-clock-o"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right" id="teeOffTime" name="teeOffTime" th:value="${preferedTeeOff}" th:disabled="${#authorization.expression('hasRole(''ADMIN'')')} or ${golfLinkBooking.getGolfLinkBookingExtension().getBookingStatus()} != 3">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Booking Date
+                                    </label>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right datepicker" id="bookingDate" name="bookingDate" th:value="${golfLinkBooking.getGolfLinkBookingExtension().getDate()} ? ${#dates.format(golfLinkBooking.getGolfLinkBookingExtension().getDate(), 'dd-MM-yyyy')} : ''" required th:disabled="${#authorization.expression('hasRole(''ADMIN'')')} or ${golfLinkBooking.getGolfLinkBookingExtension().getBookingStatus()} != 3">
+                                    </div>
+                                </div>
+                                <div class="form-group" th:hidden="${golfLinkBooking.golfLinkBookingExtension.getBookingStatus()} == 2 and ${#authorization.expression('hasRole(''ADMIN'')')} or ${golfLinkBooking.golfLinkBookingExtension.getBookingStatus()} != 1 and ${#authorization.expression('hasRole(''MEMBER'')')}" id="divTeeOffTime">
+                                    <red>*</red>
+                                    <label>
+                                        Available Tee-Off Time
+                                    </label>
+                                    <div class="input-group date bootstrap-timepicker timepicker">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-clock-o"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right" id="availableTeeOffTime" name="availableTeeOffTime" th:value="${availableTeeOff}" th:disabled="${golfLinkBooking.golfLinkBookingExtension.getBookingStatus()} == 1">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!------------------------------------------------- End Section A ------------------------------------------------->
+
+                <!------------------------------------------------- Section B ------------------------------------------------->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Section B - Main Application</h3>
+                    </div>
+                    <div class="box-body" id="sectionBBody">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        NRIC
+                                    </label>
+                                    <input type="text" class="form-control" id="nric" name="nric" th:value="${ golfLinkBooking.getGolfLinkBookingExtension().getNric() }" required readonly>
+                                </div>
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Contact No
+                                    </label>
+                                    <input type="text" class="form-control" id="contactNumber" name="contactNumber" th:value="${ golfLinkBooking.getGolfLinkBookingExtension().getContactno()}" required th:disabled="${#authorization.expression('hasRole(''ADMIN'')')} or ${golfLinkBooking.getGolfLinkBookingExtension().getBookingStatus()} != 3" onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="8">
+                                </div>
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Golf Handicap
+                                    </label>
+                                    <input type="text" class="form-control" id="handicap" name="handicap" maxlength="2" onkeypress="return event.charCode >= 48 && event.charCode <= 57" th:value="${ golfLinkBooking.getGolfLinkBookingExtension().getHandicap() }" required th:disabled="${#authorization.expression('hasRole(''ADMIN'')')} or ${golfLinkBooking.getGolfLinkBookingExtension().getBookingStatus()} != 3">
+                                </div>
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Status
+                                    </label>
+                                    <input type="text" class="form-control" th:value="${ contact.getContactExtension().getMembership().getMembershipExtension().getName() }" required disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Member Name
+                                    </label>
+                                    <input type="text" class="form-control" th:value="${ golfLinkBooking.getGolfLinkBookingExtension().getMemberName()}" required disabled>
+                                </div>
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Email Address
+                                    </label>
+                                    <input type="email" class="form-control" id="email" name="email" th:value="${ golfLinkBooking.getGolfLinkBookingExtension().getEmail()}" required  th:disabled="${#authorization.expression('hasRole(''ADMIN'')')} or ${golfLinkBooking.getGolfLinkBookingExtension().getBookingStatus()} != 3">
+                                </div>
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Expiry Date
+                                    </label>
+                                    <input type="text" class="form-control" th:value="${ contact.getContactExtension().getExpiredOn() } ? ${#dates.format(contact.getContactExtension().getExpiredOn(), 'dd-MM-yyyy')} : ''" required disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!------------------------------------------------- End Section B ------------------------------------------------->
+
+                <!------------------------------------------------- Section C ------------------------------------------------->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Section C - Other Players</h3>
+                    </div>
+                    <div class="box-body" id="sectionCBody">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="box-body table-responsive no-padding">
+                                    <table class="table table-hover" id="other-players">
+                                        <thead>
+                                            <tr>
+                                                <th>NRIC</th>
+                                                <th>Name</th>
+                                                <th>Membership Type</th>
+                                                <th>Expiry Date</th>
+                                                <th>Handicap</th>
+                                                <th>Remarks</th>
+                                                <th th:if="${#authorization.expression('hasRole(''MEMBER'')')} and ${golfLinkBooking.golfLinkBookingExtension.getBookingStatus()} == 3 ">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableBody">
+                                            <tr th:each="detailExtension : ${golfLinkBookingDetailList}">
+                                                <td th:text="${detailExtension.getNric()}">{{nric}}</td>
+                                                <td th:text="${detailExtension.getName()}">{{name}}</td>
+                                                <td th:text="${detailExtension.getContactExtension()} ? ${detailExtension.getContactExtension().getMembership().getMembershipExtension().getName()} : 'Guest'">{{membershipType}}</td>
+                                                <td th:text="${detailExtension.getContactExtension()} ? ${#dates.format(detailExtension.getContactExtension().getExpiredOn(), 'dd-MM-yyyy')} : ''">{{expiryDate}}</td>
+                                                <td th:text="${detailExtension.getHandicap()}">{{handicap}}</td>
+                                                <td th:if="${detailExtension.getContactExtension() == null}">Guest Retes will be imposed</td>
+                                                <td th:if="${detailExtension.getContactExtension() != null}"></td>
+                                                <td th:if="${#authorization.expression('hasRole(''MEMBER'')')} and ${golfLinkBooking.golfLinkBookingExtension.getBookingStatus()} == 3 "><a class="btn btn-primary btnDeletePlayer">Delete</a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>
+                                    Total Booking
+                                </label>
+                                <input type="text" class="form-control" readonly th:value="${ golfLinkBookingDetailSize + 1 }" id="playerCount">
+                            </div>
+                        </div>
+                        <div class="row" th:hidden="${#authorization.expression('hasRole(''ADMIN'')')} or ${golfLinkBooking.getGolfLinkBookingExtension().getBookingStatus()} != 3">
+                            <div class="col-md-12 text-right">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" id="btnAddPlayer">Add Player</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!------------------------------------------------- End Section C ------------------------------------------------->
+
+                <!------------------------------------------------- Section D ------------------------------------------------->
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Section D - Joining at Club Member's Flight</h3>
+                    </div>
+                    <div class="box-body" id="sectionDBody">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Club Member Name
+                                    </label>
+                                    <input type="text" class="form-control" id="flightMemberName" name="flightMemberName" th:value="${golfLinkBooking.getGolfLinkBookingExtension().getMembersName()}" th:disabled="${#authorization.expression('hasRole(''ADMIN'')')} or ${golfLinkBooking.getGolfLinkBookingExtension().getBookingStatus()} != 3">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Booked & Confirmed Flight Time
+                                    </label>
+                                    <div class="input-group date bootstrap-timepicker timepicker">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-clock-o"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right timepicker" id="flightTime" name="flightTime" th:value="${flightTime}" th:disabled="${#authorization.expression('hasRole(''ADMIN'')')} or ${golfLinkBooking.getGolfLinkBookingExtension().getBookingStatus()} != 3">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Membership Number
+                                    </label>
+                                    <input type="text" class="form-control" id="flightMembershipNo" name="flightMembershipNo" th:value="${ golfLinkBooking.getGolfLinkBookingExtension().getMembershipNo() }" th:disabled="${#authorization.expression('hasRole(''ADMIN'')')} or ${golfLinkBooking.getGolfLinkBookingExtension().getBookingStatus()} != 3">
+                                </div>
+                                <div class="form-group" id="divRemarks">
+                                    <red id="lblMandantory">*</red>
+                                    <label>
+                                        Remarks
+                                    </label>
+                                    <textarea class="form-control" rows="3" id="remarks" name="remarks" th:text="${ golfLinkBooking.getGolfLinkBookingExtension().getDescription() }" th:disabled="${#authorization.expression('hasRole(''ADMIN'')')} and ${golfLinkBooking.golfLinkBookingExtension.getBookingStatus()} != 3 or ${golfLinkBooking.golfLinkBookingExtension.getBookingStatus()} != 3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="button" class="btn btn-primary" id="btnDelete" style="display: none">Delete</button>
+                                <button type="submit" class="btn btn-primary" id="btnSubmit" th:if="${ golfLinkBooking.golfLinkBookingExtension.getBookingStatus() == 3 }">Update</button>
+                                <button type="button" class="btn btn-default" id="btnCancel">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!------------------------------------------------- End Section D ------------------------------------------------->
+
+            </form>
+        </section>
+    </div>
+    <div th:replace="fragments/template :: footer"></div>
+</div>
+<div th:include="fragments/template :: javascript" th:remove="tag"></div>
+
+<!------------------------------------------------- Add New Player Model ------------------------------------------------->
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="myModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header box-header with-border">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add A New Player</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <red>*</red>
+                            <label>
+                                NRIC
+                            </label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="txtAuthenticateIC" data-inputmask="'mask': 'a9999999a'" data-mask required>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-info btn-flat" id="btnICAuthenticate">
+                                        <i class="fa fa-check"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                Name
+                            </label>
+                            <input type="text" class="form-control" required id="txtAuthenticateName" disabled onkeypress='return event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 97 && event.charCode <= 122 || event.charCode == 32 || event.charCode == 39'>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                Golf Handicap
+                            </label>
+                            <input type="text" class="form-control" required id="txtAuthenticateHandicap" disabled maxlength="2" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+                        </div>
+                        <div class="form-group" style="display: none;">
+                            <label>
+                                Membership Type
+                            </label>
+                            <input type="text" class="form-control" required id="txtAuthenticateMemberType">
+                        </div>
+                        <div class="form-group" style="display: none;">
+                            <label>
+                                Expiry Date
+                            </label>
+                            <input type="text" class="form-control" required id="txtAuthenticateExpDate">
+                        </div>
+                        <div class="form-group" style="display: none;">
+                            <label>
+                                Remarks
+                            </label>
+                            <input type="text" class="form-control" required id="txtAuthenticateRemarks">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnAddNewPlayer" data-dismiss="modal">Add</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!------------------------------------------------- End Add New Player Model ------------------------------------------------->
+
+<!------------------------------------------------- Delete Player Model ------------------------------------------------->
+<div class="modal fade" id="deleteAlertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="deleteAlertModalLabel">DELETE BOOKING</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure want to delete this booking information?
+            </div>
+            <form action="###" method="post" th:action="@{/golfing/booking/delete}">
+                <!-- Get Golf Link Booking ID -->
+                <input type="hidden" name="bookingID" th:value="${golfbookingID}">
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="btnDeleteBooking">Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!------------------------------------------------- End Delete Player Model ------------------------------------------------->
+<script>
+    $(document).ready(function() {
+        var count = $("#playerCount").val();
+
+        <!----------------------- Date Input Style ----------------------->
+        $(":input").inputmask();
+        $('textarea[data-allcap], input[data-allcap]').on('keypress', function () {
+            $(this).val(function () {
+                return this.value.toUpperCase();
+            });
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
+        $("[data-mask]").inputmask();
+
+        <!----------------------- Date Picker Style ----------------------->
+        $('.datepicker').datepicker({
+            format: 'dd-mm-yyyy',
+            startDate: '+3d',
+            endDate: '+14d',
+            autoclose: true
+        });
+        var date = new Date();
+        $('input[name=registrationDate]').datepicker("setDate", date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear());
+
+        <!----------------------- Time Picker Style ----------------------->
+        $('#flightTime').timepicker({
+            disableFocus: false,
+            minuteStep: 1,
+            template: 'dropdown',
+            defaultTime: false,
+        });
+        $('#teeOffTime').timepicker({
+            disableFocus: true,
+            minuteStep: 1,
+            template: 'dropdown',
+            display: 'none',
+        });
+        $('#availableTeeOffTime').timepicker({
+            disableFocus: true,
+            defaultTime: '09:00 AM',
+            minuteStep: 1,
+            template: 'dropdown',
+            display: 'none',
+        });
+
+        <!----------------------- Hidden Add Player Button ----------------------->
+        if($("#playerCount").val() == 4){
+            $("#btnAddPlayer").hide();
+        }else{
+            $("#btnAddPlayer").show();
+        }
+
+        <!----------------------- Authenticate Member ----------------------->
+        $("#btnICAuthenticate").click(function () {
+            //Change NRIC to Uppercase
+            $("#txtAuthenticateIC").val(function () {
+                return this.value.toUpperCase();
+            });
+
+            //Validate NRIC shoud not be null
+            if($("#txtAuthenticateIC").val() == ""){
+                alert("NRIC is required");
+                return false;
+            }
+
+            //Validate NRIC shoud not be the same as registered member
+            if($("#txtAuthenticateIC").val() == $("#nric").val()){
+                alert("IC should not repeated");
+                return false;
+            }
+
+            //Validate NRIC shoud not repeated on the table
+            var arrNRIC = [];
+            $("#tableBody tr").each(function() {
+                arrNRIC.push($(this).find("td:eq(0)").text());
+            });
+            for(i = 0; i < arrNRIC.length; i++) {
+                if($("#txtAuthenticateIC").val().toUpperCase() == arrNRIC[i]){
+                    alert("IC should not repeated");
+                    return false;
+                }
+            }
+
+            $("#btnICAuthenticate").attr("disabled", "disabled");
+            $.ajax({
+                type: 'POST',
+                url: '/ajax/member/',
+                data: {
+                    nric: $("#txtAuthenticateIC").val(),
+                },
+                dataType: 'json',
+                success: function (data) {
+                    var getExpDate = new Date(data.contactExtension.expiredOn);
+                    var expDate = getExpDate.getDate() + '-' + getExpDate.getMonth() + '-' + getExpDate.getFullYear();
+                    $("#txtAuthenticateName").val(data.contactExtension.fullName);
+                    $("#txtAuthenticateHandicap").val(data.contactExtension.isHandicap);
+                    $("#txtAuthenticateMemberType").val(data.contactExtension.membership.membershipExtension.name);
+                    $("#txtAuthenticateExpDate").val(expDate);
+                    $("#txtAuthenticateRemarks").val("");
+
+                    $("#txtAuthenticateIC").attr("disabled", "disabled");
+                    $("#txtAuthenticateName").attr("disabled", "disabled");
+                    $("#txtAuthenticateHandicap").prop("disabled", false);
+                },
+                error: function () {
+                    $("#txtAuthenticateName").val("");
+                    $("#txtAuthenticateHandicap").val("");
+                    $("#txtAuthenticateMemberType").val("Guest");
+                    $("#txtAuthenticateExpDate").val("");
+                    $("#txtAuthenticateRemarks").val("Guest Retes will be imposed");
+
+                    $("#txtAuthenticateIC").attr("disabled", "disabled");
+                    $("#txtAuthenticateName").prop("disabled", false);
+                    $("#txtAuthenticateHandicap").prop("disabled", false);
+                }
+            });
+        });
+
+        <!----------------------- Action when Modal Load ----------------------->
+        $('#myModal').on('hidden.bs.modal', function (e) {
+            $("#txtAuthenticateIC").prop("disabled", false);
+            $("#txtAuthenticateName").attr("disabled", "disabled");
+            $("#txtAuthenticateHandicap").attr("disabled", "disabled");
+
+            $("#txtAuthenticateIC").val("");
+            $("#txtAuthenticateName").val("");
+            $("#txtAuthenticateHandicap").val("");
+
+            $("#btnICAuthenticate").prop("disabled", false);
+        });
+
+        <!----------------------- Insert Another Player ----------------------->
+        $("#btnAddNewPlayer").click(function () {
+            //Change NRIC to Uppercase
+            $("#txtAuthenticateName").val(function () {
+                return this.value.toUpperCase();
+            });
+            if (count == "4") {
+                alert("Player Can't More Than 4");
+                return false;
+            } else {
+                $("#tableBody").append('<tr>' +
+                    '<td>' + $("#txtAuthenticateIC").val() + '</td>' +
+                    '<td>' + $("#txtAuthenticateName").val() + '</td>' +
+                    '<td>' + $("#txtAuthenticateMemberType").val() + '</td>' +
+                    '<td>' + $("#txtAuthenticateExpDate").val() + '</td>' +
+                    '<td>' + $("#txtAuthenticateHandicap").val() + '</td>' +
+                    '<td>' + $("#txtAuthenticateRemarks").val() + '</td>' +
+                    '<td th:if="${ golfLinkBooking.golfLinkBookingExtension.getBookingStatus() == 3 }"><a class="btn btn-primary btnDeletePlayer">Delete</a></td>' +
+                    '</tr>');
+
+                count++;
+                $("#playerCount").val(count);
+            }
+            //If Player count reach maximum, hide Add Player Button
+            if($("#playerCount").val() == 4){
+                $("#btnAddPlayer").hide();
+            }
+        });
+
+        <!----------------------- Delete Specific Player on Table ----------------------->
+        $('#other-players').on('click', ".btnDeletePlayer", function () {
+            $(this).parents("tr").remove();
+            count--;
+            $("#playerCount").val(count);
+
+            if($("#playerCount").val() != 4){
+                $("#btnAddPlayer").show();
+            }
+        });
+
+        <!----------------------- Action when Modal Load ----------------------->
+        $('#myModal').on('hidden.bs.modal', function (e) {
+            $("#txtAuthenticateIC").prop("disabled", false);
+            $("#txtAuthenticateName").attr("disabled", "disabled");
+            $("#txtAuthenticateHandicap").attr("disabled", "disabled");
+
+            $("#txtAuthenticateIC").val("");
+            $("#txtAuthenticateName").val("");
+            $("#txtAuthenticateHandicap").val("");
+
+            $("#btnICAuthenticate").prop("disabled", false);
+        });
+
+        <!----------------------- Check Checkbox is Checked ----------------------->
+        $('input[type=radio][name=timeAlloted]').change(function() {
+            if(this.value == '1'){
+                $("#availableTeeOffTime").empty();
+
+                $("#availableTeeOffTime").append("<option>10:00</option>");
+                $("#availableTeeOffTime").append("<option>11:00</option>");
+                $("#availableTeeOffTime").append("<option>12:00</option>");
+            }else if (this.value == '2'){
+                $("#availableTeeOffTime").empty();
+
+                $("#availableTeeOffTime").append("<option>1:00</option>");
+                $("#availableTeeOffTime").append("<option>2:00</option>");
+                $("#availableTeeOffTime").append("<option>3:00</option>");
+            }
+        });
+
+        <!----------------------- Approval is Checked ----------------------->
+        $('input[type=radio][name=approval]').change(function() {
+            if(this.value == '1') {
+                $("#divTeeOffTime").show();
+                $("#remarks").prop("required", false);
+                $("#lblMandantory").remove();
+            }
+            else {
+                $("#divTeeOffTime").hide();
+                $("#remarks").attr("required", "required");
+            }
+        });
+
+        <!----------------------- Cancel Button Click ----------------------->
+        $("#btnCancel").click(function() {
+            window.history.back();
+        });
+
+        <!----------------------- Submit Button Click ----------------------->
+        $("#btnSubmit").click(function() {
+            //Change name value to UpperCase
+            $("#allOtherPlayerName").val(function () {
+                return this.value.toUpperCase();
+            });
+
+            //Get the table data and insert into hidden field to pass data
+            var arrNRIC = [];
+            var arrName = [];
+            var arrMemType = [];
+            var arrExpDate = [];
+            var arrHandicap = [];
+
+            $("#tableBody tr").each(function() {
+                arrNRIC.push($(this).find("td:eq(0)").text());
+                arrName.push($(this).find("td:eq(1)").text());
+                arrMemType.push($(this).find("td:eq(2)").text());
+                arrExpDate.push($(this).find("td:eq(3)").text());
+                arrHandicap.push($(this).find("td:eq(4)").text());
+            });
+
+            for(i = 0; i < arrNRIC.length; i++) {
+                if(i == 0){
+                    $("#allOtherPlayerNRIC").val(arrNRIC[i]);
+                    $("#allOtherPlayerName").val(arrName[i]);
+                    $("#allOtherPlayerMemType").val(arrMemType[i]);
+                    $("#allOtherPlayerExpDate").val(arrExpDate[i]);
+                    $("#allOtherPlayerHandicap").val(arrHandicap[i]);
+                }else {
+                    $("#allOtherPlayerNRIC").val($("#allOtherPlayerNRIC").val() + ", " + arrNRIC[i]);
+                    $("#allOtherPlayerName").val($("#allOtherPlayerName").val() + ", " + arrName[i]);
+                    $("#allOtherPlayerMemType").val($("#allOtherPlayerMemType").val() + ", " + arrMemType[i]);
+                    $("#allOtherPlayerExpDate").val($("#allOtherPlayerExpDate").val() + ", " + arrExpDate[i]);
+                    $("#allOtherPlayerHandicap").val($("#allOtherPlayerHandicap").val() + ", " + arrHandicap[i]);
+                }
+            } //End get the table data and insert into hidden field to pass data
+
+            //Change name value to UpperCase
+            $("#allOtherPlayerName").val(function () {
+                return this.value.toUpperCase();
+            });
+            $("#flightMemberName").val(function () {
+                return this.value.toUpperCase();
+            });
+            $("#flightMembershipNo").val(function () {
+                return this.value.toUpperCase();
+            });
+
+            <!----------------------- Get Value of Location ID and insert to hidden field ----------------------->
+            $("#golfingLocationId").val($("#location").val());
+
+        });
+
+        <!----------------------- Delete Button Click Pop Up Modal ----------------------->
+        $("#btnDelete").click(function() {
+            $("#deleteAlertModal").modal();
+        });
+    });
+</script>
+</body>
+</html>

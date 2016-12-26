@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:remove="all">Order Confirmation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div>
+
+
+    <p th:text="${dear}"></p>
+
+    <p> Your staycation has been successfully cancelled.</p>
+
+    <p>Should there be anything else that we could assit you with, please email us at <br/>
+        <a href="mailto:htns_sb@hometeamns.sg">htns_sb@hometeamns.sg</a> /
+        <a href="mailto:staycation@hometeamns.sg">staycation@hometeamns.sg</a>
+        <br/><br/>
+    <p>We hope to host you the next time round!</p>
+
+    <br/>
+
+    <p>Admin <br/>
+        HomeTeamNS
+    </p>
+
+    <br/>
+
+</div>
+
+<span style="font-size:13px; color:red;"><b><i>* Note:</i></b></span>
+<br/>
+
+<div style="border:1px; padding:10px; ">
+    <b>Cancellation Policies and Refund Policies</b><br/><br/>
+
+    <div class="widget-content">
+        <table class="table table-bordered table-striped table-hover data-table">
+            <thead>
+            <tr style="background-color:#F9F387;">
+                <td style="width:180px;"></td>
+                <td style="width:200px;">More than 14 days</td>
+                <td style="width:200px;">14 days or less</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr style="background-color:white;">
+                <td>Amendment Penalty</td>
+                <td> Admin Fee of $21.40</td>
+                <td>No Amendments</td>
+            </tr>
+            <tr>
+                <td>Cancellation Penalty</td>
+                <td>50% of Rental Fee</td>
+                <td>No Refunds</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+</body>
+</html>

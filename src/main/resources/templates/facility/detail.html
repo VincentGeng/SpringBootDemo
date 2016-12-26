@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/template :: meta('Members')">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HomeTeam NS | Members</title>
+</head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<div class="wrapper">
+    <div th:replace="fragments/template :: header"></div>
+    <div th:replace="fragments/template :: sidebar('dashboard')"></div>
+    <div class="content-wrapper">
+        <!--/*@thymesVar id="header" type="java.lang.String"*/-->
+
+        <div th:replace="fragments/template :: content-header(${header})"></div>
+        <!-- Main content -->
+        <section class="content">
+            <!--/*@thymesVar id="booking" type="com.techstudio.htns.domain.FacilityBooking"*/-->
+            <form action="###" method="get" th:action="@{/chalet/bookingDetail}">
+
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">BOOKING DETAILS</h3>
+                    </div>
+
+                    <div class="box-body">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>
+                                    NRIC</label>
+                                <input type="text" id="nric" name="nric" class="form-control" th:value="${booking.getFacilityBookingExtension()} ? ${booking.getFacilityBookingExtension().getNonMemberNric()} : ''"  readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Email</label>
+                                <input type="text" id="email" name="email" class="form-control" th:value="${booking.getFacilityBookingExtension()} ? ${booking.getFacilityBookingExtension().getEmail()} : ''"  readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Category</label>
+                                <input type="text" id="category" name="category" class="form-control" th:value="${booking.getFacilityBookingExtension().getFacility().getFacilityExtension()} ? ${booking.getFacilityBookingExtension().getFacility().getFacilityExtension().getFacilityCategory().getFacilityCategoryExtension().getName()}: ''" readonly>
+                            </div>
+
+                            <!--<div class="form-group">-->
+                                <!--<label>-->
+                                    <!--Location</label>-->
+                                <!--<input type="text" id="location" name="location" class="form-control" th:value="${booking.getFacilityBookingExtension().getFacility().getFacilityExtension().getBusinessUnit().getName()} ? ${booking.getFacilityBookingExtension().getFacility().getFacilityExtension().getBusinessUnit().getName()} : ''" readonly>-->
+                            <!--</div>-->
+
+                            <div class="form-group">
+                                <label>
+                                    Facility Name</label>
+                                <input type="text" id="facilityName" name="facilityName" class="form-control" th:value="${booking.getFacilityBookingExtension().getFacility().getFacilityExtension()}  ? ${booking.getFacilityBookingExtension().getFacility().getFacilityExtension().getBusinessUnit().getName()} + ' - ' + ${booking.getFacilityBookingExtension().getFacility().getFacilityExtension().getName()} : ''" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                   Booking Date</label>
+                                <input type="text" id="chaletName" name="chaletName" class="form-control" th:value="${booking.getFacilityBookingExtension()} ? ${#dates.format(booking.getFacilityBookingExtension().getStartDate(), 'dd-MM-yyyy')} : ''" readonly>
+                            </div>
+
+                            <!--<div class="form-group">-->
+                                <!--<label>-->
+                                    <!--Applicable Rate (SGD)</label>-->
+                                <!--<input type="text" id="rate" name="rate" class="form-control" th:value="${booking.getFacilityBookingExtension()}  ?  ${#numbers.formatDecimal(booking.getFacilityBookingExtension().getFees(), 0, 'COMMA', 2, 'POINT')} : ''" readonly>-->
+                            <!--</div>-->
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>
+                                    Name</label>
+                                <input type="text" id="name" name="name" class="form-control" th:value="${booking.getFacilityBookingExtension().getName()}  ? ${booking.getFacilityBookingExtension().getName()} : ''" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Mobile </label>
+                                <input type="text" id="mobile" name="mobile" class="form-control" th:value="${booking.getFacilityBookingExtension().getMobile()}  ? ${booking.getFacilityBookingExtension().getMobile()} : ''" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Facility</label>
+                                <input type="text" id="facility" name="facility" class="form-control" th:value="${booking.getFacilityBookingExtension().getFacility().getFacilityExtension().getFacilitySubCategory()}  ? ${booking.getFacilityBookingExtension().getFacility().getFacilityExtension().getFacilitySubCategory().getFacilitySubCategoryExtension().getName()} : ''" readonly>
+                            </div>
+
+                            <input type="hidden" id="status" name="status" th:value="${booking.getFacilityBookingExtension().getStatus()}">
+
+                            <div class="form-group">
+                                <label>
+                                    Status</label>
+                                <input type="text" id="statusTxt" name="statusTxt" class="form-control" th:value="${booking.getFacilityBookingExtension().getBookingStatusStr()}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    Slot Selected</label>
+                                <input type="text" id="slot" name="slot" class="form-control" th:value="${booking.getFacilityBookingExtension().getStartDate()} ? ${#dates.format(booking.getFacilityBookingExtension().getStartDate(), 'hh:mm a')} + ' - ' + ${#dates.format(booking.getFacilityBookingExtension().getEndDate(), 'hh:mm a')} : ''" readonly>
+
+                            </div>
+
+                            <!--<div class="form-group">-->
+                                <!--<label>-->
+                                   <!--Remarks</label>-->
+                                <!--<input type="text" id="remark" name="remark" class="form-control" th:value="" readonly>-->
+
+                            <!--</div>-->
+                        </div>
+                    </div> <!-- Close body -->
+                </div>
+
+                <input type="hidden" id="invoice" name="invoice" th:value="${booking.getFacilityBookingExtension().getInvoice()} ? ${booking.getFacilityBookingExtension().getInvoice().getName()} : ''">
+
+                <!----------------------------------  Invoice ---------------------------------->
+                <div class="box box-default" style="display:none;" id="showInvoice">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">INVOICE</h3>
+                    </div>
+
+                    <div class="box-body">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label style="width:30%;">
+                                    Invoice Number:</label>
+                                <a href="" target="_blank"><span th:text="${booking.getFacilityBookingExtension().getInvoice()} ? ${booking.getFacilityBookingExtension().getInvoice().getName()} :'-'"></span></a>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="width:30%;">
+                                    Total Amount(SGD): </label>
+                                <span th:text="${booking.getFacilityBookingExtension().getInvoice()} ? ${#numbers.formatDecimal(booking.getFacilityBookingExtension().getInvoice().getTotalAmount(), 0, 'COMMA', 2, 'POINT')} :'-' "></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!----------------------------------  Back button ---------------------------------->
+
+                <div class="box-body">
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-primary" id="btnCancel" onclick="history.back()">Back</button>
+                    </div>
+                </div>
+
+            </form>
+
+        </section>
+    </div>
+    <div th:replace="fragments/template :: footer"></div>
+</div>
+<div th:include="fragments/template :: javascript" th:remove="tag"></div>
+<script>
+    $(document).ready(function() {
+
+       var invoice =  $("#invoice").val();
+
+       if((invoice!=null)&&(invoice!="")){
+           $("#showInvoice").show();
+       }
+
+    });
+</script>
+</body>
+</html>

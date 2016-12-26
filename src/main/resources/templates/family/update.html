@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/template :: meta('Members')"></head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<div class="wrapper">
+    <div th:replace="fragments/template :: header"></div>
+    <div th:replace="fragments/template :: sidebar('member')"></div>
+    <div class="content-wrapper">
+        <!--/*@thymesVar  type="java.lang.String"*/-->
+        <div th:replace="fragments/template :: content-header(${header})"></div>
+        <!-- Main content -->
+        <section class="content">
+            <!--/*@thymesVar id="familyMember" type="com.techstudio.htns.domain.FamilyMember"*/-->
+            <form action="###" method="post" th:action="@{/family/update}" th:object="${familyMember}" id="member-reg-form">
+                <input type="hidden" th:field="*{id}">
+                <input type="hidden" th:field="*{familyMemberExtension.id}">
+                <input type="hidden" th:field="*{createdOn}">
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">PERSONAL DETAILS</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Name
+                                    </label>
+                                    <input type="text" class="form-control" th:field="*{familyMemberExtension.name}" data-allcap>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Gender
+                                    </label>
+                                    <div class="radio row">
+                                        <div class="col-sm-6">
+                                            <label class="radio-inline">
+                                                <input type="radio" th:field="*{familyMemberExtension.genderCode}" value="0"> Male
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="radio-inline">
+                                                <input type="radio" th:field="*{familyMemberExtension.genderCode}" value="1"> Female
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Email</label>
+                                    <input type="email" class="form-control" th:field="*{familyMemberExtension.email}">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Hand Phone</label>
+                                    <input type="text" class="form-control" th:field="*{familyMemberExtension.mobile}" data-inputmask="'mask': '(65) 9999 9999'" data-mask>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Member (<a th:href="@{/member/(id=*{getFamilyMemberExtension().getContact().getContactId()})}">Go to member</a>)
+                                    </label>
+                                    <input type="hidden" th:field="*{familyMemberExtension.contact}">
+                                    <input type="text" class="form-control" th:value="*{getFamilyMemberExtension().getContact().getContactExtension().getFullName()}" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Expiry Date</label>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right datepicker" th:field="*{familyMemberExtension.expiredOn}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Active Membership
+                                    </label>
+                                    <input type="text" class="form-control" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Car IU</label>
+                                    <input type="text" class="form-control" th:field="*{familyMemberExtension.carIu}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        NRIC / Birth Cert
+                                    </label>
+                                    <input type="text" class="form-control" th:field="*{familyMemberExtension.nric}" data-allcap>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Relationship
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" th:field="*{familyMemberExtension.relationship}">
+                                        <option value="Spouse">Spouse</option>
+                                        <option value="Parents">Parent</option>
+                                        <option value="Child">Child</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Date Of Birth (DD-MM-YYYY)</label>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right datepicker" th:field="*{familyMemberExtension.birthday}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Race
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" th:field="*{familyMemberExtension.race}">
+                                        <!--/*@thymesVar id="allNationality" type="java.util.List<com.techstudio.htns.domain.MaritalStatus>"*/-->
+                                        <option th:each="item : ${allRace}" th:value="${item.getId()}" th:text="${item.getName()}">Wireframe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Approval Status
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" th:field="*{familyMemberExtension.approvalStatus}">
+                                        <option disabled selected value=""> -- select an option --</option>
+                                        <option value="0">Pending Approval</option>
+                                        <option value="1">Approved</option>
+                                        <option value="2">Rejected</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>PA CAN Number</label>
+                                    <input type="text" class="form-control" th:field="*{familyMemberExtension.paCanNumber}">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Action Flag
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" th:field="*{familyMemberExtension.actionFlag}">
+                                        <!--/*@thymesVar id="allNationality" type="java.util.List<com.techstudio.htns.domain.MaritalStatus>"*/-->
+                                        <option th:each="item : ${allActionFlag}" th:value="${item.getId()}" th:text="${item.getName()}">Wireframe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Car Plate</label>
+                                    <input type="text" class="form-control" th:field="*{familyMemberExtension.carPlate}" data-inputmask="'mask': 'a[a][a][9][9][9]9[a]'">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>
+                                        Notes
+                                    </label>
+                                    <textarea type="text" class="form-control" th:field="*{familyMemberExtension.notes}"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-default">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+    <div th:replace="fragments/template :: footer"></div>
+</div>
+<div th:include="fragments/template :: javascript" th:remove="tag"></div>
+<script th:src="@{/plugins/singpost/temp.api.js}"></script>
+<script>
+    function pad(str, max) {
+        str = str.toString();
+        return str.length < max ? pad("0" + str, max) : str;
+    }
+
+    $(document).ready(function () {
+        $(":input").inputmask();
+        $('textarea[data-allcap], input[data-allcap]').on('keyup', function () {
+            $(this).val(function () {
+                return this.value.toUpperCase();
+            });
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
+        $("[data-mask]").inputmask();
+
+        $('.datepicker').datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true
+        });
+
+        var date = new Date();
+        $('input[name=registrationDate]').datepicker("setDate", date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear());
+
+
+        $('#member-reg-form').on('submit', function () {
+//            var serializeString = $(this).serialize();
+//            alert(serializeString);
+        });
+
+        // @ OLD CODE : INCASE OF NEEDING IT, TO BE REMOVED ON PRODUCTION
+        //            $('input[name=postal_code]').on('change', function () {
+        //                $(this).singpostAPI({
+        //                    line1: 'input[name=addressLine1]',
+        //                    line2: 'input[name=addressLine2]',
+        //                });
+        //            });
+    });
+</script>
+</body>
+</html>

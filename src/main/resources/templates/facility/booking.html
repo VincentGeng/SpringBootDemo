@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/template :: meta('Members')"></head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<div class="wrapper">
+    <div th:replace="fragments/template :: header"></div>
+    <div th:replace="fragments/template :: sidebar('facility')"></div>
+    <div class="content-wrapper">
+        <!--/*@thymesVar id="header" type="java.lang.String"*/-->
+        <!--/*@thymesVar id="allCategory" type="java.util.List<com.techstudio.htns.domain.FacilityCategoryExtension>"*/-->
+        <!--/*@thymesVar id="category" type="com.techstudio.htns.domain.FacilityCategoryExtension"*/-->
+        <!--/*@thymesVar id="allSubCategory" type="java.util.List<com.techstudio.htns.domain.FacilitySubCategory>"*/-->
+        <!--/*@thymesVar id="subCategory" type="com.techstudio.htns.domain.FacilitySubCategory"*/-->
+        <!--/*@thymesVar id="allAvailableFacility" type="java.util.List<com.techstudio.htns.domain.Facility>"*/-->
+        <!--/*@thymesVar id="availableFacility" type="com.techstudio.htns.domain.Facility"*/-->
+        <!--/*@thymesVar id="allLocation" type="java.util.List<com.techstudio.htns.domain.BusinessUnit>"*/-->
+        <!--/*@thymesVar id="location" type="com.techstudio.htns.domain.BusinessUnit"*/-->
+
+        <div th:replace="fragments/template :: content-header(${header})"></div>
+        <!-- Main content -->
+        <div class="content">
+
+            <!--/*@thymesVar id="message" type="java.lang.String"*/-->
+            <div class="callout callout-success" id="msgDisplay" th:if="${message} != null">
+                <!--<h4>Member added successfully!</h4>-->
+
+                <p>[[${message}]]</p>
+            </div>
+
+            <!--/*@thymesVar id="chalet" type="com.techstudio.htns.domain.Chalet"*/-->
+            <form action="###" method="get" th:action="@{/facility/booking}">
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">BOOKING DETAILS</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Select a Facility Category
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" id="categoryId"
+                                            name="categoryId" required>
+                                        <option value="">SELECT</option>
+                                        <option th:each="category : ${allCategory}" th:value="${category.getId()}"
+                                                th:text="${category.getName()}"
+                                                th:selected="${selectedCategory} == ${category.getId()}">Wireframe
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Select from the available Facilities
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" id="facilityId" name="facilityId" required>
+                                        <option value="">SELECT</option>
+                                        <option th:if="${allAvailableFacility} != null" th:each="availableFacility : ${allAvailableFacility}" th:value="${availableFacility.getId()}" th:text="${availableFacility.getFacilityExtension().getBusinessUnit().getName()} + ' - ' + ${availableFacility.getFacilityExtension().getName()}"  th:selected="${selectedFacility} == ${availableFacility.getId()}">Wireframe</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Select a Facility
+                                    </label>
+                                    <select class="form-control select2 select2-hidden-accessible" id="subCategoryId"
+                                            name="subCategoryId" required>
+                                        <option value="">SELECT</option>
+                                        <option th:if="${allSubCategory} != null" th:each="subCategory : ${allSubCategory}" th:value="${subCategory.getId()}" th:text="${subCategory.getFacilitySubCategoryExtension().getName()}"  th:selected="${selectedSubCategory} == ${subCategory.getId()}">Wireframe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Please Select Booking Date
+                                    </label>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon" id="select_date">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right datepicker" id="date"
+                                               name="date" required
+                                               th:value="${selectedDate} ? ${#dates.format(selectedDate, 'dd-MM-yyyy')} : ''">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--<select class="form-control select2 select2-hidden-accessible" id="locationId"-->
+                                <!--name="locationId">-->
+                            <!--<option value="">SELECT</option>-->
+                            <!--<option th:if="${allLocation} != null" th:each="location : ${allLocation}" th:value="${location.getId()}" th:text="${location.getName()}"  th:selected="${selectedLocation} == ${location.getId()}">Wireframe</option>-->
+                        <!--</select>-->
+
+                        <div class="form-group" style="display:none;">
+                            <label>
+                                <red>*</red>Location
+                            </label>
+                            <select class="form-control select2 select2-hidden-accessible" id="locationId" name="locationId" required>
+                                <option th:if="${allLocation} != null" th:each="location : ${allLocation}" th:value="${location.getId()}" th:text="${location.getName()}"  th:selected="${selectedLocation} == ${location.getId()}">Wireframe</option>
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="submit" id="searchButton" class="btn btn-primary">Search</button>
+                                <button type="reset" class="btn btn-default">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div id="timetable"></div>
+                </div>
+
+                <div class="col-md-12 text-right" style="margin-top:20px; margin-bottom:20px;">
+                    <button type="button" class="btn btn-primary" id="confirmBtn"  style="display:none;">Book Now</button>
+                    <button type="button" class="btn btn-primary" id="bookingBtn"  style="display:none;" data-toggle="modal" data-target=".bookingDetails">Book Now</button>
+                    <button type="button" class="btn btn-primary" style="display:none;" id="successBtn" data-toggle="modal" data-target=".successBooking">Success</button>
+                    <button type="button" class="btn btn-primary" style="display:none;" id="deleteBtn" data-toggle="modal" data-target=".deleteBooking">Delete</button>
+
+                </div>
+
+
+            </div>
+            <!--<div th:if="${calendar} != null">-->
+
+                <!--<div class="row" id="displayCalendar" style="display:none">-->
+                    <!--<div class="col-md-12 text-right" style="background-color: grey">-->
+                        <!--<label>-->
+                            <!--<red> Click and Drag on the dates to make booking</red>-->
+                        <!--</label>-->
+                    <!--</div>-->
+                    <!--<div class="col-md-12">-->
+
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+
+        </div>
+    </div>
+    <div th:replace="fragments/template :: footer"></div>
+</div>
+<div th:include="fragments/template :: javascript" th:remove="tag"></div>
+
+<!-- Booking -->
+<div class="modal fade bookingDetails" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form action="###" method="post" th:action="@{/facility/booking}" id="addBooking">
+                <div class="modal-header box-header with-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Facility Booking</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12" id="personalDetails">
+
+                            <input id="bLocationId" name="bLocationId" type="hidden"/>
+                            <input id="bFacilityId" name="bFacilityId" type="hidden"/>
+                            <input id="bTotalPayable" name="bTotalPayable" type="hidden"/>
+                            <input id="bTenderAmt" name="bTenderAmt" type="hidden"/>
+                            <input id="bAmount" name="bAmount" type="hidden"/>
+                            <input id="bDesc" name="bDesc" type="hidden"/>
+                            <input id="bDate" name="bDate" type="hidden"/>
+                            <input id="bCategoryId" name="bCategoryId" type="hidden"/>
+                            <input id="bSubCategoryId" name="bSubCategoryId" type="hidden"/>
+                            <input id="listBookingSummary" name="listBookingSummary" type="hidden"/>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Facility Selected
+                                    </label>
+                                    <label class="form-control" id="facility" name="facility" style="border: 0px;"><span id="bFacility"></span></label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        NRIC
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="nric" name="nric" data-inputmask="'mask': 'a9999999a'" data-mask required>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" id="checkNRIC" type="button"><i class="glyphicon glyphicon-ok-circle"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <red>*</red>
+                                    <label>
+                                        Email</label>
+                                    <input type="email" id="email" name="email" class="form-control" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Booking Type</label>
+                                    <div class="form-control" style="border:none;">
+                                        <label class="radio-inline">
+                                            <input class="rb" type="radio" id="book" name="bookingType" value="book">Book
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input class="rb" type="radio" id="block" name="bookingType" value="block">Block
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Location</label>
+                                    <label class="form-control" id="loc" name="loc" style="border: 0px;"><span id="bLocation"></span></label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Name</label>
+                                    <input type="text" id="name" name="name" class="form-control" required data-allcap>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Mobile</label>
+
+                                    <input type="text" id="phone" name="phone" class="form-control" required data-inputmask="'mask': '(65) 9999 9999'" data-mask >
+                                </div>
+
+                                <div class="form-group" id="showRemark" style="display:none;">
+                                    <label>
+                                        <red>*</red>
+                                        Remarks</label>
+                                    <input type="text" id="remarks" name="remarks" class="form-control" required>
+                                </div>
+
+                            </div>
+                        </div> <!-- Close Personal Details -->
+
+                        <!----------------------------------  Unavailable Message ---------------------------------->
+
+
+                        <div class="col-xs-12" id="showUnavailable" style="display:none; padding:5%;">
+                            <label>
+                                <red>This facility is not eligible for this membership type.</red>
+                            </label>
+
+                        </div>
+
+                        <!----------------------------------  Booking Summary ---------------------------------->
+                        <div class="col-xs-12" id="showSummary" style="margin-top:20px; display:none;">
+
+
+                            <label>
+                                <div style="color:#e55425; margin-left:2px;">Booking Summary</div>
+                            </label>
+
+
+                            <div class="widget-content nopadding">
+                                <table id="summaryTable"
+                                       class="table table-bordered table-striped table-hover"
+                                       style="text-align: center">
+                                    <thead>
+                                    <tr style="background-color: #CCCCCC">
+                                        <th style="text-align:center">Location</th>
+                                        <th style="text-align:center">Booking Date</th>
+                                        <th style="text-align:center">Selected Slot</th>
+                                        <th style="text-align:center">Applicable Rate</th>
+                                        <th style="text-align:center">Remove</th>
+                                    </tr>
+                                    </thead>
+                                    <!--<tbody style="font-size:14px;">-->
+                                    <!--<tr>-->
+                                        <!--<td style="text-align:left"><span id="location"></span></td>-->
+                                        <!--<td style="text-align:left"><span id="bookingDate"></span></td>-->
+                                        <!--<td style="text-align:right"><span id="selectedSlot"></span></td>-->
+                                        <!--<td style="text-align:right"><span id="rate"></span></td>-->
+                                        <!--<td style="text-align:right"><span id="remove"></span></td>-->
+                                    <!--</tr>-->
+                                    <!--</tbody>-->
+                                </table>
+                            </div>
+
+                            <div class="col-md-3 text-right"
+                                 style="background-color: grey; float:right; text-align:center;">
+                                <label style="color:#FFFFFF">
+                                    Total Payable (SGD): <span id="totalPayable"></span>
+                                </label>
+                            </div>
+
+                            <br/><br/><br/>
+                        </div><!-- Close Booking Summary -->
+
+
+                        <!----------------------------------  Payment Mode ---------------------------------->
+                        <div class="col-xs-12" id="showPayment" style="display:none;">
+                            <label>
+                                <div style="color:#e55425; margin-left:2px;">Payment Mode</div>
+                            </label>
+
+                            <div class="widget-content nopadding">
+                                <table id ="paymentTable" class="table table-bordered table-striped table-hover" style="text-align: center">
+                                    <tbody>
+                                    <tr style="background-color: #CCCCCC">
+                                        <th style="text-align:center">Payment Type</th>
+                                        <th style="text-align:center">Description</th>
+                                        <th style="text-align:center">Amount (SGD)</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">CASH</td>
+                                        <td><input id="d1"type="text" style="width: 100%;"/></td>
+                                        <td><input id="p1" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">Cheque / Cashier Order / Money Order</td>
+                                        <td><input id="d2"type="text" style="width: 100%;"/></td>
+                                        <td><input id="p2" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">Complimentary Vouchers</td>
+                                        <td><input id="d3"type="text" style="width: 100%;"/></td>
+                                        <td><input id="p3" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">Credit Cards (Masters / Visa)</td>
+                                        <td><input id="d4" type="text" style="width: 100%;"/></td>
+                                        <td><input id="p4" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">Diners</td>
+                                        <td><input id="d5" type="text" style="width: 100%;"/></td>
+                                        <td><input id="p5" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">HomeTeamNS Blue Voucher</td>
+                                        <td><input id="d6" type="text" style="width: 100%;"/></td>
+                                        <td><input id="p6" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left">Nets</td>
+                                        <td><input id="d7" type="text" style="width: 100%;"/></td>
+                                        <td><input id="p7" type="number" style="width: 100%; text-align:right;"/></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="col-md-3"
+                                 style="background-color: grey; float:right; width:30%; text-align:center;">
+                                <label style="color:#FFFFFF">
+                                    Tendered Amount (SGD): <span id="tenderedAmt"></span>
+                                </label>
+                            </div>
+
+                            <div class="col-md-3"
+                                 style="background-color: grey; float:right; width:30%; text-align:center; margin-right:2%;">
+                                <label style="color:#FFFFFF">
+                                    Amount Balance (SGD): <span id="balance"></span>
+                                </label>
+                            </div>
+
+                            <br/><br/><br/>
+                        </div><!-- Close PaymenMode -->
+
+
+                        <div class="col-xs-12" id="showBtn" style="display:none; margin-bottom:20px; text-align:right;">
+                            <button type="button" id="bookingSubmit" class="btn btn-primary"><span
+                                    id="submitBtnText"></span></button>
+                            &nbsp;&nbsp;
+                            <!-- <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button> -->
+                        </div>
+
+                    </div><!-- Close row -->
+                </div><!-- Close modal body -->
+            </form>
+        </div><!-- CLose modal content -->
+    </div>
+</div>
+
+<!-- Delete Booking -->
+<div class="modal fade deleteBooking" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form action="###" method="post" th:action="@{/facility/delete}" id="deleteBooking">
+                <div class="modal-header box-header with-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Facility Booking</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12" id="dpersonalDetails">
+
+                            <input id="dBookingId" name="dBookingId" type="hidden"/>
+                            <input id="dCategoryId" name="dCategoryId" type="hidden"/>
+                            <input id="dSubCategoryId" name="dSubCategoryId" type="hidden"/>
+                            <input id="dLocationId" name="dLocationId" type="hidden"/>
+                            <input id="dFacilityId" name="dFacilityId" type="hidden"/>
+                            <input id="dDate" name="dDate" type="hidden"/>
+                            <input id="dAction" name="dAction" type="hidden" value="delete"/>
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <red></red>
+                                        Facility Selected
+                                    </label>
+                                    <input type="text" id="dFacility" name="dFacility" class="form-control" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red></red>
+                                        NRIC
+                                    </label>
+                                    <input type="text" id="dNric" name="dNric" class="form-control" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <red></red>
+                                    <label>
+                                        Email</label>
+                                    <input type="text" id="dEmail" name="dEmail" class="form-control" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red></red>
+                                        Booking Date</label>
+                                    <input type="text" id="dBookingDate" name="dBookingDate" class="form-control" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red></red>
+                                        Applicable Rate</label>
+                                    <input type="text" id="dRate" name="dRate" class="form-control" readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <red></red>
+                                        Location</label>
+                                    <input type="text" id="dLocation" name="dLocation" class="form-control" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red></red>
+                                        Name</label>
+                                    <input type="text" id="dName" name="dName" class="form-control" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red></red>
+                                        Mobile</label>
+                                    <input type="text" id="dMobile" name="dMobile" class="form-control" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>
+                                        <red></red>
+                                        Slot Selected</label>
+                                    <input type="text" id="dSlot" name="dSlot" class="form-control" readonly>
+                                </div>
+
+
+                                <div class="form-group" style="display:none;">
+                                    <label>
+                                        <red></red>
+                                        Booking Type</label>
+                                    <div class="form-control" style="border:none;">
+                                        <label class="radio-inline">
+                                            <input class="rb" type="radio" id="dbook" name="bookingType2" value="book">Book
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input class="rb" type="radio" id="dblock" name="bookingType2" value="block">Block
+                                        </label>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group" id="showDemark" style="display:none;">
+                                    <label>
+                                        <!--<red>*</red>-->
+                                        Remarks</label>
+                                    <input type="text" id="dRemark" name="dRemark" class="form-control" required readonly>
+                                </div>
+                            </div>
+                        </div> <!-- Close Personal Details -->
+
+
+                        <!----------------------------------  Booking Summary ---------------------------------->
+                        <!--<div class="col-xs-12" id="showDSummary" style="margin-top:20px; display:none;">-->
+
+
+                            <!--<label>-->
+                                <!--<div style="color:#e55425; margin-left:2px;">Booking Summary</div>-->
+                            <!--</label>-->
+
+
+                            <!--<div class="widget-content nopadding">-->
+                                <!--<table id="summaryDTable"-->
+                                       <!--class="table table-bordered table-striped table-hover"-->
+                                       <!--style="text-align: center">-->
+                                    <!--<thead>-->
+                                    <!--<tr style="background-color: #CCCCCC">-->
+                                        <!--<th style="text-align:center">Location</th>-->
+                                        <!--<th style="text-align:center">Booking Date</th>-->
+                                        <!--<th style="text-align:center">Selected Slot</th>-->
+                                        <!--<th style="text-align:center">Applicable Rate</th>-->
+                                    <!--</tr>-->
+                                    <!--</thead>-->
+                                <!--</table>-->
+                            <!--</div>-->
+
+                            <!--<div class="col-md-3 text-right"-->
+                                 <!--style="background-color: grey; float:right; text-align:center;">-->
+                                <!--<label style="color:#FFFFFF">-->
+                                    <!--Total Payable (SGD): <span id="dtotalPayable"></span>-->
+                                <!--</label>-->
+                            <!--</div>-->
+
+                            <!--<br/><br/><br/>-->
+                        <!--</div>&lt;!&ndash; Close Booking Summary &ndash;&gt;-->
+
+
+                        <div class="col-xs-12" id="showDBtn" style="display:none; margin-bottom:20px; text-align:right;">
+                            <button type="button" id="deleteSubmit" class="btn btn-primary">Delete</button>
+                            &nbsp;&nbsp;
+                        </div>
+
+                        <div class="col-xs-12" id="showCloseBtn" style="display:none; margin-bottom:20px; text-align:right;">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            &nbsp;&nbsp;
+                        </div>
+
+                    </div><!-- Close row -->
+                </div><!-- Close modal body -->
+            </form>
+        </div><!-- CLose modal content -->
+    </div>
+</div>
+
+<!--/*@thymesVar id="showSuccesful" type="java.lang.String"*/-->
+<div style="display:none;" th:if="${showSuccesful} != null">
+    <span id="getSuccess">[[${showSuccesful}]]</span>
+</div>
+
+<!--/*@thymesVar id="invoiceNo" type="java.lang.String"*/-->
+<div style="display:none;" th:if="${invoiceNo} != null">
+    <span id="getInvoice">[[${invoiceNo}]]</span>
+</div>
+
+
+<!-- Success Booking -->
+<div class="modal fade successBooking" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header box-header with-border">
+                <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+                <h4 class="modal-title" id="myLargeModalLabel">Booking Success</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row" >
+
+                    <div class="col-md-12" style="margin-top:20px;">
+                        <div class="col-md-3">
+                            <img th:src="@{/dist/img/success.jpg}" style="width:50%; float:right;">
+                        </div>
+                        <div class="col-md-7">
+                            Your Invoice generated successfully. <br/>
+                            Please click the Invoice Number to print the receipt.<br/><br/>
+                            Your Invoice Number is <a id="invoice" href="#" target="_blank"><span id="invoiceText"></span></a>
+
+                            <div class="col-xs-12" style=" margin-top:20px; margin-bottom:20px; text-align:right;">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- Close row -->
+            </div><!-- Close modal body -->
+        </div><!-- CLose modal content -->
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        $('.datepicker').datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true,
+        });
+
+        $("[data-mask]").inputmask();
+
+        //set timeout for prompy succesful message
+        setTimeout(function() {
+            $('#msgDisplay').fadeOut();
+        }, 5000);
+
+
+        var categoryId = "";
+        var subCategoryId = "";
+
+        //------------------- Trigger when Facility Category Change -------------------//
+        $("#categoryId").on('change', function () {
+            var categoryId = $(this).val();
+
+            //clear facility(subcategory)
+            $('#subCategoryId').empty();
+            $('#subCategoryId').append($('<option>', {
+                value: "",
+                text: "SELECT"
+            }));
+
+            //clear available facilities
+            $('#facilityId').empty();
+            $('#facilityId').append($('<option>', {
+                value: "",
+                text: "SELECT"
+            }));
+
+            getSubCategory(categoryId); //get sub-category listing
+
+        });
+
+        //------------------- Trigger when Facility Change -------------------//
+        $("#subCategoryId").on('change', function () {
+
+            var categoryId = $("#categoryId").val();
+            var subCategoryId = $(this).val();
+
+            //clear available facilities
+            $('#facilityId').empty();
+            $('#facilityId').append($('<option>', {
+                value: "",
+                text: "SELECT"
+            }));
+
+            getAvailableFacilities(categoryId, subCategoryId); //get facility location listing
+        });
+
+        //------------------- Function to get facility sub category -------------------//
+        function getSubCategory(categoryId) {
+            var parameter = {
+                'categoryId': categoryId
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/ajax/facility/',
+                data: parameter,
+                dataType: 'json',
+                success: function (data) {
+
+                    if ((data == null) || (data == "")) {
+                        $('#subCategoryId').append($('<option>', {
+                            value: "",
+                            text: "No Facility for this Category"
+                        }));
+                    } else {
+                        $.each(data, function (i, data) {
+
+                            $('#subCategoryId').append($('<option>', {
+                                value: data.facilitySubCategoryExtension.id,
+                                text: data.facilitySubCategoryExtension.name
+                            }));
+                        });
+                    }
+                }
+            });
+        }
+
+        //------------------- Function to get available facility -------------------//
+        function getAvailableFacilities(categoryId, subCategoryId) {
+            var parameter = {
+                'categoryId': categoryId,
+                'subCategoryId': subCategoryId,
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/ajax/availableFacilities/',		//1 AP - 1 group
+                data: parameter,
+                dataType: 'json',
+                success: function (data) {
+
+                   // console.log("getAvailableFacilities:",data);
+
+                    if ((data == null) || (data == "")) {
+                        $('#facilityId').append($('<option>', {
+                            value: "",
+                            text: "No Facility for this Category"
+                        }));
+                    } else {
+                        $.each(data, function (i, data) {
+
+                            $('#facilityId').append($('<option>', {
+                                value: data.id,
+                                text: data.facilityExtension.businessUnit.name + " - " + data.facilityExtension.name,
+                            }));
+                        });
+                    }
+                }
+            });
+        }
+
+        //when confirm button is click
+        $("#confirmBtn").click(function () {
+
+            $("#bookingBtn").click();  //direct call pop up
+
+        });
+
+
+        var timeSlots = "";
+        var dates = "";
+        var bookingInfos = "";
+
+
+        var facilityName = [(${facilityName})];
+        var facilityId = [(${facilityId})];
+        var openingHours = [(${facilityOpeningHoursId})];
+
+        dates = [(${dates})];
+        timeSlots = [(${timeSlots})];
+        bookingInfos = [(${bookingInfos})];
+
+        var calendar = $('#timetable').customTimetable({
+            onClick: function () {
+
+                //show Book Now Btn
+                $('#confirmBtn').show();
+
+            },
+            onBookedClick: function() {
+
+                //console.log("onBooked:",$(this).data());
+
+                var bookingId = $(this).data('bookingId');
+                var bookingType = $(this).data('bookingType');
+                var slotFrom = $(this).data('timecodeFrom');
+                var slotTo = $(this).data('timecodeTo');
+
+                slotFrom = (slotFrom * 15)/60 ;
+                slotTo = (slotTo * 15) / 60 ;
+
+                if(slotFrom>12){
+                    slotFrom = Number(slotFrom) - Number(12) + ".00" + "PM";
+                    slotTo = Number(slotTo) - Number(12) + ".00" + "PM";
+                }else{
+                    slotFrom = slotFrom + ".00" + "AM";
+                    slotTo = slotTo + ".00" + "AM";
+                }
+
+                var slot = slotFrom +" - " + slotTo;
+
+                $("#dSlot").val(slot);
+                $("#dBookingId").val(bookingId);
+
+                $("#summaryDBody").remove();
+                getBookingDetails(bookingId);
+
+                var slot = slotFrom + "-" + slotTo;
+
+
+                var facilityId = $("#facilityId").val();
+                var facilityTxt = $("#facilityId option:selected").text();
+                var fSplit = facilityTxt.split("- ");
+
+                facilityTxt = fSplit[fSplit.length-1];
+
+                var locationId =  $("#locationId").val();
+                var locationTxt =  $("#locationId option:selected").text();
+                var date =  $("#date").val();
+                var categoryId =  $("#categoryId").val();
+                var subCategoryId =  $("#subCategoryId").val();
+
+                $("#dDate").val(date);
+                $("#dCategoryId").val(categoryId);
+                $("#dSubCategoryId").val(subCategoryId);
+                $("#dLocationId").val(locationId);
+                $("#dFacilityId").val(facilityId);
+                $("#dLocation").val(locationTxt);
+                $("#dFacility").val(facilityTxt);
+
+
+                if(bookingType=="book"){
+
+                    document.getElementById('dbook').checked = true;
+                    document.getElementById("dblock").disabled = true;
+
+                    $('#deleteBtn').click();
+                    $('#showDBtn').hide();
+                    $('#showCloseBtn').show();
+
+
+                    //only can delete booking
+                }else if(bookingType == "block"){
+
+                    document.getElementById('dblock').checked = true;
+                    document.getElementById("dbook").disabled = true;
+
+                    $('#deleteBtn').click();
+                    $('#showDBtn').show();
+                    $('#showCloseBtn').hide();
+                }
+
+            },
+            dates : dates,
+            resourcesList: timeSlots,
+            resourcesInfo: bookingInfos,
+            data : {
+                "facility-id" : facilityId,
+                "facility-name" : facilityName,
+                "opening-hours-id" : openingHours,
+            }
+        });
+
+
+        function getBookingDetails(bookingId) {
+            var parameter = {
+                'id': bookingId
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/ajax/facility-booking/',
+                data: parameter,
+                dataType: 'json',
+                success: function (data) {
+
+                    //console.log("getBookingDetails:",data);
+
+                    if((data!=null) && (data!="")) {
+
+                        var facilityBookingExtension = data.facilityBookingExtension;
+                        var name = facilityBookingExtension.name;
+                        var email = facilityBookingExtension.email;
+                        var mobile = facilityBookingExtension.mobile;
+                        mobile = "(65) " + mobile;
+                        var nric = facilityBookingExtension.nonMemberNric;
+
+                        var date = facilityBookingExtension.date;
+                        date = new Date(date);
+
+                        var dYear = date.getFullYear();
+                        var dMonth = date.getMonth() + 1;
+                        var dDay = date.getDate();
+
+                        var bookingDate = dDay + "-" + dMonth + "-" + dYear;
+
+                        var slotFrom = facilityBookingExtension.startDate;
+                        var slotTo = facilityBookingExtension.endDate;
+
+                        var rate = facilityBookingExtension.fees;
+                        rate = Number(rate).toFixed(2);
+                        rate = "SGD " + rate;
+
+                        $("#dName").val(name);
+                        $("#dEmail").val(email);
+                        $("#dMobile").val(mobile);
+                        $("#dNric").val(nric);
+                        $("#dBookingDate").val(bookingDate);
+                        $("#dRate").val(rate);
+
+                        $("#showDSummary").show();
+                    }
+                }
+            });
+        }
+
+        var successVal = $("#getSuccess").text();
+        var invoiceVal = $("#getInvoice").text();
+
+
+        if(successVal=="true"){
+            if(invoiceVal!=""){
+                $("#invoiceText").text(invoiceVal);
+                //document.getElementById("invoice").href="../"+invoiceVal;
+                $("#successBtn").click();
+            }
+        }
+
+        $('#bookingBtn').on('click', function(){
+
+            var selectedResult = calendar.getSelectedDates();
+           // console.log("selectedResult:",selectedResult);
+
+            var facilityId = $("#facilityId").val();
+            var facilityTxt = $("#facilityId option:selected").text();
+            var fSplit = facilityTxt.split("- ");
+
+            facilityTxt = fSplit[fSplit.length-1];
+
+            var locationId =  $("#locationId").val();
+            var locationTxt =  $("#locationId option:selected").text();
+            var date =  $("#date").val();
+            var categoryId =  $("#categoryId").val();
+            var subCategoryId =  $("#subCategoryId").val();
+
+            $("#bDate").val(date);
+            $("#bCategoryId").val(categoryId);
+            $("#bSubCategoryId").val(subCategoryId);
+            $("#bLocationId").val(locationId);
+            $("#bFacilityId").val(facilityId);
+            $("#bLocation").text(locationTxt);
+            $("#bFacility").text(facilityTxt);
+
+            document.getElementById('book').checked = true;
+
+            var nric = $("#nric").val();
+
+            if(nric!=""){
+                checkNRIC(nric);
+            }
+
+        });
+
+//        $("#nric").on('change', function(){
+//            document.getElementById("checkNRIC").style.color='grey';
+//            $("#checkNRIC").html('<i class="glyphicon glyphicon-ok-circle"></i>');
+//
+//            $('#name').val("");
+//            $('#email').val("");
+//            $('#phone').val("");
+//
+//            document.getElementById('name').readOnly = false;
+//
+//
+//        });
+
+
+        $("#checkNRIC").click(function(){
+
+            var nric = $("#nric").val();
+
+            $('#name').val("");
+            $('#email').val("");
+            $('#phone').val("");
+            $("#summaryBody").remove();
+
+            document.getElementById("checkNRIC").style.color='black';
+            $("#checkNRIC").html('<i class="glyphicon glyphicon-ok-circle"></i>');
+            document.getElementById('name').readOnly = false;
+            checkNRIC(nric);
+
+        });
+
+
+        function checkNRIC(nric) {
+
+            var selectedResult = calendar.getSelectedDates();
+            selectedResult["nric"] = nric;  //add nric
+
+            $.ajax({
+                type: 'POST',
+                url: '/ajax/member/facility-booking/',
+                data: JSON.stringify(selectedResult),
+                dataType: 'json',
+                contentType: "application/json; charset=UTF-8",
+                processData: false,
+                success: function (data) {
+
+                   // console.log("data:",data);
+
+                    if((data!="")&&(data!=null)){
+
+                        if((data.contact!="")&&(data.contact!=null)) {
+
+                            var contact = data.contact;
+                            var email = contact.email;
+                            var mobile = contact.mobilePhone;
+                            var name = contact.contactExtension.fullName;
+
+                            $('#name').val(name);
+                            $('#email').val(email);
+                            $('#phone').val(mobile);
+
+                        }
+
+
+                        var timeSlot = data.timeSlots;
+                        //console.log("timeSlot:",timeSlot);
+                        //console.log("timeSlotLength:",timeSlot.length);
+
+                        if(timeSlot.length>0){
+
+                            document.getElementById('name').readOnly = true;
+                            document.getElementById("checkNRIC").style.color = 'green';
+                            $("#checkNRIC").html('<i class="glyphicon glyphicon-ok-circle"></i>');
+
+                            $("#summaryBody").remove();
+
+                            var tbody = document.createElement('tbody'), tr, td, row, cell;
+                            tbody.id="summaryBody";
+
+                            var totalSum = 0;
+                            var count = 0;
+                            var listBookingSummary="";
+                            var COMA = ",";
+                            var DELIMITER = "|";
+
+                            for(var arr in timeSlot){
+
+
+                                var date = timeSlot[arr].date;
+                                var name = timeSlot[arr].name;
+                                var price = timeSlot[arr].priceRate;
+                                price = Number(price).toFixed(2);
+                                var timeCodeFrom = timeSlot[arr].timeCodeFrom;
+                                var timeCodeTo = timeSlot[arr].timeCodeTo;
+                                var location = $("#bLocation").text();
+                                var locationId = $("#bLocationId").val();
+
+                                if(listBookingSummary==""){
+                                    listBookingSummary += location + COMA + date + COMA + name + COMA + price;
+                                }else{
+                                    listBookingSummary += DELIMITER + location + COMA + date + COMA + name + COMA + price;
+                                }
+
+                                $("#listBookingSummary").val(listBookingSummary);
+                                totalSum += Number(price);
+
+                                tr = document.createElement('tr');
+
+                                td1 = document.createElement('td');
+                                td1.setAttribute('name', "location["+count+"]");
+                                td1.style.textAlign="left";
+                                tr.appendChild(td1);
+                                td1.innerHTML = location;
+
+                                td2 = document.createElement('td');
+                                td2.setAttribute('name', "bookingDate["+count+"]");
+                                td2.style.textAlign="left";
+                                tr.appendChild(td2);
+                                td2.innerHTML = date;
+
+                                td3 = document.createElement('td');
+                                td3.setAttribute('name', "slot["+count+"]");
+                                td3.style.textAlign="left";
+                                tr.appendChild(td3);
+                                td3.innerHTML = name;
+
+                                td4 = document.createElement('td');
+                                td4.setAttribute('name', "rate["+count+"]");
+                                td4.style.textAlign="right";
+                                tr.appendChild(td4);
+                                td4.innerHTML = price;
+
+                                td5 = document.createElement('td');
+                                td5.setAttribute('name', "remove["+count+"]");
+                                td5.style.textAlign="center";
+                                tr.appendChild(td5);
+                                td5.innerHTML = "<a href='#' onclick='removeFunction("+count+");' value='"+count+"'>Remove</a>";
+
+                                tbody.appendChild(tr);
+                                count++;
+
+                            }
+                            document.getElementById('summaryTable').appendChild(tbody);
+
+                            totalSum = totalSum.toFixed(2);
+                            $("#totalPayable").text(totalSum);
+
+                            var p1 = $("#p1").val();
+                            var p2 = $("#p2").val();
+                            var p3 = $("#p3").val();
+                            var p4 = $("#p4").val();
+                            var p5 = $("#p5").val();
+                            var p6 = $("#p6").val();
+                            var p7 = $("#p7").val();
+
+                            var tenderAmt = Number(p1) + Number(p2) + Number(p3) + Number(p4) + Number(p5) + Number(p6) + Number(p7);
+                            tenderAmt = tenderAmt.toFixed(2);
+
+                            var balance = Number(totalSum) - Number(tenderAmt);
+                            balance = balance.toFixed(2);
+
+                            $("#balance").text(balance);
+                            $("#tenderedAmt").text(tenderAmt);
+
+                            var bookingType="";
+
+                            if (document.getElementById('book').checked) {
+                                bookingType = document.getElementById('book').value;
+
+                            }else if (document.getElementById('block').checked) {
+                                bookingType = document.getElementById('block').value;
+                            }
+
+                            $('#showUnavailable').hide();
+
+                            if(bookingType=="book"){
+
+                                $('#showSummary').show();
+                                $('#showPayment').show();
+                                $('#showBtn').show();
+                                $('#submitBtnText').text("Make Payment");
+
+                            }else if(bookingType=="block"){
+
+                                $('#showSummary').show();
+                                $('#showPayment').hide();
+                                $('#showBtn').show();
+                                $('#submitBtnText').text("Block");
+
+                            }else{
+                                $('#showSummary').show();
+                            }
+
+
+                        }else{
+                            $('#showUnavailable').show();
+
+                            $('#showSummary').hide();
+                            $('#showPayment').hide();
+                            $('#showBtn').hide();
+
+                            document.getElementById("checkNRIC").style.color = 'red';
+                            $("#checkNRIC").html('<i class="glyphicon glyphicon-remove"></i>');
+
+                        }
+                    }else{
+
+                        document.getElementById("checkNRIC").style.color = 'red';
+                        $("#checkNRIC").html('<i class="glyphicon glyphicon-remove"></i>');
+
+                        $('#showSummary').hide();
+                        $('#showPayment').hide();
+                        $('#showBtn').hide();
+                    }
+                }
+            })
+        }
+
+        $("#p1").on('change', function(){
+            var p1 = $(this).val();
+            var p2 = $("#p2").val();
+            var p3 = $("#p3").val();
+            var p4 = $("#p4").val();
+            var p5 = $("#p5").val();
+            var p6 = $("#p6").val();
+            var p7 = $("#p7").val();
+            var totalPayable = $("#totalPayable").text();
+            var balance ;
+            var tenderedAmt;
+
+            tenderedAmt = (Number(p1) + Number(p2) + Number(p3) + Number(p4) + Number(p5) + Number(p6) + Number(p7)).toFixed(2);
+            balance = (Number(totalPayable)-Number(tenderedAmt)).toFixed(2);
+
+            $("#balance").text(balance);
+            $("#tenderedAmt").text(tenderedAmt);
+
+        });
+
+        $("#p2").on('change', function(){
+            var p1 = $("#p1").val();
+            var p2 = $(this).val();
+            var p3 = $("#p3").val();
+            var p4 = $("#p4").val();
+            var p5 = $("#p5").val();
+            var p6 = $("#p6").val();
+            var p7 = $("#p7").val();
+            var totalPayable = $("#totalPayable").text();
+            var balance ;
+            var tenderedAmt;
+
+            tenderedAmt = (Number(p1) + Number(p2) + Number(p3) + Number(p4) + Number(p5) + Number(p6) + Number(p7)).toFixed(2);
+            balance = (Number(totalPayable)-Number(tenderedAmt)).toFixed(2);
+
+            $("#balance").text(balance);
+            $("#tenderedAmt").text(tenderedAmt);
+
+        });
+
+        $("#p3").on('change', function(){
+            var p1 = $("#p1").val();
+            var p2 = $("#p2").val();
+            var p3 = $(this).val();
+            var p4 = $("#p4").val();
+            var p5 = $("#p5").val();
+            var p6 = $("#p6").val();
+            var p7 = $("#p7").val();
+            var totalPayable = $("#totalPayable").text();
+            var balance ;
+            var tenderedAmt;
+
+            tenderedAmt = (Number(p1) + Number(p2) + Number(p3) + Number(p4) + Number(p5) + Number(p6) + Number(p7)).toFixed(2);
+            balance = (Number(totalPayable)-Number(tenderedAmt)).toFixed(2);
+
+            $("#balance").text(balance);
+            $("#tenderedAmt").text(tenderedAmt);
+
+        });
+
+        $("#p4").on('change', function(){
+            var p1 = $("#p1").val();
+            var p2 = $("#p2").val();
+            var p3 = $("#p3").val();
+            var p4 = $(this).val();
+            var p5 = $("#p5").val();
+            var p6 = $("#p6").val();
+            var p7 = $("#p7").val();
+            var totalPayable = $("#totalPayable").text();
+            var balance ;
+            var tenderedAmt;
+
+            tenderedAmt = (Number(p1) + Number(p2) + Number(p3) + Number(p4) + Number(p5) + Number(p6) + Number(p7)).toFixed(2);
+            balance = (Number(totalPayable)-Number(tenderedAmt)).toFixed(2);
+
+            $("#balance").text(balance);
+            $("#tenderedAmt").text(tenderedAmt);
+
+        });
+
+        $("#p5").on('change', function(){
+            var p1 = $("#p1").val();
+            var p2 = $("#p2").val();
+            var p3 = $("#p3").val();
+            var p4 = $("#p4").val();
+            var p5 = $(this).val();
+            var p6 = $("#p6").val();
+            var p7 = $("#p7").val();
+            var totalPayable = $("#totalPayable").text();
+            var balance ;
+            var tenderedAmt;
+
+            tenderedAmt = (Number(p1) + Number(p2) + Number(p3) + Number(p4) + Number(p5) + Number(p6) + Number(p7)).toFixed(2);
+            balance = (Number(totalPayable)-Number(tenderedAmt)).toFixed(2);
+
+            $("#balance").text(balance);
+            $("#tenderedAmt").text(tenderedAmt);
+
+        });
+
+        $("#p6").on('change', function(){
+            var p1 = $("#p1").val();
+            var p2 = $("#p2").val()
+            var p3 = $("#p3").val();
+            var p4 = $("#p4").val();
+            var p5 = $("#p5").val();
+            var p6 = $(this).val();
+            var p7 = $("#p7").val();
+            var totalPayable = $("#totalPayable").text();
+            var balance ;
+            var tenderedAmt;
+
+            tenderedAmt = (Number(p1) + Number(p2) + Number(p3) + Number(p4) + Number(p5) + Number(p6) + Number(p7)).toFixed(2);
+            balance = (Number(totalPayable)-Number(tenderedAmt)).toFixed(2);
+
+            $("#balance").text(balance);
+            $("#tenderedAmt").text(tenderedAmt);
+
+        });
+
+        $("#p7").on('change', function(){
+            var p1 = $("#p1").val();
+            var p2 = $("#p2").val()
+            var p3 = $("#p3").val();
+            var p4 = $("#p4").val();
+            var p5 = $("#p5").val();
+            var p6 = $("#p6").val();
+            var p7 = $(this).val();
+            var totalPayable = $("#totalPayable").text();
+            var balance ;
+            var tenderedAmt;
+
+            tenderedAmt = (Number(p1) + Number(p2) + Number(p3) + Number(p4) + Number(p5) + Number(p6) + Number(p7)).toFixed(2);
+            balance = (Number(totalPayable)-Number(tenderedAmt)).toFixed(2);
+
+            $("#balance").text(balance);
+            $("#tenderedAmt").text(tenderedAmt);
+
+        });
+
+
+        var ERROR_SUBMIT = "Total Amount and Tendered Amount are not tally.";
+
+        $(".rb").on('change', function(){
+
+            var bookingType = $(this).val();
+            var nric = $("#nric").val();
+
+
+            if(nric!=""){
+                if(bookingType=="book") {
+
+                    $('#showSummary').show();
+                    $('#showPayment').show();
+                    $('#showBtn').show();
+                    $('#showRemark').hide();
+                    $('#submitBtnText').text("Make Payment");
+
+                }else if(bookingType=="block"){
+
+                    $('#showSummary').show();
+                    $('#showPayment').hide();
+                    $('#showBtn').show();
+                    $('#showRemark').show();
+                    $('#submitBtnText').text("Block Now");
+
+                }
+            }else{
+
+                $('#showSummary').hide();
+                $('#showPayment').hide();
+                $('#showBtn').hide();
+            }
+
+        });
+
+        $("#bookingSubmit").click(function(e){
+            e.preventDefault();
+
+            var totalPayable = $("#totalPayable").text();
+            var tenderedAmt = $("#tenderedAmt").text();
+            var balance = $("#balance").text();
+
+            var nric = $("#nric").val();
+            var email = $("#email").val();
+            var name = $("#name").val();
+            var mobile = $("#phone").val();
+
+
+            mobile = mobile.replace("(65) ","").replace(/_/g,"").replace(" ","");
+            var mobileLength = mobile.length;
+
+            var radios = document.getElementsByName('bookingType');
+
+            var bookingType;
+            for (var i = 0, length = radios.length; i < length; i++) {
+                if (radios[i].checked) {
+                    bookingType = radios[i].value;
+                    break;
+                }
+            }
+
+            var d1 = $("#d1").val();
+            var d2 = $("#d2").val();
+            var d3 = $("#d3").val();
+            var d4 = $("#d4").val();
+            var d5 = $("#d5").val();
+            var d6 = $("#d6").val();
+            var d7 = $("#d7").val();
+
+            var p1 = $("#p1").val();
+            var p2 = $("#p2").val();
+            var p3 = $("#p3").val();
+            var p4 = $("#p4").val();
+            var p5 = $("#p5").val();
+            var p6 = $("#p6").val();
+            var p7 = $("#p7").val();
+
+            if(p1==""){
+                p1="0";
+            }
+            if(p2==""){
+                p2="0";
+            }
+            if(p3==""){
+                p3="0";
+            }
+            if(p4==""){
+                p4="0";
+            }
+            if(p5==""){
+                p5="0";
+            }
+            if(p6==""){
+                p6="0";
+            }
+            if(p7==""){
+                p7="0";
+            }
+            var desc="";
+            var amount="";
+            var SEPARATOR = "|";
+            var CASH = "CASH";
+            var CHEQUE = "Cheque/Cashier Order/Money Order";
+            var VOUCHERS = "Vouchers"
+            var CREDIT_CARD = "Credit Card";
+            var DINERS = "Diners";
+            var BLUE_VOUCHER = "HomeTeamNS Blue Voucher";
+            var NETS = "Nets";
+
+            if(d1==""){
+                desc += CASH + SEPARATOR;
+            }else{
+                desc += d1 + SEPARATOR;
+            }
+
+            if(d2==""){
+                desc += CHEQUE + SEPARATOR;
+            }else{
+                desc += d2 + SEPARATOR;
+            }
+
+            if(d3==""){
+                desc += VOUCHERS + SEPARATOR;
+            }else{
+                desc += d3 + SEPARATOR;
+            }
+
+            if(d4==""){
+                desc += CREDIT_CARD + SEPARATOR;
+            }else{
+                desc += d4 + SEPARATOR;
+            }
+
+            if(d5==""){
+                desc += DINERS + SEPARATOR;
+            }else{
+                desc += d5 + SEPARATOR;
+            }
+
+            if(d6==""){
+                desc += BLUE_VOUCHER + SEPARATOR;
+            }else{
+                desc += d6 + SEPARATOR;
+            }
+
+            if(d7==""){
+                desc += NETS;
+            }else{
+                desc += d7;
+            }
+
+            amount += p1 + SEPARATOR;
+            amount += p2 + SEPARATOR;
+            amount += p3 + SEPARATOR;
+            amount += p4 + SEPARATOR;
+            amount += p5 + SEPARATOR;
+            amount += p6 + SEPARATOR;
+            amount += p7;
+
+            $("#bTotalPayable").val(totalPayable);
+            $("#bDesc").val(desc);
+            $("#bAmount").val(amount);
+            $("#bTenderAmt").val(tenderedAmt);
+
+            var ERROR_SUBMIT = "Total Amount and Tendered Amount are not tally.";
+
+            if((mobileLength==0) || (nric=="") || (name=="") || (email=="")){
+
+                alert("Please fill in all the mandatory fields.");
+
+            }else if(mobileLength<8){
+
+                alert("Invalid Phone Number");
+
+            }else{
+
+                if (bookingType == "book") {
+
+                    if (balance != "0.00") {
+                        alert(ERROR_SUBMIT);
+
+                    } else {
+                        $("#addBooking").submit();
+
+                    }
+
+                }else if (bookingType == "block") {
+
+                    var remark = $("#remarks").val();
+
+                    if (remark==""){
+                        alert("Please fill in remarks for blocking slot(s)");
+                    }else{
+                        $("#addBooking").submit();
+                    }
+
+                }
+            }
+
+        });
+
+
+        $("#deleteSubmit").click(function(e) {
+            e.preventDefault();
+
+            var r = confirm("Do you want to remove this blocking?");
+
+            if(r==true){
+
+                this.form.submit();
+            }
+
+        });
+
+    });
+
+    function removeFunction(val){
+
+
+        var rowCount = $("#summaryTable tr").length;
+
+        var deleteRow = Number(val) + Number(1);
+
+        if(rowCount>2){
+            document.getElementById("summaryTable").deleteRow(deleteRow);
+
+        }else{
+            alert("Must have minimum one slot");
+        }
+
+        var rowCount = $("#summaryTable tr").length;
+        var cellCount =  document.getElementById("summaryTable").rows[0].cells.length;
+
+        var content = "";
+        var DELIMITER = "|";
+        var COMA = ",";
+        var total = 0;
+
+        for(var i=1; i<rowCount; i++){
+
+            for(var j=0; j<cellCount-1; j++){
+                content += document.getElementById("summaryTable").rows[i].cells[j].innerHTML;
+
+                if(j==cellCount-2){
+                    total += Number(document.getElementById("summaryTable").rows[i].cells[j].innerHTML);
+                }
+
+                if(j!=cellCount-2){
+                    content += COMA;
+                }
+            }
+
+            if(i!=rowCount-1){
+                content += DELIMITER;
+            }
+
+        }
+
+        $("#listBookingSummary").val(content);
+
+        total = total.toFixed(2);
+
+        var p1 = $("#p1").val();
+        var p2 = $("#p2").val();
+        var p3 = $("#p3").val();
+        var p4 = $("#p4").val();
+        var p5 = $("#p5").val();
+        var p6 = $("#p6").val();
+        var p7 = $("#p7").val();
+
+        var tenderAmt =  + Number(p2) + Number(p3) + Number(p4) + Number(p5) + Number(p6) + Number(p7);
+        var balance = Number(total) - Number(tenderAmt);
+        balance = balance.toFixed(2);
+
+        $("#totalPayable").text(total);
+        $("#balance").text(balance);
+
+    }
+
+
+</script>
+</body>
+</html>

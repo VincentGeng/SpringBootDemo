@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/template :: meta('Members')">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HomeTeam NS | Members</title>
+</head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<div class="wrapper">
+    <div th:replace="fragments/template :: header"></div>
+    <div th:replace="fragments/template :: sidebar('member')"></div>
+    <div class="content-wrapper">
+        <!--/*@thymesVar id="header" type="java.lang.String"*/-->
+        <!--/*@thymesVar id="memberPreferences" type="java.util.HashMap"*/-->
+        <!--/*@thymesVar id="contact" type="com.techstudio.htns.domain.Member"*/-->
+        <div th:replace="fragments/template :: content-header(${member.fullName})"></div>
+        <!-- Main content -->
+        <section class="content">
+            <div id="wizard-form">
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">PERSONAL PARTICULARS</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Nationality
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getNationalityId()}">
+                                </div>
+                                <div class="form-group" id="is_pr_form_group">
+                                    <label>
+                                        <red>*</red>
+                                        Are you a PR?
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getIsPr()}">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        NRIC
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getNric()}">
+                                </div>
+                                <div class="form-group" id="passport_no_form_group">
+                                    <label>Passport No.</label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getPassportNo()}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Salutation
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getSalutation()}">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Full name (As on NRIC/FIN)
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getFullName()}">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Gender
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${'Male'}" th:if="${member.getGender() == 'M'}">
+                                    <input type="text" class="form-control" value="" disabled th:value="${'Female'}" th:if="${member.getGender() == 'F'}">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Race
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getRace()}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Date Of Birth (DD-MM-YYYY)
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${#dates.format(member.getDob(), 'dd-MM-yyyy')}">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Marital Status
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getMaritalStatus()}">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Preferred name on card
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getExpiry()}">
+                                </div>
+                                <div class="form-group">
+                                    <label>No. of Children</label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getStatus()}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">CONTACT INFORMATION</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Postal Code
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:if="${member.getAddress()} != null" th:value="${member.getAddress().getPostalCode()}">
+                                    <input type="text" class="form-control" value="" disabled th:if="${member.getAddress()} == null">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Address Line 1
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:if="${member.getAddress()} != null" th:value="${member.getAddress().getLine_1()}">
+                                    <input type="text" class="form-control" value="" disabled th:if="${member.getAddress()} == null">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Address Line 2
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:if="${member.getAddress()} != null" th:value="${member.getAddress().getLine_2()}">
+                                    <input type="text" class="form-control" value="" disabled th:if="${member.getAddress()} == null">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Unit No.
+                                    </label>
+                                    <div class="input-group" th:if="${member.getAddress()} != null" th:with="unitSplit=${#strings.arraySplit(member.getAddress().getUnitNumber(), '-')}">
+                                        <span class="input-group-addon">#</span>
+                                        <input type="text" class="form-control" value="" disabled th:value="${unitSplit[0]}">
+                                        <span class="input-group-addon">-</span>
+                                        <input type="text" class="form-control" value="" disabled th:value="${unitSplit[1]}">
+                                    </div>
+                                    <div class="input-group" th:if="${member.getAddress()} == null">
+                                        <span class="input-group-addon">#</span>
+                                        <input type="text" class="form-control" value="" disabled>
+                                        <span class="input-group-addon">-</span>
+                                        <input type="text" class="form-control" value="" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group" th:each="phone : ${member.getPhoneList()}">
+                                    <label th:if="${phone.getType()} == 'home'">Home No.</label>
+                                    <label th:if="${phone.getType()} == 'mobile'">
+                                        <red>*</red>
+                                        Mobile No.
+                                    </label>
+                                    <label th:if="${phone.getType()} == 'office'">Office No.</label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${phone.getNumber()}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Email
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getEmail()}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-default" th:if="${member.getMemberMain()} != null">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">EMERGENCY CONTACT</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Name
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getMemberMain().getEcFullName()}">
+                                </div>
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Relationship
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getMemberMain().getEcRelationship()}">
+                                </div>
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Contact No.
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getMemberMain().getEcPhone()}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-default" th:if="${member.getMemberMain()} != null">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">OTHER PARTICULARS</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Occupation:
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getMemberMain().getOccupation().getValue()}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Annual Income
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getMemberMain().getAnnualIncome().getValue()}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Highest Education Level
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getMemberMain().getHigherEducation().getValue()}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Housing Type
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getMemberMain().getHousingType().getValue()}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">PREFERENCES</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Interest Groups</label>
+                                    <div th:each="preference : ${member.getPreferences()}">
+                                        <span class="label label-default label-13" th:if="${preference.getGroup() == 'interest_group'}" th:data-id="${preference.getPreferenceId()}" th:text="${preference.getValue()}">Option</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Perks & Privileges</label>
+                                    <div th:each="preference : ${member.getPreferences()}">
+                                        <span class="label label-default label-13" th:if="${preference.getGroup() == 'perks_privileges'}" th:data-id="${preference.getPreferenceId()}" th:text="${preference.getValue()}">Option</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Arts & Lifestyle</label>
+                                    <div th:each="preference : ${member.getPreferences()}">
+                                        <span class="label label-default label-13" th:if="${preference.getGroup() == 'arts_lifestyle'}" th:data-id="${preference.getPreferenceId()}" th:text="${preference.getValue()}">Option</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Sports</label>
+                                    <div th:each="preference : ${member.getPreferences()}">
+                                        <span class="label label-default label-13" th:if="${preference.getGroup() == 'sports'}" th:data-id="${preference.getPreferenceId()}" th:text="${preference.getValue()}">Option</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Education & Lifeskills</label>
+                                    <div th:each="preference : ${member.getPreferences()}">
+                                        <span class="label label-default label-13" th:if="${preference.getGroup() == 'edu_lifeskills'}" th:data-id="${preference.getPreferenceId()}" th:text="${preference.getValue()}">Option</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Children's Programmes</label>
+                                    <div th:each="preference : ${member.getPreferences()}">
+                                        <span class="label label-default label-13" th:if="${preference.getGroup() == 'children_program'}" th:data-id="${preference.getPreferenceId()}" th:text="${preference.getValue()}">Option</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">NEWSLETTER SUBSCRIPTION</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input th:if="${member.getSubscribeEmail() == 1}" type="checkbox" value="1" checked disabled th:text="'Email'">
+                                            <input th:if="${member.getSubscribeEmail() == 0 || member.getSubscribeEmail() == null}" type="checkbox" disabled th:text="'Email'">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input th:if="${member.getSubscribeSms() == 1}" type="checkbox" value="1" checked disabled th:text="'SMS'">
+                                            <input th:if="${member.getSubscribeSms() == 0 || member.getSubscribeSms() == null}" type="checkbox" disabled th:text="'SMS'">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input th:if="${member.getSubscribePostal() == 1}" type="checkbox" value="1" checked disabled th:text="'Postal Mail'">
+                                            <input th:if="${member.getSubscribePostal() == 0 || member.getSubscribePostal() == null}" type="checkbox" disabled th:text="'Postal Mail'">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input th:if="${member.getSubscribeVoice() == 1}" type="checkbox" value="1" checked disabled th:text="'Voice'">
+                                            <input th:if="${member.getSubscribeVoice() == 0 || member.getSubscribeVoice() == null}" type="checkbox" disabled th:text="'Voice'">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">PARTICULARS OF FAMILY MEMBERS</h3>
+                    </div>
+                    <div class="box-body">
+                        <input type="hidden" name="subMemberCount" id="sub-member-count" value="0">
+                        <div class="row family-form">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Relationship
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Nationality
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled>
+                                </div>
+                                <div class="form-group family_is_pr_form_group">
+                                    <label>
+                                        <red>*</red>
+                                        Are you a PR?
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        NRIC/FIN/Birth Cert No.
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Passport No.</label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getPassportNo()}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Full Name (As In NRIC/FIN/Birth Cert)
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Gender
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Race
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Date Of Birth (dd-mm-yyyy)</label>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control" value="" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Mobile No.
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Email
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <red>*</red>
+                                        Family Membership Fee
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>
+                                        Supporting Document:
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">MEMBERSHIP INFO</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Membership Type
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Membership Card Type
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Membership Status
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Registration Type
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Expiry Date
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${#dates.format(member.getExpiry(), 'dd-MM-yyyy')}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Remaining Day(s)
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${member.getRemainingDay()}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Created At
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${#dates.format(member.getCreatedAt(), 'dd-MM-yyyy HH:mm:ss')}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        Updated At
+                                    </label>
+                                    <input type="text" class="form-control" value="" disabled th:value="${#dates.format(member.getUpdatedAt(), 'dd-MM-yyyy HH:mm:ss')}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Remarks</label>
+                                    <textarea type="text" class="form-control" name="remarkReason" disabled></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div th:replace="fragments/template :: footer"></div>
+</div>
+<div th:include="fragments/template :: javascript" th:remove="tag"></div>
+<script>
+    $(document).ready(function() {
+    });
+</script>
+</body>
+</html>

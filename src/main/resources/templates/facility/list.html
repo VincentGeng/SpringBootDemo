@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/template :: meta('Members')"></head>
+<body class="hold-transition skin-red-light sidebar-mini fixed">
+<div class="wrapper">
+    <div th:replace="fragments/template :: header"></div>
+    <div th:replace="fragments/template :: sidebar('facility')"></div>
+    <div class="content-wrapper">
+        <!--/*@thymesVar id="header" type="java.lang.String"*/-->
+        <div th:replace="fragments/template :: content-header(${header})"></div>
+        <!-- Main content -->
+        <section class="content">
+            <!--<div class="box box-default">-->
+                <!--&lt;!&ndash;<div class="box-body">&ndash;&gt;-->
+                    <!--<div class="row">-->
+                        <!--<div class="col-sm-12">-->
+                            <table id="example" class="table table-bordered table-hover dataTable display clickable" cellspacing="0" width="100%">
+                                <thead>
+                                <tr role="row">
+                                    <th>Invoice</th>
+                                    <th>Location</th>
+                                    <th>Facility</th>
+                                    <th>Date</th>
+                                    <th>Slot</th>
+                                    <th>NRIC</th>
+                                    <th>Status</th>
+                                    <th>Updated Date</th>
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                <tr>
+                                    <th>Invoice</th>
+                                    <th>Location</th>
+                                    <th>Facility</th>
+                                    <th>Date</th>
+                                    <th>Slot</th>
+                                    <th>NRIC</th>
+                                    <th>Status</th>
+                                    <th>Updated Date</th>
+                                </tr>
+                                </tfoot>
+                                <tbody>
+                                    <!--/*@thymesVar id="bookingList" type="java.lang.List<com.techstudio.htns.domain.FacilityBooking>"*/-->
+                                    <!--/*@thymesVar id="booking" type="com.techstudio.htns.domain.FacilityBooking"*/-->
+                                    <tr th:each="booking : ${bookingList}" th:data-href="@{/facility/bookingDetail(id=${booking.getId()})}">
+                                        <td th:text="${booking.getFacilityBookingExtension().getInvoice()} ? ${booking.getFacilityBookingExtension().getInvoice().getName()} : ''">{{invoice}}</td>
+                                        <td th:text="${booking.getFacilityBookingExtension().getFacility().getFacilityExtension()} ? ${booking.getFacilityBookingExtension().getFacility().getFacilityExtension().getBusinessUnit().getName()} : ''">{{category}}</td>
+                                        <td th:text="${booking.getFacilityBookingExtension().getFacility().getFacilityExtension().getName()}">{{facility}}</td>
+                                        <td th:text="${booking.getFacilityBookingExtension().getStartDate()} ? ${#dates.format(booking.getFacilityBookingExtension().getStartDate(), 'dd-MM-yyyy')} : ''">{{startDate}}</td>
+                                        <td th:text="${booking.getFacilityBookingExtension().getStartDate()} ? ${#dates.format(booking.getFacilityBookingExtension().getStartDate(), 'hh:mm a')} + ' - ' + ${#dates.format(booking.getFacilityBookingExtension().getEndDate(), 'hh:mm a')} : ''">{{startTime}}</td>
+                                        <td th:text="${booking.getFacilityBookingExtension().getNonMemberNric()}">{{nric}}</td>
+                                        <td th:text="${booking.getFacilityBookingExtension().getBookingStatusStr()}">{{status}}</td>
+                                        <td th:text="${booking.getModifiedOn()} ? ${#dates.format(booking.getModifiedOn(), 'dd-MM-yyyy HH:mm:ss')}">{{createdOn}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--</div>-->
+        </section>
+    </div>
+    <div th:replace="fragments/template :: footer"></div>
+</div>
+<div th:include="fragments/template :: javascript" th:remove="tag"></div>
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable({
+            "ordering": false,
+            "dom": '<"top"iflp<"clear">>rt<"bottom"iflp<"clear">>',
+            "drawCallback": function(settings, json) {
+                $("tr[data-href]").on('click', function() {
+                    window.location = $(this).data("href");
+                });
+            }
+        });
+
+        var invoice =  $("#invoice").val();
+
+        if((invoice!=null)&&(invoice!="")){
+            $("#showInvoice").show();
+        }
+    } );
+</script>
+</body>
+</html>

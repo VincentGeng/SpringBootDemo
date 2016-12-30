@@ -45,15 +45,13 @@
                 <div class="htns-info">
                     <div class="htns-username">
                         <a href="#">
-                            <!-- <span th:text ="${#authentication.principal.fullname}">{{loggedInUser}}</span> -->
-                            <span>Vincent Geng</span>
+                            <span th:text ="${#authentication.principal.fullname}">{{loggedInUser}}</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-down pull-right"></i>
                             </span>
                         </a>
                     </div>
-                    <!-- <p th:text="${#authentication.principal.roleDisplay}">{{UserAccountType}}</p> -->
-                    <p>Developer</p>
+                    <p th:text="${#authentication.principal.roleDisplay}">{{UserAccountType}}</p>
                 </div>
             </div>
             <ul class="sidebar-menu">
@@ -63,8 +61,8 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li th:classappend="${page == 'profile' ? 'active' : ''}">
-                    <a href="#" >
+                <li sec:authorize="hasRole('MEMBER')" th:classappend="${page == 'profile' ? 'active' : ''}">
+                    <a href="#" th:href="@{/profile/(id=${#authentication.principal.contact.contactId})}">
                         <i class="glyphicon glyphicon-user"></i>
                         <span>My Profile</span>
                         <span class="pull-right-container">
@@ -72,7 +70,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="treeview" th:classappend="${page == 'member' ? 'active' : ''}">
+                <li sec:authorize="hasRole('ADMIN')" class="treeview" th:classappend="${page == 'member' ? 'active' : ''}">
                     <a href="#">
                         <i class="fa fa-users"></i>
                         <span>Membership Management</span>
@@ -88,7 +86,7 @@
                         <li th:if="false"><a href="#">Preferences Settings</a></li>
                     </ul>
                 </li>
-                <li class="treeview" th:classappend="${page == 'facility' ? 'active' : ''}">
+                <li sec:authorize="hasRole('USER')" class="treeview" th:classappend="${page == 'facility' ? 'active' : ''}">
                     <a href="#">
                         <i class="fa fa-cube"></i>
                         <span>Facility Booking</span>
@@ -97,11 +95,11 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="#" th:href="@{/facility/booking}">Make a Booking</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><a href="#" th:href="@{/facility/booking}">Make a Booking</a></li>
                         <li><a href="#" th:href="@{/facility/listing}">Booking Listing</a></li>
                     </ul>
                 </li>
-                <li class="treeview" th:classappend="${page == 'chalet' ? 'active' : ''}">
+                <li sec:authorize="hasRole('USER')" class="treeview" th:classappend="${page == 'chalet' ? 'active' : ''}">
                     <a href="#">
                         <i class="fa fa-calendar-check-o"></i>
                         <span>Chalet Booking</span>
@@ -110,11 +108,11 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="#" th:href="@{/chalet/booking}">Make a Booking</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><a href="#" th:href="@{/chalet/booking}">Make a Booking</a></li>
                         <li><a href="#" th:href="@{/chalet/listing}">Booking Listing</a></li>
                     </ul>
                 </li>
-                <li class="treeview" th:classappend="${page == 'golf' ? 'active' : ''}">
+                <li sec:authorize="hasRole('USER')" class="treeview" th:classappend="${page == 'golf' ? 'active' : ''}">
                     <a href="#">
                         <i class="fa fa-book"></i>
                         <span>Golf Booking</span>
@@ -123,11 +121,11 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="#" th:href="@{/golfing/booking}">Make a Booking</a></li>
+                        <li sec:authorize="hasRole('MEMBER')"><a href="#" th:href="@{/golfing/booking}">Make a Booking</a></li>
                         <li><a href="#" th:href="@{/golfing/listing}">Booking Listing</a></li>
                     </ul>
                 </li>
-                <li th:classappend="${page == 'pos' ? 'active' : ''}">
+                <li sec:authorize="hasRole('ADMIN')" th:classappend="${page == 'pos' ? 'active' : ''}">
                     <a href="#">
                         <i class="fa fa-tags"></i>
                         <span>Point of Sales</span>
@@ -136,11 +134,11 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="#" th:href="@{/pos/add}">Add Invoice</a></li>
-                        <li><a href="#" th:href="@{/pos/home}">Invoice Listing</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><a href="#" th:href="@{/pos/add}">Add Invoice</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><a href="#" th:href="@{/pos/home}">Invoice Listing</a></li>
                     </ul>
                 </li>
-                <li class="treeview" th:classappend="${page == 'event' ? 'active' : ''}">
+                <li sec:authorize="hasRole('ADMIN')" th:if="false" class="treeview" th:classappend="${page == 'event' ? 'active' : ''}">
                     <a href="#">
                         <i class="fa fa-gift"></i>
                         <span>Event Management</span>
@@ -152,7 +150,7 @@
                         <li><a href="#">New Event</a></li>
                     </ul>
                 </li>
-                <li class="treeview" th:classappend="${page == 'product' ? 'active' : ''}">
+                <li sec:authorize="hasRole('ADMIN')" th:if="false" class="treeview" th:classappend="${page == 'product' ? 'active' : ''}">
                     <a href="#">
                         <i class="fa fa-shopping-bag"></i>
                         <span>Product Management</span>
@@ -165,7 +163,7 @@
                         <li><a href="#">Product Category</a></li>
                     </ul>
                 </li>
-                <li class="treeview" th:classappend="${page == 'staff' ? 'active' : ''}">
+                <li sec:authorize="hasRole('ADMIN')" th:if="false" class="treeview" th:classappend="${page == 'staff' ? 'active' : ''}">
                     <a href="#">
                         <i class="fa fa-user"></i>
                         <span>Staff Management</span>
@@ -178,7 +176,7 @@
                         <li><a href="#">Staff Listing</a></li>
                     </ul>
                 </li>
-                <li class="treeview" th:classappend="${page == 'settings' ? 'active' : ''}">
+                <li sec:authorize="hasRole('ADMIN')" th:if="false" class="treeview" th:classappend="${page == 'settings' ? 'active' : ''}">
                     <a href="#">
                         <i class="fa fa-cog"></i>
                         <span>Settings</span>
@@ -197,7 +195,7 @@
                         <li><a href="#">Cancellation Policy</a></li>
                     </ul>
                 </li>
-                <!-- <li th:classappend="${page == 'profile' ? 'active' : ''}">
+                <li sec:authorize="hasRole('MEMBER')" th:classappend="${page == 'profile' ? 'active' : ''}">
                     <a href="#" th:href="@{/settings/change-password/(id=${#authentication.principal.contact.contactId})}">
                         <i class="glyphicon glyphicon-lock"></i>
                         <span>Change Password</span>
@@ -205,7 +203,7 @@
                             <i class="fa fa-angle-right pull-right"></i>
                         </span>
                     </a>
-                </li> -->
+                </li>
                 <li>
                     <a th:href="@{/logout}">
                         <i class="fa fa-sign-out"></i>

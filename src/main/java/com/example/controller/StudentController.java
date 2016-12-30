@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.example.model.StudentDTO;
 import com.example.service.StudentService;
 
 @RestController
-@RequestMapping(value="/class/student")
-public class StudentController {
+@RequestMapping(value="/student")
+public class StudentController extends BaseController{
 	
 	private StudentService studentService;
 	
@@ -23,6 +24,11 @@ public class StudentController {
     public void setStudentServiceImpl(StudentService studentService) {
         this.studentService = studentService;
     }
+	
+	@Override
+	protected String getModuleFolder() {
+		return "student/";
+	}
 	
 	@RequestMapping(value="/",method = RequestMethod.GET)
 	public ArrayList<StudentDTO> getAllStudents(){
@@ -69,6 +75,11 @@ public class StudentController {
 		}
 		
 		return student;
+	}
+	
+	@RequestMapping(value="/test",method = RequestMethod.GET)
+	public ModelAndView test(){
+		return goToCurrentFolderPage("blank");
 	}
 
 }

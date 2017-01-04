@@ -2,6 +2,8 @@ package com.example.controller;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +19,8 @@ import com.example.service.StudentService;
 @RestController
 @RequestMapping(value="/student")
 public class StudentController extends BaseController{
+	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private StudentService studentService;
 	

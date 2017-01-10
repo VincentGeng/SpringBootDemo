@@ -28,7 +28,7 @@ public class PublicController extends BaseController{
     	log.info("loginPage||GET|Error Message is present:"+error.isPresent());
     	if(error.isPresent()) {
     		log.info("loginPage||GET|EXIT");
-        	return new ModelAndView("public/login", "error", error);
+        	return new ModelAndView("public/login", "error", error.get());
     	}else {
     		log.info("loginPage||GET|EXIT");
         	return goToCurrentFolderPage("login");
@@ -43,7 +43,7 @@ public class PublicController extends BaseController{
     		) {
     	log.info("loginErrorPage||GET|ENTRY");
     	
-    	redirectAttrs.addFlashAttribute("errorMsg", "Incorrect Email or Password!");
+    	redirectAttrs.addFlashAttribute("error", "Incorrect Email or Password!");
     	
 		log.info("loginErrorPage||GET|EXIT");
     	return redirectToPage("/public/login");

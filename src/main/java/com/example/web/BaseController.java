@@ -1,6 +1,7 @@
-package com.example.controller;
+package com.example.web;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -19,6 +20,10 @@ public abstract class BaseController {
 	
 	protected ModelAndView goToCurrentFolderPage(String pageName) {
 		return new ModelAndView(getModuleFolder() + pageName);
+	}
+	
+	protected ModelAndView goToCurrentFolderPageWithModel(String pageName, String modelName, Model model) {
+		return new ModelAndView(getModuleFolder() + pageName, modelName, model);
 	}
 	
 	protected String getLoginPath() {

@@ -2,7 +2,7 @@ package com.example.service;
 
 import java.util.ArrayList;
 
-import com.example.model.StudentDTO;
+import com.example.domain.StudentDTO;
 
 public interface StudentService {
 	

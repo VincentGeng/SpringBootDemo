@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.dao.StudentDAO;
-import com.example.model.StudentDTO;
+import com.example.domain.StudentDTO;
+import com.example.repository.StudentDAO;
 import com.example.service.StudentService;
 
 @Transactional

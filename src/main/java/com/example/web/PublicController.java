@@ -5,12 +5,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class PublicController extends BaseController{
@@ -23,30 +21,31 @@ public class PublicController extends BaseController{
 	}
 
     @RequestMapping(value="/login",method = RequestMethod.GET)
-    public ModelAndView loginPage(@RequestParam Optional<String> error) {
+    public ModelAndView loginPage(
+    		@RequestParam Optional<String> error,
+    		@RequestParam Optional<String> logout
+    		) {
     	log.info("loginPage||GET|ENTRY");
     	log.info("loginPage||GET|Error Message is present:"+error.isPresent());
+    	log.info("loginPage||GET|logout Message is present:"+logout.isPresent());
+    	
     	if(error.isPresent()) {
+    		
     		log.info("loginPage||GET|EXIT");
-        	return new ModelAndView("public/login", "error", error.get());
-    	}else {
+        	return new ModelAndView("public/login", "errorMsg", "Invalid username or password!");
+        	
+    	}else if(logout.isPresent()){
+    		
+    		log.info("loginPage||GET|EXIT");
+        	return new ModelAndView("public/login", "logoutMsg", "You've been logged out successfully.");
+        	
+    	}else{
+    		
     		log.info("loginPage||GET|EXIT");
         	return goToCurrentFolderPage("login");
+        	
     	}
 		
-    }
-    
-    @RequestMapping(value="/login-error",method = RequestMethod.GET)
-    public String loginErrorPage(
-    		RedirectAttributes redirectAttrs,
-    		Model model
-    		) {
-    	log.info("loginErrorPage||GET|ENTRY");
-    	
-    	redirectAttrs.addFlashAttribute("error", "Incorrect Email or Password!");
-    	
-		log.info("loginErrorPage||GET|EXIT");
-    	return redirectToPage("/public/login");
     }
     
     @RequestMapping(value="/reset-password",method = RequestMethod.GET)

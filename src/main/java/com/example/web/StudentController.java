@@ -83,7 +83,7 @@ public class StudentController extends BaseController{
 	
 	@RequestMapping(value="/test",method = RequestMethod.GET)
 	public ModelAndView test(){
-		return goToCurrentFolderPage("dashboard");
+		return goToCurrentFolderPage("test");
 	}
 
 }

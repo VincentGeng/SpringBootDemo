@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Controller
-public class MainController {
+public class HomeController {
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	

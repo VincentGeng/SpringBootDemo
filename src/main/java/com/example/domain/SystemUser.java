@@ -35,6 +35,9 @@ public class SystemUser implements UserDetails{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+	
+	@Column(name = "fullname", columnDefinition="varchar(150)", nullable = false, unique = true)
+    private String fullname;
 
     @Column(name = "username", columnDefinition="varchar(150)", nullable = false, unique = true)
     private String username;
@@ -109,6 +112,14 @@ public class SystemUser implements UserDetails{
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
 	}
 
 	public List<SystemRole> getRoles() {

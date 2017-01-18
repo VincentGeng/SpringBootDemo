@@ -1,7 +1,6 @@
 package com.example.config;
 
 
-
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         		.csrf().disable()
         		
         		.authorizeRequests()
-        		.antMatchers("/public/**").permitAll()
+        		.antMatchers("/login", "/sign-up", "/forgot-password").permitAll()
                 .anyRequest().authenticated()
                 
                 .and()
@@ -101,7 +100,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     public void configure(WebSecurity web) throws Exception {
         web
         	.ignoring()
-        	.antMatchers("/bootstrap/**", "/dist/**", "/plugins/**");
+        	.antMatchers("/bootstrap/**", "/dist/**", "/plugins/**", "/public/**");
     }
     
     @Bean(name="persistentTokenRepository")

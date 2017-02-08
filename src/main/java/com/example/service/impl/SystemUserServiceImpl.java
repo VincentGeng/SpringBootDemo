@@ -24,4 +24,9 @@ public class SystemUserServiceImpl implements SystemUserService{
 		systemUserRepository.save(systemUser);
 	}
 
+	@Override
+	public boolean checkIfSystemUserExistsByEmail(String email) {
+		return systemUserRepository.findByUsername(email).isPresent();
+	}
+
 }

@@ -48,7 +48,7 @@ public class PublicController extends BaseController{
     	}else if(logout.isPresent()){
     		
     		log.info("loginPage||GET|EXIT");
-        	return new ModelAndView("public/login", "logoutMsg", "You've been logged out successfully.");
+        	return new ModelAndView("public/login", "successMsg", "You've been logged out successfully.");
         	
     	}else{
     		
@@ -79,31 +79,47 @@ public class PublicController extends BaseController{
     	return goToCurrentFolderPage("login");
     }
     
-    @RequestMapping(value="/forgot-password",method = RequestMethod.GET)
-    public ModelAndView forgotPasswordPage(
-    		@RequestParam Optional<String> error,
-    		@RequestParam Optional<String> message
+    @RequestMapping(value="/begin_reset_password",method = RequestMethod.GET)
+    public ModelAndView beginResetPasswordPage(
+    		@RequestParam Optional<String> errorMsg
     		) {
-    	log.info("forgotPasswordPage||GET|ENTRY");
-    	log.info("forgotPasswordPage||GET|Error is present:"+error.isPresent());
-    	log.info("forgotPasswordPage||GET|Message is present:"+message.isPresent());
+    	log.info("beginResetPasswordPage||GET|ENTRY");
+    	log.info("beginResetPasswordPage||GET|Error Message: "+errorMsg);
     	
-    	if(error.isPresent()) {
-    		
-    		log.info("forgotPasswordPage||GET|EXIT");
-        	return new ModelAndView("public/forgot_password", "error", error.get());
-        	
-    	}else if(message.isPresent()){
-    		
-    		log.info("forgotPasswordPage||GET|EXIT");
-        	return new ModelAndView("public/forgot_password", "message", message.get());
-        	
-    	}else{
-    		
-    		log.info("forgotPasswordPage||GET|EXIT");
-    		return goToCurrentFolderPage("forgot_password");
-        	
+    	if(errorMsg.isPresent()) {
+    		log.info("beginResetPasswordPage||GET|EXIT");
+    		return new ModelAndView("public/begin_reset_password", "errorMsg", errorMsg.get());
+    	}else {
+    		log.info("beginResetPasswordPage||GET|EXIT");
+    		return goToCurrentFolderPage("begin_reset_password");
     	}
+        
+    }
+    
+    @RequestMapping(value="/begin_reset_password",method = RequestMethod.POST)
+    public ModelAndView resetPasswordFormSubmit(
+    		@RequestParam String email
+    		) {
+    	log.info("beginResetPasswordPage||POST|ENTRY");
+    	log.info("beginResetPasswordPage||POST|Email:"+email);
+    	
+    	if(systemUserService.checkIfSystemUserExistsByEmail(email)) {
+    		//resetPasswordEmailService
+    		return resetEmailSentPage(email);
+    	}else {
+    		return beginResetPasswordPage(Optional.of("We couldn't find your account with that information"));
+    	}
+    	
+    }
+    
+    @RequestMapping(value="/reset_email_sent",method = RequestMethod.GET)
+    public ModelAndView resetEmailSentPage(
+    		@RequestParam String email
+    		) {
+    	log.info("resetEmailSentPage||POST|ENTRY");
+    	log.info("resetEmailSentPage||POST|Email:"+email);
+    	
+    	return new ModelAndView("public/reset_email_sent", "email", email.replaceAll("(\\w{1,2})(\\w+)(@.*)", "$1****$3"));
     	
     }
     

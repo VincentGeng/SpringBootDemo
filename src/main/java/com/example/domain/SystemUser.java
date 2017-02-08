@@ -26,6 +26,7 @@ public class SystemUser implements UserDetails{
 	 * 
 	 */
 	private static final long serialVersionUID = 5761555019930249687L;
+	private static final int ACTIVE_SYSTEM_USER = 1;
 	
 	//# ===============================
 	//# = Column definition
@@ -36,7 +37,7 @@ public class SystemUser implements UserDetails{
     @Column(name = "id")
     private Long id;
 	
-	@Column(name = "fullname", columnDefinition="varchar(150)", nullable = false, unique = true)
+	@Column(name = "fullname", columnDefinition="varchar(150)", nullable = false)
     private String fullname;
 
     @Column(name = "username", columnDefinition="varchar(150)", nullable = false, unique = true)
@@ -94,7 +95,7 @@ public class SystemUser implements UserDetails{
 	@Override
 	public boolean isEnabled() {
 		
-		if(getStatus() == 1) {
+		if(getStatus() == ACTIVE_SYSTEM_USER) {
 			return true;
 		}else{
 			return false;

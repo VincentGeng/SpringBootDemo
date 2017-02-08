@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+	<head th:replace="fragments/template :: meta('Login')"></head>
+	<body class="hold-transition login-page">
+		<div class="login-box">
+	  		<div class="login-logo">
+				<a href="https://github.com/VincentGeng/" class="logo">
+					<img th:src="@{/dist/img/spring-boot.png}" src="../../dist/img/spring-boot.png" style="width:200px" alt="SpringBootDemo" class="navbar-logo">
+				</a>
+	  		</div>
+	  		<!-- /.login-logo -->
+	  		<div class="login-box-body">
+	    		<div style="font-size: 20px; margin-bottom: 15px; font-weight: bold">Check your Account</div>
+	    		<p>We've sent an email to <Strong>[[${email}]]</Strong>. Click the link in the email to reset your password.</p>
+	    		<p>If you don't see the email, check other places it might be, like your junk, spam, social, or other folders.</p>
+	  		</div>
+	  		<!-- /.login-box-body -->
+	  		<div th:replace="fragments/template :: form-footer"></div>
+		</div>
+		<!-- /.login-box -->
+	
+		<!-- jQuery 2.2.3 -->
+		<script th:src="@{/plugins/jQuery/jquery-2.2.3.min.js}"></script>
+		<!-- Bootstrap 3.3.6 -->
+		<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+	</body>
+</html>

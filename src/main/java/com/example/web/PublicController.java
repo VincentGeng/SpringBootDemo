@@ -131,22 +131,16 @@ public class PublicController extends BaseController{
     	log.info("resetEmailSentPage||POST|ENTRY");
     	log.info("resetEmailSentPage||POST|Email:"+email);
     	
-    	return new ModelAndView("public/reset_email_sent", "email", email.replaceAll("(\\w{1,2})(\\w+)(@.*)", "$1****$3"));
-    	
-    }
-    
-    @RequestMapping(value="/email",method = RequestMethod.GET)
-    public void sendEmail(
-    		HttpServletRequest request
-    		) {
-    	log.info("sendEmail||POST|ENTRY");
     	String resetPasswordLink = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/reset_password_link/";
     	Context context = new Context();
-        context.setVariable("user", "vincentgeng90@gmail.com");
+        context.setVariable("user", email);
         context.setVariable("reset_password_link", resetPasswordLink);
 
         String emailContent = templateEngine.process("emails/reset_password", context);
     	mailService.sendResetPasswordMail(null, emailContent);
+    	
+    	return new ModelAndView("public/reset_email_sent", "email", email.replaceAll("(\\w{1,2})(\\w+)(@.*)", "$1****$3"));
+    	
     }
     
 }

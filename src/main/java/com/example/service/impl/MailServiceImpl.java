@@ -34,6 +34,7 @@ public class MailServiceImpl implements MailService{
         this.sendMail(email, SUBJECT_RESET_PASSWORD_USER, content, true, null);
     }
 	
+	@Async
     private void sendMail(String email, String subject, String content, Boolean isHtml, String filepath) {
         String defaultSender = SENDER_NAME;
         String defaultSenderEmail = SENDER_EMAIL;

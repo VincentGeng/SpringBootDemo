@@ -26,6 +26,7 @@ public class SystemUser implements UserDetails{
 	 * 
 	 */
 	private static final long serialVersionUID = 5761555019930249687L;
+	
 	private static final int ACTIVE_SYSTEM_USER = 1;
 	
 	//# ===============================
@@ -101,6 +102,14 @@ public class SystemUser implements UserDetails{
 			return false;
 		}
 		
+	}
+	
+	//# ===============================
+	//# = Constructor
+	//# ===============================
+	
+	public SystemUser() {
+		super();
 	}
 	
 	//# ===============================

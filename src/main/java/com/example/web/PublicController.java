@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
+
 import com.example.domain.SystemUser;
 import com.example.service.MailService;
 import com.example.service.SystemUserService;
@@ -32,9 +31,6 @@ public class PublicController extends BaseController{
     
     @Autowired
     private MailService mailService;
-    
-    @Autowired
-    private TemplateEngine templateEngine;
     
     @Override
 	protected String getModuleFolder() {
@@ -132,13 +128,10 @@ public class PublicController extends BaseController{
     	log.info("resetEmailSentPage||POST|Email:"+email);
     	
     	String resetPasswordLink = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/reset_password_link/";
-    	Context context = new Context();
-        context.setVariable("user", email);
-        context.setVariable("reset_password_link", resetPasswordLink);
-
-        String emailContent = templateEngine.process("emails/reset_password", context);
-    	mailService.sendResetPasswordMail(null, emailContent);
     	
+    	mailService.generateTokenAndSendResetPasswordMail(email, resetPasswordLink);
+    	
+    	log.info("resetEmailSentPage||POST|EXIT");
     	return new ModelAndView("public/reset_email_sent", "email", email.replaceAll("(\\w{1,2})(\\w+)(@.*)", "$1****$3"));
     	
     }

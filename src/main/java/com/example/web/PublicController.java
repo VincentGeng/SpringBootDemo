@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.example.domain.ResetPasswordFormDTO;
 import com.example.domain.SystemUser;
 import com.example.service.MailService;
+import com.example.service.ResetPasswordTokenService;
 import com.example.service.SystemUserService;
 
 @Controller
@@ -28,6 +30,9 @@ public class PublicController extends BaseController{
     
     @Autowired
     private SystemUserService systemUserService;
+    
+    @Autowired
+    private ResetPasswordTokenService resetPasswordTokenService;
     
     @Autowired
     private MailService mailService;
@@ -143,20 +148,23 @@ public class PublicController extends BaseController{
     	log.info("resetPasswordFormPage||GET|ENTRY");
     	log.info("resetPasswordFormPage||GET|Token:"+token);
     	
+    	ResetPasswordFormDTO resetPasswordFormDTO = new ResetPasswordFormDTO(resetPasswordTokenService.getSystemUserByToken(token), token);
+    	
     	log.info("resetPasswordFormPage||GET|EXIT");
-    	return new ModelAndView("public/reset_password_form");
+    	return new ModelAndView("public/reset_password_form", "ResetPasswordFormDTO", resetPasswordFormDTO);
     }
     
     @RequestMapping(value="/reset_password_form",method = RequestMethod.POST)
     public ModelAndView resetPasswordFormSubmit(
-    		@ModelAttribute("SystemUser") SystemUser systemUser,
-    		@RequestParam String token
+    		@ModelAttribute ResetPasswordFormDTO resetPasswordFormDTO
     		) {
     	log.info("resetPasswordFormSubmit||POST|ENTRY");
-    	log.info("resetPasswordFormSubmit||POST|Token:"+token);
+    	log.info("resetPasswordFormSubmit||POST|Token:"+resetPasswordFormDTO.getToken());
+    	
+    	systemUserService.saveSystemUser(resetPasswordFormDTO.getSystemUser());
     	
     	log.info("resetPasswordFormSubmit||POST|EXIT");
-    	return new ModelAndView("public/reset_password_form");
+    	return new ModelAndView("public/login", "successMsg", "Your password updated.");
     }
     
 }

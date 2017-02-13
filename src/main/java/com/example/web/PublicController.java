@@ -127,13 +127,36 @@ public class PublicController extends BaseController{
     	log.info("resetEmailSentPage||POST|ENTRY");
     	log.info("resetEmailSentPage||POST|Email:"+email);
     	
-    	String resetPasswordLink = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/reset_password_link/";
+    	String resetPasswordLink = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/reset_password_form/";
     	
     	mailService.generateTokenAndSendResetPasswordMail(email, resetPasswordLink);
     	
     	log.info("resetEmailSentPage||POST|EXIT");
     	return new ModelAndView("public/reset_email_sent", "email", email.replaceAll("(\\w{1,2})(\\w+)(@.*)", "$1****$3"));
     	
+    }
+    
+    @RequestMapping(value="/reset_password_form",method = RequestMethod.GET)
+    public ModelAndView resetPasswordFormPage(
+    		@RequestParam String token
+    		) {
+    	log.info("resetPasswordFormPage||GET|ENTRY");
+    	log.info("resetPasswordFormPage||GET|Token:"+token);
+    	
+    	log.info("resetPasswordFormPage||GET|EXIT");
+    	return new ModelAndView("public/reset_password_form");
+    }
+    
+    @RequestMapping(value="/reset_password_form",method = RequestMethod.POST)
+    public ModelAndView resetPasswordFormSubmit(
+    		@ModelAttribute("SystemUser") SystemUser systemUser,
+    		@RequestParam String token
+    		) {
+    	log.info("resetPasswordFormSubmit||POST|ENTRY");
+    	log.info("resetPasswordFormSubmit||POST|Token:"+token);
+    	
+    	log.info("resetPasswordFormSubmit||POST|EXIT");
+    	return new ModelAndView("public/reset_password_form");
     }
     
 }

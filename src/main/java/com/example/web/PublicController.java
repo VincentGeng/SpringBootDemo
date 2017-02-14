@@ -28,6 +28,10 @@ public class PublicController extends BaseController{
     
     private static final int ACTIVE_SYSTEM_USER = 1;
     
+    private static final String CANNOT_FIND_ACCOUNT = "1";
+    private static final String TOKEN_INVALID = "2";
+    private static final String TOKEN_EXPIRED = "3";
+    
     @Autowired
     private SystemUserService systemUserService;
     
@@ -99,7 +103,24 @@ public class PublicController extends BaseController{
     	
     	if(errorMsg.isPresent()) {
     		log.info("beginResetPasswordPage||GET|EXIT");
-    		return new ModelAndView("public/begin_reset_password", "errorMsg", errorMsg.get());
+    		switch (errorMsg.get()) {
+    		
+	            case CANNOT_FIND_ACCOUNT:  
+            			log.info("beginResetPasswordPage||GET|EXIT");
+            			return new ModelAndView("public/begin_reset_password", "errorMsg", "We couldn't find your account with that information");
+	            
+	            case TOKEN_INVALID:  
+		            	log.info("beginResetPasswordPage||GET|EXIT");
+		    			return new ModelAndView("public/begin_reset_password", "errorMsg", "The reset link you clicked is invalid. Please request a new one.");
+	            
+	            case TOKEN_EXPIRED:
+		            	log.info("beginResetPasswordPage||GET|EXIT");
+		    			return new ModelAndView("public/begin_reset_password", "errorMsg", "The reset link you clicked has expired. Please request a new one.");
+	            
+	            default: 
+	            		return new ModelAndView("public/begin_reset_password", "errorMsg", "The reset link you clicked encountered an unknown error. Please request a new one.");
+    		}
+    		
     	}else {
     		log.info("beginResetPasswordPage||GET|EXIT");
     		return goToCurrentFolderPage("begin_reset_password");
@@ -116,10 +137,13 @@ public class PublicController extends BaseController{
     	log.info("beginResetPasswordPage||POST|Email:"+email);
     	
     	if(systemUserService.checkIfSystemUserExistsByEmail(email)) {
-    		//resetPasswordEmailService
+    		log.info("beginResetPasswordPage||send email");
+			log.info("beginResetPasswordPage||POST|EXIT");
     		return resetEmailSentPage(request, email);
     	}else {
-    		return beginResetPasswordPage(Optional.of("We couldn't find your account with that information"));
+    		log.info("beginResetPasswordPage||cannot find account");
+			log.info("beginResetPasswordPage||POST|EXIT");
+    		return beginResetPasswordPage(Optional.of(CANNOT_FIND_ACCOUNT));
     	}
     	
     }
@@ -156,12 +180,12 @@ public class PublicController extends BaseController{
     		}else {
     			log.info("resetPasswordFormPage||token expired");
     			log.info("resetPasswordFormPage||GET|EXIT");
-    			return goToCurrentFolderPage("public/token_expired");
+    			return beginResetPasswordPage(Optional.of(TOKEN_EXPIRED));
     		}
     	}else {
     		log.info("resetPasswordFormPage||invalid token");
     		log.info("resetPasswordFormPage||GET|EXIT");
-    		return goToCurrentFolderPage("public/invalid_token");
+    		return beginResetPasswordPage(Optional.of(TOKEN_INVALID));
     	}
     	
     }

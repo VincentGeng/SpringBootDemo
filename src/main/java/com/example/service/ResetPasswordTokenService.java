@@ -8,4 +8,6 @@ public interface ResetPasswordTokenService {
 
 	SystemUser getSystemUserByToken(String resetPasswordToken);
 
+	boolean checkIfTokenExpiredByToken(String resetPasswordToken);
+
 }

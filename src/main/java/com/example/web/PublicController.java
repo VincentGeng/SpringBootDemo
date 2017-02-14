@@ -148,10 +148,22 @@ public class PublicController extends BaseController{
     	log.info("resetPasswordFormPage||GET|ENTRY");
     	log.info("resetPasswordFormPage||GET|Token:"+token);
     	
-    	ResetPasswordFormDTO resetPasswordFormDTO = new ResetPasswordFormDTO(resetPasswordTokenService.getSystemUserByToken(token), token);
+    	if(resetPasswordTokenService.checkIfTokenExistsByToken(token)) {
+    		if(resetPasswordTokenService.checkIfTokenExpiredByToken(token)) {
+    			ResetPasswordFormDTO resetPasswordFormDTO = new ResetPasswordFormDTO(resetPasswordTokenService.getSystemUserByToken(token), token);
+    	    	log.info("resetPasswordFormPage||GET|EXIT");
+    	    	return new ModelAndView("public/reset_password_form", "ResetPasswordFormDTO", resetPasswordFormDTO);
+    		}else {
+    			log.info("resetPasswordFormPage||token expired");
+    			log.info("resetPasswordFormPage||GET|EXIT");
+    			return goToCurrentFolderPage("public/token_expired");
+    		}
+    	}else {
+    		log.info("resetPasswordFormPage||invalid token");
+    		log.info("resetPasswordFormPage||GET|EXIT");
+    		return goToCurrentFolderPage("public/invalid_token");
+    	}
     	
-    	log.info("resetPasswordFormPage||GET|EXIT");
-    	return new ModelAndView("public/reset_password_form", "ResetPasswordFormDTO", resetPasswordFormDTO);
     }
     
     @RequestMapping(value="/reset_password_form",method = RequestMethod.POST)

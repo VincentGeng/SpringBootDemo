@@ -10,4 +10,6 @@ public interface ResetPasswordTokenService {
 
 	boolean checkIfTokenExpiredByToken(String resetPasswordToken);
 
+	void deleteToken(String resetPasswordToken);
+
 }

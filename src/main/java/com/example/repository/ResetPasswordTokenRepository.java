@@ -9,5 +9,7 @@ import com.example.domain.ResetPasswordToken;
 public interface ResetPasswordTokenRepository extends JpaRepository<ResetPasswordToken, Long>{
 	
 	Optional<ResetPasswordToken> findByToken(String token);
+
+	void deleteByToken(String resetPasswordToken);
 	
 }

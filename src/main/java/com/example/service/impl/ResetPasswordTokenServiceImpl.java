@@ -56,4 +56,9 @@ public class ResetPasswordTokenServiceImpl implements ResetPasswordTokenService{
 	    	return true;
 	    }
 	}
+
+	@Override
+	public void deleteToken(String resetPasswordToken) {
+		resetPasswordTokenRepository.deleteByToken(resetPasswordToken);
+	}
 }

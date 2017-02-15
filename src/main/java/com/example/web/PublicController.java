@@ -48,6 +48,7 @@ public class PublicController extends BaseController{
 
     @RequestMapping(value="/login",method = RequestMethod.GET)
     public ModelAndView loginPage(
+    		@RequestParam Optional<String> successMsg,
     		@RequestParam Optional<String> error,
     		@RequestParam Optional<String> logout
     		) {
@@ -64,6 +65,11 @@ public class PublicController extends BaseController{
     		
     		log.info("loginPage||GET|EXIT");
         	return new ModelAndView("public/login", "successMsg", "You've been logged out successfully.");
+        	
+    	}else if(successMsg.isPresent()){
+    		
+    		log.info("loginPage||GET|EXIT");
+        	return new ModelAndView("public/login", "successMsg", successMsg.get());
         	
     	}else{
     		
@@ -195,12 +201,31 @@ public class PublicController extends BaseController{
     		@ModelAttribute ResetPasswordFormDTO resetPasswordFormDTO
     		) {
     	log.info("resetPasswordFormSubmit||POST|ENTRY");
-    	log.info("resetPasswordFormSubmit||POST|Token:"+resetPasswordFormDTO.getToken());
+    	String token = resetPasswordFormDTO.getToken();
+    	log.info("resetPasswordFormSubmit||POST|Token:"+token);
     	
-    	systemUserService.saveSystemUser(resetPasswordFormDTO.getSystemUser());
+    	if(resetPasswordTokenService.checkIfTokenExistsByToken(token)) {
+    		if(resetPasswordTokenService.checkIfTokenExpiredByToken(token)) {
+    			
+	    		systemUserService.saveSystemUser(resetPasswordFormDTO.getSystemUser());
+	    		log.info("resetPasswordFormSubmit||POST|saved systemuser to database, witch id="+resetPasswordFormDTO.getSystemUser().getId());
+	    		
+	    		resetPasswordTokenService.deleteToken(token);
+	    		log.info("resetPasswordFormSubmit||POST|token was deleted from database");
+	    		
+	        	log.info("resetPasswordFormSubmit||POST|EXIT");
+	        	return new ModelAndView("public/login", "successMsg", "Your password has been updated.");
+    		}else {
+    			log.info("resetPasswordFormSubmit||token expired");
+    			log.info("resetPasswordFormSubmit||POST|EXIT");
+    			return beginResetPasswordPage(Optional.of(TOKEN_EXPIRED));
+    		}
+    	}else {
+    		log.info("resetPasswordFormSubmit||invalid token");
+    		log.info("resetPasswordFormSubmit||POST|EXIT");
+    		return beginResetPasswordPage(Optional.of(TOKEN_INVALID));
+    	}
     	
-    	log.info("resetPasswordFormSubmit||POST|EXIT");
-    	return new ModelAndView("public/login", "successMsg", "Your password updated.");
     }
     
 }

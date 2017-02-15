@@ -1,6 +1,7 @@
 package com.example.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,14 +14,22 @@ import com.example.service.SystemUserService;
 public class SystemUserServiceImpl implements SystemUserService{
 	
 	private SystemUserRepository systemUserRepository;
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	@Autowired
-    public void setSystemUserRepository(SystemUserRepository systemUserRepository) {
+    public SystemUserServiceImpl(
+    		SystemUserRepository systemUserRepository,
+    		BCryptPasswordEncoder bCryptPasswordEncoder
+    		) {
+		
         this.systemUserRepository = systemUserRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        
     }
 
 	@Override
 	public void saveSystemUser(SystemUser systemUser) {
+		systemUser.setPassword(bCryptPasswordEncoder.encode(systemUser.getPassword()));
 		systemUserRepository.save(systemUser);
 	}
 

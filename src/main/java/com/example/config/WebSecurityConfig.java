@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -21,7 +22,7 @@ import com.example.security.CustomUserService;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
-	DataSource dataSource;
+	private DataSource dataSource;
 	
 	@Autowired
     private CustomUserService customUserService;
@@ -31,6 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         // Add customised UserDetailService authentication.
         auth
         	.userDetailsService(customUserService)
+        	.passwordEncoder(BCryptPasswordEncoder())
 	        .and()
 	        .inMemoryAuthentication()
 	        .withUser("user@demo.com").password("pass").roles("USER");
@@ -107,7 +109,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     public void configure(WebSecurity web) throws Exception {
         web
         	.ignoring()
-        	.antMatchers("/bootstrap/**", "/dist/**", "/plugins/**", "/public/**");
+        	.antMatchers(
+        			"/bootstrap/**",
+        			"/dist/**",
+        			"/plugins/**",
+        			"/public/**");
+    }
+    
+    @Bean
+    public BCryptPasswordEncoder BCryptPasswordEncoder() {
+    	return new BCryptPasswordEncoder();
     }
     
     @Bean(name="persistentTokenRepository")

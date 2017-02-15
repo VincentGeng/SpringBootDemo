@@ -97,7 +97,7 @@ public class PublicController extends BaseController{
     		) {
     	systemUser.setStatus(ACTIVE_SYSTEM_USER);
     	systemUserService.saveSystemUser(systemUser);
-    	return goToCurrentFolderPage("login");
+    	return new ModelAndView("public/login", "successMsg", "Your account has been created.");
     }
     
     @RequestMapping(value="/begin_reset_password",method = RequestMethod.GET)

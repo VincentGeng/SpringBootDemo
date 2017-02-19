@@ -38,4 +38,14 @@ public class SystemUserServiceImpl implements SystemUserService{
 		return systemUserRepository.findByUsername(email).isPresent();
 	}
 
+	@Override
+	public boolean checkIfSystemUserExistsById(Long id) {
+		return systemUserRepository.findOne(id)!=null;
+	}
+
+	@Override
+	public SystemUser getSystemUserById(long id) {
+		return systemUserRepository.findOne(id);
+	}
+
 }

@@ -8,4 +8,8 @@ public interface SystemUserService {
 	
 	boolean checkIfSystemUserExistsByEmail(String email);
 
+	boolean checkIfSystemUserExistsById(Long id);
+	
+	SystemUser getSystemUserById(long id);
+
 }

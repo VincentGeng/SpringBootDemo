@@ -92,16 +92,26 @@
            								</span>
          							</a>
        						</li> -->
-						<li class="active treeview" th:classappend="${page == 'profile' ? 'active' : ''}">
+						<li class="treeview" th:classappend="${page == 'profile' ? 'active' : ''}">
 							<a href="#" >
 								<i class="glyphicon glyphicon-user"></i>
-								<span>My Profile</span>
+								<span>Profile</span>
 								<span class="pull-right-container">
 									<i class="fa fa-angle-right pull-right"></i>
 								</span>
 							</a>
+							<ul class="treeview-menu">
+								<li th:classappend="${page == 'profile' ? 'active' : ''}">
+									<a href="#" th:href="@{/profile/__${#authentication.principal.id}__}"><i class="fa fa-circle-o"></i> My Profile</a>
+								</li>
+							</ul>
+							<ul class="treeview-menu">
+								<li>
+									<a href="#" th:href="@{/profile/change-password}"><i class="fa fa-circle-o"></i> Change Password</a>
+								</li>
+							</ul>
 						</li>
-						<li class="treeview" th:classappend="${page == 'member' ? 'active' : ''}">
+						<li class="treeview">
 							<a href="#">
 								<i class="fa fa-users"></i>
 								<span>Membership Management</span>
@@ -111,7 +121,7 @@
 							</a>
 							<ul class="treeview-menu">
 								<li>
-									<a href="#" th:href="@{/member/add}">Add Member</a>
+									<a href="#" th:href="@{/member/add}"><i class="fa fa-circle-o"></i>Add Member</a>
 								</li>
 							</ul>
 						</li>
@@ -127,7 +137,7 @@
 	  		</aside>
 	
 	  		<!-- Content Wrapper. Contains page content -->
-	  		<div class="content-wrapper">
+	  		<div class="content-wrapper" th:fragment="main">
 			    <!-- Content Header (Page header) -->
 			    <section class="content-header">
 			      	<h1>

@@ -95,8 +95,12 @@ public class PublicController extends BaseController{
     public ModelAndView signUpFormSubmit(
     		@ModelAttribute SystemUser systemUser
     		) {
+    	log.info("sign-up||POST|ENTRY");
+    	
     	systemUser.setStatus(ACTIVE_SYSTEM_USER);
     	systemUserService.saveSystemUser(systemUser);
+    	
+    	log.info("sign-up||POST|EXIT");
     	return new ModelAndView("public/login", "successMsg", "Your account has been created.");
     }
     
@@ -113,7 +117,7 @@ public class PublicController extends BaseController{
     		
 	            case CANNOT_FIND_ACCOUNT:  
             			log.info("beginResetPasswordPage||GET|EXIT");
-            			return new ModelAndView("public/begin_reset_password", "errorMsg", "We couldn't find your account with that information");
+            			return new ModelAndView("public/begin_reset_password", "errorMsg", "We couldn't find your account with that information.");
 	            
 	            case TOKEN_INVALID:  
 		            	log.info("beginResetPasswordPage||GET|EXIT");

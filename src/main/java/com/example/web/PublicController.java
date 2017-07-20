@@ -112,7 +112,6 @@ public class PublicController extends BaseController{
     	log.info("beginResetPasswordPage||GET|Error Message: "+errorMsg);
     	
     	if(errorMsg.isPresent()) {
-    		log.info("beginResetPasswordPage||GET|EXIT");
     		switch (errorMsg.get()) {
     		
 	            case CANNOT_FIND_ACCOUNT:  
@@ -128,6 +127,7 @@ public class PublicController extends BaseController{
 		    			return new ModelAndView("public/begin_reset_password", "errorMsg", "The reset link you clicked has expired. Please request a new one.");
 	            
 	            default: 
+	            		log.info("beginResetPasswordPage||GET|EXIT");
 	            		return new ModelAndView("public/begin_reset_password", "errorMsg", "The reset link you clicked encountered an unknown error. Please request a new one.");
     		}
     		

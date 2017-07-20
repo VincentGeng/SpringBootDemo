@@ -1,0 +1,25 @@
+version: '3'
+services:
+    mysqldb:
+        build:
+            context: ./src/main/docker/mysqldb
+            dockerfile: Dockerfile
+        image: mysqldb
+        container_name: demo-mysql
+        ports:
+            - "3307:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: demo
+    webapp:
+        build:
+            context: ./src/main/docker/webapp
+            dockerfile: Dockerfile
+        image: springbootmysqldocker:1.0
+        container_name: demo-app
+        depends_on:
+            - mysqldb
+        ports:
+            - "8081:8080"
+        links:
+            - mysqldb

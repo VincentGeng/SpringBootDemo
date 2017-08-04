@@ -3560,6 +3560,38 @@ table.text-center th {
   color: #1087dd;
   background-color: #ffffff;
 }
+.btn-wechat {
+	color: #ffffff;
+	background-color: #09BA07;
+	border-color: rgba(0, 0, 0, 0.2);
+} 
+.btn-wechat:focus,
+.btn-wechat.focus {
+	color: #ffffff;
+	background-color: #488D19;
+	border-color: rgba(0, 0, 0, 0.2);
+} 
+.btn-wechat:hover {
+	color: #ffffff;
+	background-color: #488D19;
+	border-color: rgba(0, 0, 0, 0.2);
+}
+.btn-wechat:active,
+.btn-wechat.active,
+.open > .dropdown-toggle.btn-facebook {
+	color: #ffffff;
+	background-color: #488D19;
+	border-color: rgba(0, 0, 0, 0.2);
+} 
+.btn-wechat:active,
+.btn-wechat.active,
+.open > .dropdown-toggle.btn-facebook {
+	background-image: none;
+}
+.btn-wechat .badge {
+	color: #09BA07;
+	background-color: #ffffff;
+}
 .btn-facebook {
   color: #ffffff;
   background-color: #3b5998;

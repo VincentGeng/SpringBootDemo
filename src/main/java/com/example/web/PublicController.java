@@ -232,4 +232,11 @@ public class PublicController extends BaseController{
     	
     }
     
+    @RequestMapping(value="/session_expired",method = RequestMethod.GET)
+    public ModelAndView sessionOccupied() {
+    	log.info("sessionOccupied||GET|ENTRY");
+    	log.info("sessionOccupied||GET|EXIT");
+    	return goToCurrentFolderPage("session_expired");
+    }
+    
 }

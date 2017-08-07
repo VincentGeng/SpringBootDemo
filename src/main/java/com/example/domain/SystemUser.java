@@ -18,8 +18,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import groovy.transform.EqualsAndHashCode;
+
 @Entity
 @Table(name="user")
+@EqualsAndHashCode(callSuper = true, excludes = { "id", "fullname", "username", "password", "status", "roles"})
 public class SystemUser implements UserDetails{
 	
 	/**

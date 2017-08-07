@@ -4,6 +4,7 @@ package com.example.config;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -11,9 +12,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import com.example.security.CustomUserService;
 
@@ -78,6 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         		.authorizeRequests()
         		.antMatchers(
         				"/login",
+        				"/session_occupied",
         				"/sign-up",
         				"/begin_reset_password",
         				"/send_reset_password",
@@ -92,13 +97,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                     .permitAll()
                     
                 .and()
-	                .logout()
+	                .logout().invalidateHttpSession(true)
 	                .permitAll()
 	                
-                .and()
-	                .rememberMe()
-	                .tokenRepository(persistentTokenRepository())// persistent token for "remember me"
-	                .tokenValiditySeconds(86400);// keep for one day;
+//                .and()
+//	                .rememberMe()
+//	                .tokenRepository(persistentTokenRepository())// persistent token for "remember me"
+//	                .tokenValiditySeconds(86400)// keep for one day;
+	                
+	            .and()
+	            	.sessionManagement()
+	            	.maximumSessions(1)
+	            	.expiredUrl("/session_expired")
+	            	.maxSessionsPreventsLogin(true)
+	            	.sessionRegistry(sessionRegistry());
     }
     
     
@@ -128,4 +140,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     	return tokenRepository;
     }
     
+    /**         *  SESSION         */
+    // Work around https://jira.spring.io/browse/SEC-2855
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        SessionRegistry sessionRegistry = new SessionRegistryImpl();
+        return sessionRegistry;
+    }
+    
+    @Bean
+    public static ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
+        return new ServletListenerRegistrationBean<HttpSessionEventPublisher>(new HttpSessionEventPublisher());
+    }
 }
